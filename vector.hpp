@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/12 17:16:29 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/12 18:58:26 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ namespace ft
 		}
 
 		/*			Iterators			*/
-		iterator	begin(void) const{
+		iterator	begin(void){
 			return (iterator(this->_start));
 		}
 
@@ -144,7 +144,7 @@ namespace ft
 		// 	return (iterator(this->_start));
 		// }
 
-		iterator	end(void) const{
+		iterator	end(void){
 			return (iterator(this->_end));
 		}
 
@@ -218,18 +218,30 @@ namespace ft
 			}
 		}
 
-		// iterator erase(iterator pos){
+		// iterator	erase(iterator pos){
 		// 	allocator_type alloc = allocator_type();
-		// 	size_type offset = pos - this->begin();
-		// 	for(; pos != (--this->end()); ++pos, ++offset)
-		// 		alloc.construct(this->_start + offset, *(this->_start + offset + 1));
-		// 	alloc.destroy(this->_end - 1);
+		// 	for(; pos != this->end(); pos) alloc.construct(pos, *(++pos));
+		// 	alloc.destroy(this);
 		// }
 		
 		void pop_back(){
 			allocator_type alloc = allocator_type();
 			
 			alloc.destroy(--this->_end);
+		}
+
+		void resize(size_type new_size, T value = T() ){
+			if (new_size < this->size())
+			{
+				allocator_type alloc = allocator_type();
+				/* maybe when i figure out how to implement erase() i can use erase here */
+				for (size_type i = new_size; i < this->size(); ++i) alloc.destroy(this->_start + i);
+				this->_end = this->_start + new_size;
+			}
+			else if (new_size > this->size())
+			{
+				for (size_type i = this->size(); i < new_size; ++i) this->push_back(value);
+			}
 		}
 
 		// void swap( vector& other ){
