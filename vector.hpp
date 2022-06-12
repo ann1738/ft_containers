@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/12 09:24:46 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/12 17:16:29 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,13 @@
 
 #include <memory>
 #include <limits>
-#include <bits/stl_iterator_base_types.h>
 
 
 
 namespace ft
 {
 
-	
+	template <typename T> class vectorIterator;
 
 	template < typename T, typename _Alloc = std::allocator<T> > 
 	class	vector
@@ -37,19 +36,42 @@ namespace ft
     	typedef typename allocator_type::pointer	pointer;
     	typedef typename allocator_type::const_pointer	const_pointer;
 
-		typedef	std::iterator<pointer, value_type>	iterator;
-		typedef	std::iterator<const_pointer, value_type>	const_iterator;
+		// typedef	std::iterator<pointer, value_type>	iterator;
+		// typedef	std::iterator<const_pointer, value_type>	const_iterator;
+		typedef		ft::vectorIterator<T>	iterator;
 	private:
 		/*			Private Members			*/
-		pointer _start = nullptr;
-		pointer _end = nullptr;
-		pointer _end_of_memory = nullptr;
+		pointer _start;
+		pointer _end;
+		pointer _end_of_memory;
 	public:
 
+		vector(const vector& other){
+			allocator_type alloc = allocator_type();
+			this->_start = alloc.allocate(other.capacity());
+
+			for (size_type i = 0; i < other.size(); ++i) alloc.construct(this->_start + i, other[i]);
+			this->_end = this->_start + other.size();
+			this->_end_of_memory = this->_start + other.capacity();
+		}
+		vector<value_type> & operator=(const vector& other){
+			if (this != &other)
+			{
+				allocator_type alloc = allocator_type();
+				this->_start = alloc.allocate(other.capacity());
+
+				for (size_type i = 0; i < other.size(); ++i) alloc.construct(this->_start + i, other[i]);
+				this->_end = this->_start + other.size();
+				this->_end_of_memory = this->_start + other.capacity();
+			}
+			return *(this);
+		}
 		/*			Constuctor			*/
-		// vector(void): _start(), _end(), _end_of_memory() {}
-		// vector(const al._M_end_of_storag`llocator_type &  alloc ){}
-		/*explicit*/ vector( size_type count, const_reference value = value_type(), allocator_type alloc = allocator_type())
+		vector(void): _start(nullptr), _end(nullptr), _end_of_memory(nullptr) {}
+		// explicit vector( const Allocator& alloc );
+		// template< class InputIt >
+		// vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
+		explicit vector( size_type count, const_reference value = value_type(), allocator_type alloc = allocator_type())
 		{
 			this->_start = alloc.allocate(count);
 			/*not needed*/
@@ -185,7 +207,6 @@ namespace ft
 				/* add the new element */
 				alloc.construct(temp + this->size(), value);
 
-				std::cout << "OI I AM HERE" << std::endl;
 				/* destroy and deallocate */
 				for (size_type i = 0; i < temp_size; ++i) alloc.destroy(this->_start + i);
 				alloc.deallocate(this->_start, temp_size);
@@ -197,7 +218,20 @@ namespace ft
 			}
 		}
 
+		// iterator erase(iterator pos){
+		// 	allocator_type alloc = allocator_type();
+		// 	size_type offset = pos - this->begin();
+		// 	for(; pos != (--this->end()); ++pos, ++offset)
+		// 		alloc.construct(this->_start + offset, *(this->_start + offset + 1));
+		// 	alloc.destroy(this->_end - 1);
+		// }
 		
+		void pop_back(){
+			allocator_type alloc = allocator_type();
+			
+			alloc.destroy(--this->_end);
+		}
+
 		// void swap( vector& other ){
 		// 	/*replace with iterators later and maybe use XOR to swap */
 		// 	/* orr just use copy constructor */
@@ -219,15 +253,45 @@ namespace ft
 	template <typename T>
 	class vectorIterator : std::iterator< std::random_access_iterator_tag, vector<T> >
 	{
-		friend class vector;
-		public:
-		vectorIterator();
-		private:
-		
-		template <typename T>
-		bool	operator!=(const vectorIterator & rhs) {return !(this == rhs);}
+		friend class vector<T>;
+		typedef typename	vector<T>::pointer pointer;
+	public:
+		vectorIterator(pointer temp) : it_start(temp) {}
+
+		T &	operator*(void){
+			return *(this->it_start);
+		}
+
+		vectorIterator operator++(void){
+			return (vectorIterator(++(this->it_start)));
+		}
+
+		vectorIterator operator++(int){
+			vectorIterator temp;
+			temp.it_start = this->it_start++;
+			return (temp);
+		}
+
+		vectorIterator operator--(void){
+			return (vectorIterator(--(this->it_start)));
+		}
+
+		vectorIterator operator--(int){
+			vectorIterator temp;
+			temp.it_start = this->it_start--;
+			return (temp);
+		}
+
+		bool	operator<(const vectorIterator & rhs) {return (this->it_start < rhs.it_start);}
+		bool	operator<=(const vectorIterator & rhs) {return (this->it_start <= rhs.it_start);}
+		bool	operator>(const vectorIterator & rhs) {return (this->it_start > rhs.it_start);}
+		bool	operator>=(const vectorIterator & rhs) {return (this->it_start >= rhs.it_start);}
+		bool	operator==(const vectorIterator & rhs) {return (this->it_start == rhs.it_start);}
+		bool	operator!=(const vectorIterator & rhs) {return (this->it_start != rhs.it_start);}
+
+	private:
+		pointer	it_start;
 	};
 }
 
-/*std::vector<std::string> a(10, "heye")*/
 #endif
