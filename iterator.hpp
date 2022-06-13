@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 14:02:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/12 15:50:43 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/13 15:51:31 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 namespace ft
 {
 	template <class T>
-	class	iterators_traits{
+	class	iterator_traits{
 	public:
 		typedef typename T::difference_type   difference_type;
 		typedef typename T::value_type        value_type;
@@ -25,6 +25,7 @@ namespace ft
 		typedef typename T::iterator_category iterator_category;
 	};
 
+#if 0
 	/* Iterator all categories: copy constructible, copy assignable, destructable */
 	template <class T>
 	class iterator: public iterators_traits<T>
@@ -114,6 +115,7 @@ namespace ft
 		bool	operator>=(const iterator & rhs) {return (this->it_start >= rhs.it_start);}
 		reference	operator[](T::size_type n) {return *(this->it_start + 1);}
 	};
+#endif
 }
 
 
