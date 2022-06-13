@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/13 18:29:50 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/13 19:30:48 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,23 +73,38 @@ int main()
 	// 		std::cout << *itt << std::endl;
 	// 	std::cout << "SIZE is " << copy.size() << std::endl;
 	// }
+	// {
+	// 	std::cout << "MINE\n";
+	// 	ft::vector<int> a(100, 1337);
+	// 	ft::vector<int> b(10, 1337);
+	// 	if (ft::equal(a.begin(), a.begin() + 10, b.begin()))
+	// 		std::cout << "\e[32mEQUAL\e[0m" << std::endl;
+	// 	else
+	// 		std::cout << "\e[31mNOT EQUAL\e[0m" << std::endl;
+	// }
+	// {
+	// 	std::cout << "THEIRS\n";
+	// 	std::vector<int> a(100, 1337);
+	// 	std::vector<int> b(10, 1337);
+	// 	if (std::equal(a.begin(), a.begin() + 10, b.begin()))
+	// 		std::cout << "\e[32mEQUAL\e[0m" << std::endl;
+	// 	else
+	// 		std::cout << "\e[31mNOT EQUAL\e[0m" << std::endl;
+	// }
+	// std::cout << "#########################" << std::endl;
 	{
-		std::cout << "MINE\n";
-		ft::vector<int> a(100, 1337);
-		ft::vector<int> b(10, 1337);
-		if (ft::equal(a.begin(), a.begin() + 10, b.begin()))
-			std::cout << "\e[32mEQUAL\e[0m" << std::endl;
+		// std::vector<int> a(10, 420);
+		// std::vector<int> b(10, 420);
+		std::string a("Heyyyy");
+		std::string b("heyyyy");
+		if (std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end()))
+			std::cout << "a is less\n";
 		else
-			std::cout << "\e[31mNOT EQUAL\e[0m" << std::endl;
-	}
-	{
-		std::cout << "THEIRS\n";
-		std::vector<int> a(100, 1337);
-		std::vector<int> b(10, 1337);
-		if (std::equal(a.begin(), a.begin() + 10, b.begin()))
-			std::cout << "\e[32mEQUAL\e[0m" << std::endl;
+			std::cout << "a is greater or equal\n";
+		if (std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end())
+			== ft::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end()))
+			std::cout << "\e[32mCORRECT\e[0m\n";
 		else
-			std::cout << "\e[31mNOT EQUAL\e[0m" << std::endl;
+			std::cout << "\e[31mINCORRECT\e[0m\n";
 	}
-	std::cout << "#########################" << std::endl;
 }
