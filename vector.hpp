@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/13 18:21:40 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/14 08:47:45 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,7 @@ namespace ft
 	class	vector
 	{
 	public:
-		/* Iterator typedefs */
 		typedef typename std::ptrdiff_t   difference_type;
-		// typedef typename T        value_type;
-		// typedef typename allocator_type::pointer           pointer;
-		// typedef typename value_type&         reference;
 		typedef typename std::random_access_iterator_tag iterator_category;
 		/*			Member Types			*/
     	typedef T 							value_type;
@@ -42,9 +38,11 @@ namespace ft
     	typedef typename allocator_type::pointer	pointer; //check this
     	typedef typename allocator_type::const_pointer	const_pointer;
 
+		
 		// typedef	std::iterator<pointer, value_type>	iterator;
 		// typedef	std::iterator<const_pointer, value_type>	const_iterator;
 		typedef		ft::vectorIterator<T>		iterator;
+		typedef 	ft::reverse_iterator<iterator>		reverse_iterator;
 	private:
 		/*			Private Members			*/
 		pointer _start;
@@ -158,6 +156,14 @@ namespace ft
 		iterator	end(void){
 			return (iterator(this->_end));
 		}
+		
+		reverse_iterator	rbegin(void){
+			return (reverse_iterator(end()));
+		}
+
+		reverse_iterator	rend(void){
+			return (reverse_iterator(begin()));
+		}
 
 		/*			Capacity			*/
 		bool	empty(void) const{
@@ -229,12 +235,6 @@ namespace ft
 			}
 		}
 
-		// iterator	erase(iterator pos){
-		// 	allocator_type alloc = allocator_type();
-		// 	for(; pos != this->end(); pos) alloc.construct(pos, *(++pos));
-		// 	alloc.destroy(this);
-		// }
-		
 		void pop_back(){
 			allocator_type alloc = allocator_type();
 			
@@ -332,16 +332,16 @@ namespace ft
 	};
 
 	template <typename T>
-	class vectorIterator : ft::iterator_traits< ft::vector<T> >
+	class vectorIterator
 	{
-		friend class vector<T>;
+		// friend class vector<T>;
 		// typedef typename	vector<T>::value_type* pointer;
+	public:
 		typedef typename ft::vector<T>::difference_type   difference_type;
 		typedef typename ft::vector<T>::value_type        value_type;
 		typedef typename ft::vector<T>::pointer           pointer;
 		typedef typename ft::vector<T>::reference         reference;
 		typedef typename ft::vector<T>::iterator_category iterator_category;
-	public:
 		vectorIterator(void) {it_start = 0;}
 		vectorIterator(pointer temp) {it_start = temp;}
 		vectorIterator(vectorIterator const & iter) {it_start = iter.it_start;}

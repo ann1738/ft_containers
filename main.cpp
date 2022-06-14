@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/13 19:30:48 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/14 08:55:36 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "timer.hpp"
 #include "additional.hpp"
 #include <vector>
+#include <iterator>
 int main()
 {
 	// {
@@ -92,19 +93,29 @@ int main()
 	// 		std::cout << "\e[31mNOT EQUAL\e[0m" << std::endl;
 	// }
 	// std::cout << "#########################" << std::endl;
+	// {
+	// 	// std::vector<int> a(10, 420);
+	// 	// std::vector<int> b(10, 420);
+	// 	std::string a("Heyyyy");
+	// 	std::string b("heyyyy");
+	// 	if (std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end()))
+	// 		std::cout << "a is less\n";
+	// 	else
+	// 		std::cout << "a is greater or equal\n";
+	// 	if (std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end())
+	// 		== ft::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end()))
+	// 		std::cout << "\e[32mCORRECT\e[0m\n";
+	// 	else
+	// 		std::cout << "\e[31mINCORRECT\e[0m\n";
+	// }
+
 	{
-		// std::vector<int> a(10, 420);
-		// std::vector<int> b(10, 420);
-		std::string a("Heyyyy");
-		std::string b("heyyyy");
-		if (std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end()))
-			std::cout << "a is less\n";
-		else
-			std::cout << "a is greater or equal\n";
-		if (std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end())
-			== ft::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end()))
-			std::cout << "\e[32mCORRECT\e[0m\n";
-		else
-			std::cout << "\e[31mINCORRECT\e[0m\n";
+		ft::vector<int> a;
+		for (size_t i = 1; i < 6; ++i) a.push_back(i);
+		ft::vector<int>::reverse_iterator r = a.rend();
+		ft::vector<int>::iterator i = r.base();
+
+		for (ft::vector<int>::reverse_iterator rit = a.rbegin(); rit != a.rend(); ++rit)
+			std::cout << *rit << std::endl;
 	}
 }
