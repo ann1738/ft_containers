@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/14 08:55:36 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/14 19:13:00 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "additional.hpp"
 #include <vector>
 #include <iterator>
+
 int main()
 {
 	// {
@@ -117,5 +118,32 @@ int main()
 
 		for (ft::vector<int>::reverse_iterator rit = a.rbegin(); rit != a.rend(); ++rit)
 			std::cout << *rit << std::endl;
+		ft::vector<int>::reverse_iterator rit = a.rbegin();
+		ft::vector<int>::iterator it = rit.base();
+		// assert(&*rit == &*(it - 1));
+	}
+	{
+		{
+			// std::vector<int> a(11, 42);
+			// std::vector<int> aa(2, 420);
+			// std::cout << "SIZ: " << a.size() << std::endl;
+			// a.assign(aa.begin(), aa.end());
+			// for (std::vector<int>::iterator it = a.begin(); it != a.end(); ++it)
+			// 	std::cout << *it << std::endl;
+			// std::cout << "SIZ: " << a.size() << std::endl;
+			// std::cout << "CAP: " << a.capacity() << std::endl;
+			
+		}
+		{
+			// std::cout << "\nMINE NOW\n" << std::endl;
+			// ft::vector<int> a(11, 42);
+			// std::vector<int> aa(2, 420);
+			// std::cout << "SIZ: " << a.size() << std::endl;
+			// a.assign(aa.begin(), aa.end());
+			// for (ft::vector<int>::iterator it = a.begin(); it != a.end(); it++)
+			// 	std::cout << *it << std::endl;
+			// std::cout << "SIZ: " << a.size() << std::endl;
+			// std::cout << "CAP: " << a.capacity() << std::endl;
+		}
 	}
 }

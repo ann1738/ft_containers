@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/14 08:47:45 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/14 18:10:46 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ namespace ft
 		pointer _end_of_memory;
 	public:
 
+		/*		Copy constructor and copy assignment		*/
 		vector(const vector& other){
 			allocator_type alloc = allocator_type();
 			this->_start = alloc.allocate(other.capacity());
@@ -58,6 +59,7 @@ namespace ft
 			this->_end = this->_start + other.size();
 			this->_end_of_memory = this->_start + other.capacity();
 		}
+
 		vector<value_type> & operator=(const vector& other){
 			if (this != &other)
 			{
@@ -75,11 +77,18 @@ namespace ft
 			}
 			return *(this);
 		}
-		/*			Constuctor			*/
+
+		/*			Constuctors			*/
 		vector(void): _start(0), _end(0), _end_of_memory(0) {}
-		// explicit vector( const Allocator& alloc );
+
+		explicit vector( const allocator_type& alloc ):  _start(0), _end(0), _end_of_memory(0) {static_cast<void>(alloc);}
+
 		// template< class InputIt >
-		// vector(InputIt first, InputIt last, const Allocator& alloc = Allocator());
+		// vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type()){
+		// 	static_cast<void>(alloc);
+		// 	for (; first != last; ++first) push_back(*first);
+		// }
+
 		explicit vector( size_type count, const_reference value = value_type(), allocator_type alloc = allocator_type())
 		{
 			this->_start = alloc.allocate(count);
@@ -92,13 +101,38 @@ namespace ft
 			this->_end = this->_start + count;
 			this->_end_of_memory = this->_end;
 		}
-		
+
 		/*			Destructor		*/
 		~vector(){
 			allocator_type alloc = allocator_type();
 		
 			for (size_type i = 0; i < this->size(); ++i) alloc.destroy(this->_start + i);
 			alloc.deallocate(this->_start, this->capacity());
+		}
+
+		void assign( size_type count, const T& value ){
+			allocator_type alloc = allocator_type();
+			this->clear();
+			if (count > this->capacity())
+				this->reserve(count);
+			for (size_type i = 0; i < count; ++i) alloc.construct(this->_start + i, value);
+			this->_end = this->_start + count;
+		}
+
+		template< class InputIt >
+		void assign( InputIt first, InputIt last )
+		{
+			size_type count = static_cast<size_type>(&*last - &*first);
+			allocator_type alloc = allocator_type();
+			this->clear();
+			if (count > this->capacity())
+				this->reserve(count);
+			for (size_type i = 0; i < count; ++i) alloc.construct(this->_start + i, *first);
+			this->_end = this->_start + count;
+		}
+
+		allocator_type get_allocator() const{
+			return allocator_type();
 		}
 
 		/*			Element access		*/
@@ -336,6 +370,8 @@ namespace ft
 	{
 		// friend class vector<T>;
 		// typedef typename	vector<T>::value_type* pointer;
+	
+	vectorIterator	base(void) {return *(this);}
 	public:
 		typedef typename ft::vector<T>::difference_type   difference_type;
 		typedef typename ft::vector<T>::value_type        value_type;
@@ -351,6 +387,10 @@ namespace ft
 		/*YOU HAVE TO IMPLEMENT '->' also !!!*/
 		reference	operator*(void){
 			return *(this->it_start);
+		}
+
+		reference	operator->(void){
+			return (this->it_start);
 		}
 
 		vectorIterator operator++(void){
@@ -375,37 +415,37 @@ namespace ft
 			return (temp);
 		}
 
-		bool	operator<(const vectorIterator & rhs) {return (this->it_start < rhs.it_start);}
-		bool	operator<=(const vectorIterator & rhs) {return (this->it_start <= rhs.it_start);}
-		bool	operator>(const vectorIterator & rhs) {return (this->it_start > rhs.it_start);}
-		bool	operator>=(const vectorIterator & rhs) {return (this->it_start >= rhs.it_start);}
-		bool	operator==(const vectorIterator & rhs) {return (this->it_start == rhs.it_start);}
-		bool	operator!=(const vectorIterator & rhs) {return (this->it_start != rhs.it_start);}
+		// bool	operator<(const vectorIterator & rhs) {return (this->it_start < rhs.it_start);}
+		// bool	operator<=(const vectorIterator & rhs) {return (this->it_start <= rhs.it_start);}
+		// bool	operator>(const vectorIterator & rhs) {return (this->it_start > rhs.it_start);}
+		// bool	operator>=(const vectorIterator & rhs) {return (this->it_start >= rhs.it_start);}
+		// bool	operator==(const vectorIterator & rhs) {return (this->it_start == rhs.it_start);}
+		// bool	operator!=(const vectorIterator & rhs) {return (this->it_start != rhs.it_start);}
 
-		vectorIterator		operator+(const vectorIterator & rhs) 
+		vectorIterator		operator+(const vectorIterator & rhs) const
 		{
 			vectorIterator temp(*this);
 			temp = this->it_start + rhs.it_start;
 			return (temp);
 		}
-		vectorIterator		operator+(difference_type n) 
+		vectorIterator		operator+(difference_type n) const
 		{
 			vectorIterator temp(*this);
 			temp = this->it_start + n;
 			return (temp);
 		}
-		vectorIterator &	operator+=(difference_type n) 
+		vectorIterator &	operator+=(difference_type n)
 		{
 			this->it_start += n;
 			return *(this);
 		}
-		vectorIterator		operator-(const vectorIterator & rhs) 
+		vectorIterator		operator-(const vectorIterator & rhs) const
 		{
 			vectorIterator temp(*this);
 			temp = this->it_start - rhs.it_start;
 			return (temp);
 		}
-		vectorIterator		operator-(difference_type n) 
+		vectorIterator		operator-(difference_type n) const
 		{
 			vectorIterator temp(*this);
 			temp = this->it_start - n;
@@ -418,10 +458,53 @@ namespace ft
 		}
 		reference	operator[](difference_type n) {return (this->it_start[n]);}
 
+	friend bool operator==(const vectorIterator & lhs, const vectorIterator & rhs){
+		return lhs.it_start == rhs.it_start;
+	}
+
+	friend bool operator!=(const vectorIterator & lhs, const vectorIterator & rhs){
+		return lhs.it_start != rhs.it_start;
+	}
+
+	friend bool operator>(const vectorIterator & lhs, const vectorIterator & rhs){
+		return lhs.it_start > rhs.it_start;
+	}
+
+	friend bool operator>=(const vectorIterator & lhs, const vectorIterator & rhs){
+		return lhs.it_start >= rhs.it_start;
+	}
+
+	friend bool operator<(const vectorIterator & lhs, const vectorIterator & rhs){
+		return lhs.it_start < rhs.it_start;
+	}
+
+	friend bool operator<=(const vectorIterator& lhs, const vectorIterator & rhs){
+		return lhs.it_start <= rhs.it_start;
+	}
+
+	friend typename vectorIterator::difference_type operator-(const vectorIterator & lhs, const vectorIterator & rhs){
+		return lhs.it_start - rhs.it_start;
+	}
+
+	friend vectorIterator operator+(typename vectorIterator::difference_type n, const vectorIterator& it){
+		return vectorIterator(it + n);
+	}
 
 	private:
 		pointer	it_start;
 	};
+	
+	/*	Nonmember operators		*/
+
+
+
+	// template< class Iter >
+	// bool operator!=( Iter & lhs, Iter & rhs){
+	// 	return lhs.base() != rhs.base();
+	// }
+
+	
+
 }
 
 #endif
