@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/14 18:10:46 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/19 08:42:38 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <limits>
 #include <iterator>
 #include "iterator.hpp"
+#include "additional.hpp"
 
 namespace ft
 {
@@ -83,11 +84,11 @@ namespace ft
 
 		explicit vector( const allocator_type& alloc ):  _start(0), _end(0), _end_of_memory(0) {static_cast<void>(alloc);}
 
-		// template< class InputIt >
-		// vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type()){
-		// 	static_cast<void>(alloc);
-		// 	for (; first != last; ++first) push_back(*first);
-		// }
+		template< class InputIt >
+		vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type()){
+			static_cast<void>(alloc);
+			for (; first != last; ++first) push_back(*first);
+		}
 
 		explicit vector( size_type count, const_reference value = value_type(), allocator_type alloc = allocator_type())
 		{
@@ -209,7 +210,7 @@ namespace ft
 		}
 
 		size_type	max_size() const{
-			return (std::numeric_limits<size_type>::max());
+			return (std::numeric_limits<difference_type>::max());
 		}
 
 		void	reserve(size_type new_cap){
@@ -241,9 +242,15 @@ namespace ft
 		/*			Modifiers			*/
 		void	push_back( const_reference value ){
 			allocator_type alloc = allocator_type();
-			if (this->size() != this->capacity())
+			if (this->_end == this->_start)
 			{
-
+				this->_start = alloc.allocate(1);
+				alloc.construct(this->_start, value);
+				this->_end = this->_start + 1;
+				this->_end_of_memory = this->_start + 1;
+			}
+			else if (this->size() != this->capacity())
+			{
 				alloc.construct(this->_start + this->size(), value);
 				++this->_end;
 			}
@@ -334,22 +341,28 @@ namespace ft
 
 		iterator insert( iterator pos, const T& value ){
 			allocator_type alloc = allocator_type();
-			push_back(0);
+			push_back(value);
 			
-			for (iterator it = this->end() - 2; it != pos - 1 && it != this->begin(); --it)
+			for (iterator it = this->end() - 2; it != pos - 1 && it != this->begin() - 1; --it)
 				alloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
+			/*ENABLE IF TO FIX THIS*/
+			// for (ft::reverse_iterator<iterator> rit = this->rbegin(); rit != pos - 1 && rit != this->rend(); ++rit) /**/
+				// alloc.construct(&(*rit) + 1, *(rit)); /* backwards copying to avoid overlapping (similar to memmove) */
 			alloc.construct(&(*pos), value);
 			return (pos);
 		}
 
 		void insert( iterator pos, size_type count, const T& value ){
 			allocator_type alloc = allocator_type();
-			for (size_type i = 0; i < count; ++i) push_back(0);
+			for (size_type i = 0; i < count; ++i) push_back(value);
 			
-			for (iterator it = this->end() - count - 1; it != pos - 1 && it != this->begin(); --it)
+			for (iterator it = this->end() - count - 1; it != pos - 1 && it != this->begin() - 1; --it)
 				alloc.construct(&(*it) + count, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
+			for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			for (size_type i = 0; i < count; ++i, ++pos)
-				alloc.construct(&(*pos), value);
+				{alloc.construct(&(*pos), value); std::cout << "HOWOWO " << i << std::endl;}
+			for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
+			
 		}
 
 		// template< class InputIt >
@@ -363,8 +376,48 @@ namespace ft
 			*this = temp;
 		}
 
+		/*		Non-member functions	*/
+		// template< class TYPE, class Alloc >
+		// friend bool operator==( const ft::vector<TYPE,Alloc>& lhs, const ft::vector<TYPE,Alloc>& rhs ){
+		// 	if (lhs.size() != rhs.size())
+		// 		return false;
+		// 	for (size_type i = 0; i < lhs.size(); ++i)
+		// 		if (lhs[i] != rhs[i]) return false;
+		// 	return true;
+		// }
+
+		// template< class TYPE, class Alloc >
+		// friend bool operator!=( const ft::vector<TYPE,Alloc>& lhs, const ft::vector<TYPE,Alloc>& rhs ){
+		// 	return !(lhs == rhs);
+		// }
+
+		// template< class TYPE, class Alloc >
+		// friend bool operator<( const ft::vector<TYPE,Alloc>& lhs, const ft::vector<TYPE,Alloc>& rhs ){
+		// 	return (ft::lexicographical_compare(lhs, rhs));
+		// }
+		// template< class TYPE, class Alloc >
+		// friend bool operator<=( const ft::vector<TYPE,Alloc>& lhs, const ft::vector<TYPE,Alloc>& rhs ){
+		// 	return (ft::lexicographical_compare(lhs, rhs));
+		// }
+		
+		// template< class TYPE, class Alloc >
+		// friend bool operator>( const ft::vector<TYPE,Alloc>& lhs, const ft::vector<TYPE,Alloc>& rhs ){
+		// 	return (ft::lexicographical_compare(rhs, lhs));
+		// }
+		// template< class TYPE, class Alloc >
+		// friend bool operator>=( const ft::vector<TYPE,Alloc>& lhs, const ft::vector<TYPE,Alloc>& rhs ){
+		// 	return (ft::lexicographical_compare(rhs, lhs));
+		// }
+
 	};
 
+	/*		std::swap specialization		*/
+	template< class T, class Alloc >
+	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ){
+		lhs.swap(rhs);
+	}
+
+	/*		ft::vector iterator				*/
 	template <typename T>
 	class vectorIterator
 	{

@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   additional.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/14 17:14:47 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/17 15:17:04 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ADDITIONAL_HPP
 # define ADDITIONAL_HPP
+
+#include <iostream>
 
 namespace ft
 {
@@ -61,6 +63,22 @@ namespace ft
 		}
 		return (first1 == last1 && first2 != last2);
 	}
+
+	/*		enable_if		*/
+	template< bool B, class T = void >
+	struct enable_if;
+	template< class T >
+	struct enable_if<true, T> {typedef T type;};
+
+	/*		ft::pair		*/
+	template< class T1, class T2 >
+	struct pair
+	{
+		pair();
+		pair( const T1& x, const T2& y );
+		template< class U1, class U2 >
+		pair( const pair<U1, U2>& p );
+	};
 }
 
 
