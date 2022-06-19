@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   testing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 15:02:04 by ann               #+#    #+#             */
-/*   Updated: 2022/06/17 15:17:27 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/19 17:10:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 #include "vector_tests/vector_tests.hpp"
 
-# define TESTING_MODE 1
+# define TESTING_MODE 0
 
 # define PASS "\e[32mPASS!\e[0m"
 # define FAIL "\e[31mFAIL ;(\e[0m"

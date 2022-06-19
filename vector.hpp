@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 13:18:15 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/19 16:36:17 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,15 +305,21 @@ namespace ft
 		iterator erase( iterator pos ){
 			allocator_type alloc = allocator_type();
 			pointer temp = &(*pos);
-			pointer re = &(*pos) + 1;
+			pointer re = &(*pos);
+			bool	is_last = false;
 			
-			for (; pos != this->end() - 1; ++pos)
+			if (pos == end())
+				is_last = true;
+			for (; pos != this->end() - 1; ++pos, ++temp)
 			{
 				alloc.construct(temp, *(temp + 1));
-				++temp;
 			}
 			alloc.destroy(temp);
 			--this->_end;
+
+			if (is_last)
+				re = &*end();
+			// for (size_type i = 0; i < size(); ++i)	std::cout << this->at(i) << std::endl;
 			return (iterator(re));
 		}
 		
@@ -325,7 +331,10 @@ namespace ft
 			pointer st = &(*first);
 			pointer re = &(*last);
 			size_type count = 0;
+			bool	is_last = false;
 			
+			if (last == end())
+				is_last = true;
 			for (; first != last; ++first, ++count)
 				alloc.destroy(st++);
 			for (; last != this->end(); ++last)
@@ -334,6 +343,8 @@ namespace ft
 				++st;
 			}
 			this->_end -= count;
+			if (is_last)
+				re = &*end();
 			return (iterator(re));
 			
 		}
@@ -342,7 +353,7 @@ namespace ft
 			allocator_type alloc = allocator_type();
 			push_back(value);
 			
-			std::cout << "pos " << pos << " and end - 1 is " << this->end() - 1 << std::endl;
+			// std::cout << "pos " << &*pos << " and end - 1 is " << &*(this->end() - 2) << std::endl;
 			if (pos == this->end() - 1)
 				alloc.construct(&(*(this->end() - 1)), *(this->end() - 2));
 			else

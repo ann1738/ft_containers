@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   modifiers.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 07:29:58 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 13:06:57 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/19 16:41:02 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,3 +136,71 @@ void	vector_insert()
 	}
 	std::cout << "insert() " PASS << std::endl;
 }
+
+void	vector_erase()
+{
+	{
+		std::vector<int> strd;
+		ft::vector<int> mine;
+
+		for (size_t i = 0; i < 100; ++i)
+		{
+			strd.push_back(i);
+			mine.push_back(i);
+		}
+		assert(strd.size() == mine.size());
+		assert(strd.capacity() == mine.capacity());
+		
+		for (size_t i = 0; i < 100; ++i)
+		{
+			// std::cout << *strd.erase(strd.begin() + i) << " == " << *(mine.erase(mine.begin() + i)) << std::endl;
+			assert(*strd.erase(strd.begin()) == *mine.erase(mine.begin()));
+			assert(strd.size() == mine.size());
+			assert(strd.capacity() == mine.capacity());
+			for (size_t i = 0; i < strd.size(); ++i) assert(strd[i] == mine[i]);
+		}
+
+		for (size_t i = 0; i < 100; ++i)
+		{
+			strd.push_back(i);
+			mine.push_back(i);
+		}
+		assert(*strd.erase(strd.begin(), strd.begin() + 50) == *mine.erase(mine.begin(), mine.begin() + 50));
+		assert(strd.size() == mine.size());
+		assert(strd.capacity() == mine.capacity());
+
+		assert(*strd.erase(strd.begin(), strd.end()) == *mine.erase(mine.begin(), mine.end()));
+		assert(strd.size() == mine.size());
+		assert(strd.capacity() == mine.capacity());
+	}
+	{
+		std::vector<std::string> strd;
+		ft::vector<std::string> mine;
+
+		strd.push_back("ONE");
+		strd.push_back("TWO");
+		strd.push_back("THREE");
+		strd.push_back("FOUR");
+		strd.push_back("FIVE");
+
+		mine.push_back("ONE");
+		mine.push_back("TWO");
+		mine.push_back("THREE");
+		mine.push_back("FOUR");
+		mine.push_back("FIVE");
+
+		for (size_t i = 0; i < 2; ++i)
+		{
+			assert(*strd.erase(strd.begin()) == *mine.erase(mine.begin()));
+			assert(strd.size() == mine.size());
+			assert(strd.capacity() == mine.capacity());
+		}
+		
+		assert(*strd.erase(strd.begin(), strd.end()) == *mine.erase(mine.begin(), mine.end()));
+		assert(strd.size() == mine.size());
+		assert(strd.capacity() == mine.capacity());
+	}
+	std::cout << "erase() " PASS << std::endl;
+}
+
+

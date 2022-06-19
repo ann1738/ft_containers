@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   additional.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/17 15:17:04 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/19 18:16:53 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,27 @@ namespace ft
 		template< class U1, class U2 >
 		pair( const pair<U1, U2>& p );
 	};
+
+	/*		is_integral		*/
+	template< class T, T _val >
+	struct _is_integral_base
+	{
+		static const T	value = _val;
+	};
+
+	typedef _is_integral_base<bool, true> true_type;
+	typedef _is_integral_base<bool, false> false_type;
+
+
+	template< class T >
+	struct is_integral< T > : public false_type{};
+
+	template< >
+	struct is_integral< bool > : public true_type {};
+	
+
+	template< >
+	
 }
 
 
