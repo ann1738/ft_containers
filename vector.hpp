@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 08:42:38 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/19 13:18:15 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,6 @@ namespace ft
 				++st;
 			}
 			this->_end -= count;
-			std::cout << "COUNT IS -> " << count << std::endl;
 			return (iterator(re));
 			
 		}
@@ -343,12 +342,19 @@ namespace ft
 			allocator_type alloc = allocator_type();
 			push_back(value);
 			
-			for (iterator it = this->end() - 2; it != pos - 1 && it != this->begin() - 1; --it)
-				alloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
+			std::cout << "pos " << pos << " and end - 1 is " << this->end() - 1 << std::endl;
+			if (pos == this->end() - 1)
+				alloc.construct(&(*(this->end() - 1)), *(this->end() - 2));
+			else
+			{
+				for (iterator it = this->end() - 2; it != pos - 1 && it != this->begin() - 1; --it)
+					{alloc.construct(&(*it) + 1, *(it)); std::cout << "I AM HERE\n";} /* backwards copying to avoid overlapping (similar to memmove) */	
+			}
 			/*ENABLE IF TO FIX THIS*/
 			// for (ft::reverse_iterator<iterator> rit = this->rbegin(); rit != pos - 1 && rit != this->rend(); ++rit) /**/
 				// alloc.construct(&(*rit) + 1, *(rit)); /* backwards copying to avoid overlapping (similar to memmove) */
 			alloc.construct(&(*pos), value);
+			// for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			return (pos);
 		}
 
@@ -358,10 +364,10 @@ namespace ft
 			
 			for (iterator it = this->end() - count - 1; it != pos - 1 && it != this->begin() - 1; --it)
 				alloc.construct(&(*it) + count, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
-			for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
+			// for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			for (size_type i = 0; i < count; ++i, ++pos)
 				{alloc.construct(&(*pos), value); std::cout << "HOWOWO " << i << std::endl;}
-			for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
+			// for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			
 		}
 
