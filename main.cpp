@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 18:14:56 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/20 09:50:43 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,13 @@ int main()
 	}
 	#else
 	
-	// int i = 0;
-	// std::cout << std::is_integral<int>::type << std::endl;
-	std::cout <<  std::boolalpha <<  std::endl;
-	std::cout << std::is_integral<ft::vector<int>::iterator>::value << std::endl;
-	std::cout << "************************************************************\n";
-	std::cout << ft::is_integral<ft::vector<int>::iterator>::value << std::endl;
-	std::cout << ft::is_integral<ft::vector<int>::iterator>::value << std::endl;
+	std::vector<int> s;
+	s.push_back(1);
+	s.push_back(2);
+	s.push_back(3);
+	s.push_back(4);
+	s.push_back(5);
+
+	std::cout << *s.erase(s.begin(), s.end()-1) << std::endl;
 	#endif
 }

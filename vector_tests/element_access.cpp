@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 14:53:49 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 06:47:44 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/20 08:56:26 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,53 +164,53 @@ void	vector_back()
 	std::cout << "back() " PASS << std::endl;
 }
 
-/* data() */
-void	vector_data()
-{
-	{
-		std::vector<int> strd;
-		ft::vector<int> mine;
+// /* data() */
+// void	vector_data()
+// {
+// 	{
+// 		std::vector<int> strd;
+// 		ft::vector<int> mine;
 
-		for (size_t i = 0; i < 26; ++i)
-		{
-			strd.push_back(i);
-			mine.push_back(i);
-		}
-		int *dataStrd = strd.data();
-		int *dataMine = mine.data();
-		for (size_t i = 0; i < strd.size(); ++i, ++dataStrd, ++dataMine)
-			assert(*dataStrd == *dataMine);
-	}
-	{
-		std::vector<char> strd;
-		ft::vector<char> mine;
+// 		for (size_t i = 0; i < 26; ++i)
+// 		{
+// 			strd.push_back(i);
+// 			mine.push_back(i);
+// 		}
+// 		int *dataStrd = strd.data();
+// 		int *dataMine = mine.data();
+// 		for (size_t i = 0; i < strd.size(); ++i, ++dataStrd, ++dataMine)
+// 			assert(*dataStrd == *dataMine);
+// 	}
+// 	{
+// 		std::vector<char> strd;
+// 		ft::vector<char> mine;
 
-		for (char c = 'a'; c < 'z' + 1; ++c)
-		{
-			strd.push_back(c);
-			mine.push_back(c);
-		}
-		char *dataStrd = strd.data();
-		char *dataMine = mine.data();
-		for (size_t i = 0; i < strd.size(); ++i, ++dataStrd, ++dataMine)
-			assert(*dataStrd == *dataMine);
-	}
-	{
-		std::vector<std::string> strd;
-		ft::vector<std::string> mine;
+// 		for (char c = 'a'; c < 'z' + 1; ++c)
+// 		{
+// 			strd.push_back(c);
+// 			mine.push_back(c);
+// 		}
+// 		char *dataStrd = strd.data();
+// 		char *dataMine = mine.data();
+// 		for (size_t i = 0; i < strd.size(); ++i, ++dataStrd, ++dataMine)
+// 			assert(*dataStrd == *dataMine);
+// 	}
+// 	{
+// 		std::vector<std::string> strd;
+// 		ft::vector<std::string> mine;
 
-		strd.push_back("ONE");
-		strd.push_back("TWO");
-		strd.push_back("THREE");
+// 		strd.push_back("ONE");
+// 		strd.push_back("TWO");
+// 		strd.push_back("THREE");
 
-		mine.push_back("ONE");
-		mine.push_back("TWO");
-		mine.push_back("THREE");
+// 		mine.push_back("ONE");
+// 		mine.push_back("TWO");
+// 		mine.push_back("THREE");
 
-		std::string *dataStrd = strd.data();
-		std::string *dataMine = mine.data();
-		for (size_t i = 0; i < strd.size(); ++i, ++dataStrd, ++dataMine)
-			assert(*dataStrd == *dataMine);
-	}
-	std::cout << "data() " PASS << std::endl;
-}
+// 		std::string *dataStrd = strd.data();
+// 		std::string *dataMine = mine.data();
+// 		for (size_t i = 0; i < strd.size(); ++i, ++dataStrd, ++dataMine)
+// 			assert(*dataStrd == *dataMine);
+// 	}
+// 	std::cout << "data() " PASS << std::endl;
+// }

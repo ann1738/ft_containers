@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   additional.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/19 18:16:53 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/20 08:08:56 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,6 @@ namespace ft
 		return (first1 == last1 && first2 != last2);
 	}
 
-	/*		enable_if		*/
-	template< bool B, class T = void >
-	struct enable_if;
-	template< class T >
-	struct enable_if<true, T> {typedef T type;};
 
 	/*		ft::pair		*/
 	template< class T1, class T2 >
@@ -80,8 +75,15 @@ namespace ft
 		pair( const pair<U1, U2>& p );
 	};
 
+	/*		enable_if		*/
+	template< bool B, class T = void >
+	struct enable_if;
+
+	template< class T >
+	struct enable_if<true, T> {typedef T type;};
+
 	/*		is_integral		*/
-	template< class T, T _val >
+	template< class T, T _val>
 	struct _is_integral_base
 	{
 		static const T	value = _val;
@@ -90,17 +92,44 @@ namespace ft
 	typedef _is_integral_base<bool, true> true_type;
 	typedef _is_integral_base<bool, false> false_type;
 
-
 	template< class T >
-	struct is_integral< T > : public false_type{};
+	struct is_integral : public false_type{};
 
 	template< >
-	struct is_integral< bool > : public true_type {};
-	
+	struct is_integral< bool > : public true_type{};
 
 	template< >
-	
+	struct is_integral< char > : public true_type{};
+
+	template< >
+	struct is_integral< wchar_t > : public true_type {};
+
+	template< >
+	struct is_integral< unsigned char > : public true_type {};
+
+	template< >
+	struct is_integral< short int > : public true_type {};
+
+	template< >
+	struct is_integral< int > : public true_type{};
+
+	template< >
+	struct is_integral< long int > : public true_type {};
+
+	template< >
+	struct is_integral< long long int > : public true_type {};
+
+	template< >
+	struct is_integral< unsigned short int > : public true_type {};
+
+	template< >
+	struct is_integral< unsigned int > : public true_type {};
+
+	template< >
+	struct is_integral< unsigned long int > : public true_type {};
+
+	template< >
+	struct is_integral< unsigned long long int > : public true_type {};
+
 }
-
-
 #endif

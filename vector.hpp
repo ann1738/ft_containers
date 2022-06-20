@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 16:36:17 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/20 09:52:46 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,35 +28,65 @@ namespace ft
 	class	vector
 	{
 	public:
-		typedef typename std::ptrdiff_t   difference_type;
-		typedef typename std::random_access_iterator_tag iterator_category;
 		/*			Member Types			*/
-    	typedef T 							value_type;
-		typedef value_type&					reference;
-		typedef const value_type&			const_reference;
-    	typedef std::size_t					size_type;
-    	typedef _Alloc						allocator_type;
-    	typedef typename allocator_type::pointer	pointer; //check this
-    	typedef typename allocator_type::const_pointer	const_pointer;
+    	typedef T 											value_type;
+    	typedef _Alloc										allocator_type;
+		typedef value_type&									reference;
+		typedef const value_type&							const_reference;
+    	typedef typename allocator_type::pointer			pointer;
+    	typedef typename allocator_type::const_pointer		const_pointer;
+		typedef	ft::vectorIterator<T>						iterator; /*i also need the const version*/
+		typedef ft::reverse_iterator<iterator>				reverse_iterator; /*i also need the const version*/
+		typedef std::ptrdiff_t 									difference_type;
+    	typedef size_t										size_type;
 
-		
-		// typedef	std::iterator<pointer, value_type>	iterator;
-		// typedef	std::iterator<const_pointer, value_type>	const_iterator;
-		typedef		ft::vectorIterator<T>		iterator;
-		typedef 	ft::reverse_iterator<iterator>		reverse_iterator;
 	private:
 		/*			Private Members			*/
 		pointer _start;
 		pointer _end;
 		pointer _end_of_memory;
+		allocator_type	_myAlloc;
+
+		void	realloc_vec(size_type new_capacity){
+			/* allocate and construct copies of previous memory */
+			pointer temp = _myAlloc.allocate(new_capacity);
+			size_type temp_size = this->size();
+			for (size_type i = 0; i < temp_size; ++i)
+				_myAlloc.construct(temp + i, *(this->_start + i));
+
+			/* destroy and deallocate */
+			for (size_type i = 0; i < temp_size; ++i) _myAlloc.destroy(this->_start + i);
+			_myAlloc.deallocate(this->_start, temp_size);
+			
+			/* replace the old memory (maybe i could use swap) */
+			this->_start = temp;
+			this->_end = temp + temp_size;
+			this->_end_of_memory = temp + new_capacity;
+		}
 	public:
 
-		/*		Copy constructor and copy assignment		*/
-		vector(const vector& other){
-			allocator_type alloc = allocator_type();
-			this->_start = alloc.allocate(other.capacity());
+		/*			Constuctors			*/
+		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {}
 
-			for (size_type i = 0; i < other.size(); ++i) alloc.construct(this->_start + i, other[i]);
+		explicit vector( size_type count, const_reference value = value_type(), const allocator_type& alloc = allocator_type())
+			: _myAlloc(alloc){
+			this->_start = _myAlloc.allocate(count);
+			for (size_type i = 0; i < count; ++i) _myAlloc.construct(this->_start + i, value);
+			this->_end = this->_start + count;
+			this->_end_of_memory = this->_end;
+		}
+
+		template< class InputIt, typename enable_if< !is_integral<InputIt>::value >::type >
+		vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type())
+			: _myAlloc(alloc){
+			for (; first != last; ++first) push_back(*first);
+		}
+
+		/*		Copy constructor and copy assignment		*/
+		vector(const vector& other) : _myAlloc(other._myAlloc){
+			this->_start = _myAlloc.allocate(other.capacity());
+
+			for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 			this->_end = this->_start + other.size();
 			this->_end_of_memory = this->_start + other.capacity();
 		}
@@ -64,76 +94,30 @@ namespace ft
 		vector<value_type> & operator=(const vector& other){
 			if (this != &other)
 			{
-				allocator_type alloc = allocator_type();
+				_myAlloc = other._myAlloc;
 
-				for (size_type i = 0; i < this->size(); ++i) alloc.destroy(this->_start + i);
+				clear();
 				if (this->capacity())
-					alloc.deallocate(this->_start, this->capacity());
-				
-				this->_start = alloc.allocate(other.capacity());
-
-				for (size_type i = 0; i < other.size(); ++i) alloc.construct(this->_start + i, other[i]);
+					_myAlloc.deallocate(this->_start, this->capacity());
+		
+				this->_start = _myAlloc.allocate(other.capacity());
+				for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 				this->_end = this->_start + other.size();
 				this->_end_of_memory = this->_start + other.capacity();
 			}
 			return *(this);
 		}
 
-		/*			Constuctors			*/
-		vector(void): _start(0), _end(0), _end_of_memory(0) {}
-
-		explicit vector( const allocator_type& alloc ):  _start(0), _end(0), _end_of_memory(0) {static_cast<void>(alloc);}
-
-		template< class InputIt >
-		vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type()){
-			static_cast<void>(alloc);
-			for (; first != last; ++first) push_back(*first);
-		}
-
-		explicit vector( size_type count, const_reference value = value_type(), allocator_type alloc = allocator_type())
-		{
-			this->_start = alloc.allocate(count);
-			/*not needed*/
-			this->_end = this->_start;
-			this->_end_of_memory = this->_end + count;
-			/************/
-
-			for (size_type i = 0; i < count; ++i) alloc.construct(this->_start + i, value);
-			this->_end = this->_start + count;
-			this->_end_of_memory = this->_end;
-		}
-
 		/*			Destructor		*/
-		~vector(){
-			allocator_type alloc = allocator_type();
-		
-			for (size_type i = 0; i < this->size(); ++i) alloc.destroy(this->_start + i);
-			alloc.deallocate(this->_start, this->capacity());
+		~vector(){		
+			clear();
+			_myAlloc.deallocate(this->_start, this->capacity());
 		}
 
-		void assign( size_type count, const T& value ){
-			allocator_type alloc = allocator_type();
-			this->clear();
-			if (count > this->capacity())
-				this->reserve(count);
-			for (size_type i = 0; i < count; ++i) alloc.construct(this->_start + i, value);
-			this->_end = this->_start + count;
-		}
-
-		template< class InputIt >
-		void assign( InputIt first, InputIt last )
-		{
-			size_type count = static_cast<size_type>(&*last - &*first);
-			allocator_type alloc = allocator_type();
-			this->clear();
-			if (count > this->capacity())
-				this->reserve(count);
-			for (size_type i = 0; i < count; ++i) alloc.construct(this->_start + i, *first);
-			this->_end = this->_start + count;
-		}
+		/*			Allocator		*/
 
 		allocator_type get_allocator() const{
-			return allocator_type();
+			return _myAlloc;
 		}
 
 		/*			Element access		*/
@@ -142,7 +126,7 @@ namespace ft
 			throw std::out_of_range("vector::range_check error");
 		}
 
-		const_reference at( size_type pos ) const{
+		const_reference at(size_type pos) const{
 			if (pos < this->size()) return *(this->_start + pos);
 			throw std::out_of_range("vector::range_check error");
 		}
@@ -151,11 +135,11 @@ namespace ft
 			return  *(this->_start + pos);
 		}
 
-		const_reference operator[](size_type pos) const{
+		const_reference operator[] (size_type pos) const{
 			return  *(this->_start + pos);
 		}
 
-		reference	front(void){
+		reference	front(){
 			return *(this->_start);
 		}
 
@@ -163,7 +147,7 @@ namespace ft
 			return *(this->_start);
 		}
 
-		reference	back(void){
+		reference	back(){
 			return *(this->_end - 1);
 		}
 
@@ -171,13 +155,13 @@ namespace ft
 			return *(this->_end - 1);
 		}
 
-		T* data(){
-			return (this->_start);
-		}
+		// T* data(){
+		// 	return (this->_start);
+		// }
 
-		const T* data() const{
-			return (this->_start);
-		}
+		// const T* data() const{
+		// 	return (this->_start);
+		// }
 
 		/*			Iterators			*/
 		iterator	begin(void){
@@ -210,174 +194,127 @@ namespace ft
 		}
 
 		size_type	max_size() const{
-			return (std::numeric_limits<difference_type>::max());
+			return (_myAlloc.max_size());
 		}
 
-		void	reserve(size_type new_cap){
-			if (new_cap > this->max_size()) throw std::length_error("Invalid reserve() input");
-			if (new_cap > this->capacity())
+		void resize(size_type new_size, T value = T() ){
+			if (new_size < this->size())
 			{
-				allocator_type alloc = allocator_type();
-				/* allocate and construct copies of previous memory */
-				pointer temp = alloc.allocate(new_cap);
-				size_type temp_size = this->size();
-				for (size_type i = 0; i < this->size(); ++i)
-					alloc.construct(temp + i, *(this->_start + i));
-
-				/* destroy and deallocate */
-				for (size_type i = 0; i < temp_size; ++i) alloc.destroy(this->_start + i);
-				alloc.deallocate(this->_start, temp_size);
-				
-				/* replace the old memory (maybe i could use swap) */
-				this->_start = temp;
-				this->_end = temp + temp_size + 1;
-				this->_end_of_memory = temp + new_cap;
+				/* maybe when i figure out how to implement erase() i can use erase here */
+				for (size_type i = new_size; i < this->size(); ++i) _myAlloc.destroy(this->_start + i);
+				this->_end = this->_start + new_size;
 			}
+			else if (new_size > this->size())
+				for (size_type i = this->size(); i < new_size; ++i) this->push_back(value);
 		}
 
 		size_type	capacity(void) const{
 			return (static_cast<size_type>(this->_end_of_memory - this->_start));
 		}
 
+		void	reserve(size_type new_cap){
+			if (new_cap > this->max_size()) throw std::length_error("Invalid reserve() input");
+			if (new_cap > this->capacity())
+				realloc_vec(new_cap);
+		}
+
+
 		/*			Modifiers			*/
-		void	push_back( const_reference value ){
-			allocator_type alloc = allocator_type();
-			if (this->_end == this->_start)
-			{
-				this->_start = alloc.allocate(1);
-				alloc.construct(this->_start, value);
-				this->_end = this->_start + 1;
-				this->_end_of_memory = this->_start + 1;
-			}
-			else if (this->size() != this->capacity())
-			{
-				alloc.construct(this->_start + this->size(), value);
-				++this->_end;
-			}
-			else
-			{
-				/* allocate and construct copies of previous memory */
-				pointer temp = alloc.allocate(this->capacity() * 2);
-				size_type temp_size = this->size();
-				for (size_type i = 0; i < this->size(); ++i)
-					alloc.construct(temp + i, *(this->_start + i));
+		
+		void assign( size_type count, const_reference value ){
+			this->clear();
+			if (count > this->capacity())
+				realloc_vec(count);
+			for (size_type i = 0; i < count; ++i) _myAlloc.construct(this->_start + i, value);
+			this->_end = this->_start + count;
+		}
 
-				/* add the new element */
-				alloc.construct(temp + this->size(), value);
+		template< class InputIt, typename enable_if< !is_integral<InputIt>::value >::type >
+		void assign(InputIt first, InputIt last)
+		{
+			// size_type count = static_cast<size_type>(&*last - &*first);
+			size_type count = static_cast<size_type>(last - first);
+			this->clear();
+			if (count > this->capacity())
+				realloc_vec(count);
+			for (size_type i = 0; first != last; ++first, ++i) _myAlloc.construct(this->_start + i, *first);
+			this->_end = this->_start + count;
+		}
 
-				/* destroy and deallocate */
-				for (size_type i = 0; i < temp_size; ++i) alloc.destroy(this->_start + i);
-				alloc.deallocate(this->_start, temp_size);
-				
-				/* replace the old memory (maybe i could use swap) */
-				this->_start = temp;
-				this->_end = temp + temp_size + 1;
-				this->_end_of_memory = temp + (temp_size * 2);
-			}
+		void	push_back(const_reference value){
+			if (this->_start == this->_end_of_memory)
+				realloc_vec(1);
+			else if (this->size() == this->capacity())
+				realloc_vec(this->capacity() * 2);
+			_myAlloc.construct(this->_start + this->size(), value);
+			++this->_end;
 		}
 
 		void pop_back(){
-			allocator_type alloc = allocator_type();
-			
-			alloc.destroy(--this->_end);
-		}
-
-		void resize(size_type new_size, T value = T() ){
-			if (new_size < this->size())
-			{
-				allocator_type alloc = allocator_type();
-				/* maybe when i figure out how to implement erase() i can use erase here */
-				for (size_type i = new_size; i < this->size(); ++i) alloc.destroy(this->_start + i);
-				this->_end = this->_start + new_size;
-			}
-			else if (new_size > this->size())
-			{
-				for (size_type i = this->size(); i < new_size; ++i) this->push_back(value);
-			}
+			_myAlloc.destroy(--this->_end);
 		}
 
 		void clear(){
-			allocator_type alloc = allocator_type();
-			for (size_type i = 0; i < this->size(); ++i) alloc.destroy(this->_start + i);
+			for (size_type i = 0; i < this->size(); ++i) _myAlloc.destroy(this->_start + i);
 			this->_end = this->_start;
 		}
 
 		iterator erase( iterator pos ){
-			allocator_type alloc = allocator_type();
 			pointer temp = &(*pos);
-			pointer re = &(*pos);
-			bool	is_last = false;
 			
-			if (pos == end())
-				is_last = true;
-			for (; pos != this->end() - 1; ++pos, ++temp)
-			{
-				alloc.construct(temp, *(temp + 1));
-			}
-			alloc.destroy(temp);
+			for (; pos < this->end() - 1; ++pos, ++temp)
+				_myAlloc.construct(temp, *(temp + 1));
+			_myAlloc.destroy(temp);
 			--this->_end;
 
-			if (is_last)
-				re = &*end();
-			// for (size_type i = 0; i < size(); ++i)	std::cout << this->at(i) << std::endl;
-			return (iterator(re));
+			return (pos);
 		}
 		
-		/* PLS OPTIMIZE THIS BS */
+		/* PLS CONTINUE WORKING ON THIS */
 		iterator erase( iterator first, iterator last )
 		{		
-			allocator_type alloc = allocator_type();
 			pointer save = &(*first);
 			pointer st = &(*first);
-			pointer re = &(*last);
+			pointer re = &(*first);
 			size_type count = 0;
-			bool	is_last = false;
 			
-			if (last == end())
-				is_last = true;
 			for (; first != last; ++first, ++count)
-				alloc.destroy(st++);
-			for (; last != this->end(); ++last)
-			{
-				alloc.construct(save++, *st);
-				++st;
-			}
+				_myAlloc.destroy(st++);
+			for (; last != this->end(); ++last, ++st)
+				_myAlloc.construct(save++, *st);
 			this->_end -= count;
-			if (is_last)
-				re = &*end();
+
 			return (iterator(re));
 			
 		}
 
 		iterator insert( iterator pos, const T& value ){
-			allocator_type alloc = allocator_type();
 			push_back(value);
 			
 			// std::cout << "pos " << &*pos << " and end - 1 is " << &*(this->end() - 2) << std::endl;
 			if (pos == this->end() - 1)
-				alloc.construct(&(*(this->end() - 1)), *(this->end() - 2));
+				_myAlloc.construct(&(*(this->end() - 1)), *(this->end() - 2));
 			else
 			{
 				for (iterator it = this->end() - 2; it != pos - 1 && it != this->begin() - 1; --it)
-					{alloc.construct(&(*it) + 1, *(it)); std::cout << "I AM HERE\n";} /* backwards copying to avoid overlapping (similar to memmove) */	
+					{_myAlloc.construct(&(*it) + 1, *(it)); std::cout << "I AM HERE\n";} /* backwards copying to avoid overlapping (similar to memmove) */	
 			}
 			/*ENABLE IF TO FIX THIS*/
 			// for (ft::reverse_iterator<iterator> rit = this->rbegin(); rit != pos - 1 && rit != this->rend(); ++rit) /**/
 				// alloc.construct(&(*rit) + 1, *(rit)); /* backwards copying to avoid overlapping (similar to memmove) */
-			alloc.construct(&(*pos), value);
+			_myAlloc.construct(&(*pos), value);
 			// for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			return (pos);
 		}
 
 		void insert( iterator pos, size_type count, const T& value ){
-			allocator_type alloc = allocator_type();
 			for (size_type i = 0; i < count; ++i) push_back(value);
 			
 			for (iterator it = this->end() - count - 1; it != pos - 1 && it != this->begin() - 1; --it)
-				alloc.construct(&(*it) + count, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
+				_myAlloc.construct(&(*it) + count, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
 			// for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			for (size_type i = 0; i < count; ++i, ++pos)
-				{alloc.construct(&(*pos), value); std::cout << "HOWOWO " << i << std::endl;}
+				{_myAlloc.construct(&(*pos), value); std::cout << "HOWOWO " << i << std::endl;}
 			// for (iterator it = this->begin(); it != end(); ++it)	std::cout << *it << std::endl;
 			
 		}
@@ -447,7 +384,7 @@ namespace ft
 		typedef typename ft::vector<T>::value_type        value_type;
 		typedef typename ft::vector<T>::pointer           pointer;
 		typedef typename ft::vector<T>::reference         reference;
-		typedef typename ft::vector<T>::iterator_category iterator_category;
+		typedef typename std::random_access_iterator_tag iterator_category;
 		vectorIterator(void) {it_start = 0;}
 		vectorIterator(pointer temp) {it_start = temp;}
 		vectorIterator(vectorIterator const & iter) {it_start = iter.it_start;}

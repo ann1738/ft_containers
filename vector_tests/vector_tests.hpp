@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_tests.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 15:08:48 by ann               #+#    #+#             */
-/*   Updated: 2022/06/19 16:10:57 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/20 08:56:04 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	vector_at();
 void	vector_subscript();
 void	vector_front();
 void	vector_back();
-void	vector_data();
+// void	vector_data();
 
 void	vector_empty();
 void	vector_size();
