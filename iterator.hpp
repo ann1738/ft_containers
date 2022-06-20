@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 14:02:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/19 08:19:01 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/20 16:50:01 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ namespace ft
 		typedef typename T::reference         reference;
 		typedef typename T::iterator_category iterator_category;
 	};
+
+	struct input_iterator_tag {};
+	struct output_iterator_tag {};
+	struct forward_iterator_tag       : public input_iterator_tag {};
+	struct bidirectional_iterator_tag : public forward_iterator_tag {};
+	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
 	template <typename _iter>
 	class reverse_iterator{

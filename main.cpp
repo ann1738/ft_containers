@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/20 09:50:43 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/20 18:19:51 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 #include "shared.hpp"
 #include "testing.hpp"
-
+// using ft = std;
 
 int main()
 {
@@ -48,13 +48,40 @@ int main()
 	}
 	#else
 	
-	std::vector<int> s;
-	s.push_back(1);
-	s.push_back(2);
-	s.push_back(3);
-	s.push_back(4);
-	s.push_back(5);
+	ft::vector<int> my(10, 42);
 
-	std::cout << *s.erase(s.begin(), s.end()-1) << std::endl;
+	ft::vector<int>::iterator it = my.begin();
+	// ft::vector<int>::iterator nit = my.begin();
+	// nit++;
+	// it++;
+	// assert(it == nit);
+	// assert(++it == ++nit);
+	// it--;
+	// nit--;
+	// assert(it == nit);
+	// assert(--it == --nit);
+
+	// assert(it != nit + 1);
+	// assert(it < nit + 1);
+	// assert(it <= nit + 1);
+	// assert(it + 2 > nit + 1);
+	// assert(it + 2 > nit + 1);
+	
+	assert(static_cast<size_t>(my.end() - my.begin()) == my.size());
+	*it = 1;
+	std::cout << *it << std::endl;
+	
+	// std::cout << "HOWOW " << *my2.begin() << std::endl;
+	// if (my2.begin() + 2 >= my2.begin() + 2)
+	// 	std::cout << "TRUE\n";
+	// else
+	// 	std::cout << "FALSE\n";
+	// std::vector<int> stdd;
+	// stdd.push_back(1);
+	// stdd.push_back(2);
+	// stdd.push_back(3);
+	// stdd.push_back(4);
+	// stdd.push_back(5);
+
 	#endif
 }
