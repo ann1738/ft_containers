@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/20 08:08:56 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/21 13:12:47 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ namespace ft
 
 	/*		enable_if		*/
 	template< bool B, class T = void >
-	struct enable_if;
+	struct enable_if {};
 
 	template< class T >
 	struct enable_if<true, T> {typedef T type;};

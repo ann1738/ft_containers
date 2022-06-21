@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/21 09:11:43 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/21 13:26:38 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,33 +45,12 @@ int main()
 	// for (ft::vector<int>::iterator it = my.begin(); it != my.end(); ++it)
 	// std::cout << *it << std::endl;	
 
-	// my.insert(my.begin() + 4, 5, 42);
+	my.insert(my.begin(), 5, 42);
 	// sd.insert(sd.begin() + 4, 5, 42);
 	ft::vector<int> comp1(my.begin(), my.end());
-	// ft::vector<int> comp2(10, 42);
-std::vector<int> a;
-	// if (comp1 > comp2)
-	// 	std::cout << "TRUE" << std::endl;
-	// else
-	// 	std::cout << "FALSE" << std::endl;
 
-	// std::cout << "*************************" << std::endl;
 	for (ft::vector<int>::iterator it = comp1.begin(); it != comp1.end(); ++it)
 		std::cout << *it << std::endl;	
-
-
-
-	// std::cout << "HOWOW " << *my2.begin() << std::endl;
-	// if (my2.begin() + 2 >= my2.begin() + 2)
-	// 	std::cout << "TRUE\n";
-	// else
-	// 	std::cout << "FALSE\n";
-	// std::vector<int> stdd;
-	// stdd.push_back(1);
-	// stdd.push_back(2);
-	// stdd.push_back(3);
-	// stdd.push_back(4);
-	// stdd.push_back(5);
 
 	#endif
 }

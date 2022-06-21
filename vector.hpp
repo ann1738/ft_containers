@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/21 09:29:04 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/21 13:31:40 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <memory>
 #include <limits>
-#include <type_traits>
 #include "iterators/iterator.hpp"
 #include "additional.hpp"
 
@@ -78,8 +77,9 @@ namespace ft
 			this->_end_of_memory = this->_end;
 		}
 
-		template< class InputIt, typename ft::enable_if< !is_integral<InputIt>::value >::type* = 0>
-		vector(InputIt first, InputIt last, const allocator_type& alloc = allocator_type())
+		template< class InputIt>
+		vector(InputIt first, InputIt last, 
+			typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type* = 0, const allocator_type& alloc = allocator_type())
 			: _myAlloc(alloc){
 			size_type count = static_cast<size_type>(last - first);
 			this->_start = _myAlloc.allocate(count);
@@ -193,7 +193,6 @@ namespace ft
 			return (const_reverse_iterator(begin()));
 		}
 
-
 		/*			Capacity			*/
 		bool	empty(void) const{
 			return (this->_start == this->_end);
@@ -228,7 +227,6 @@ namespace ft
 				realloc_vec(new_cap);
 		}
 
-
 		/*			Modifiers			*/
 		void assign( size_type count, const_reference value ){
 			this->clear();
@@ -238,8 +236,9 @@ namespace ft
 			this->_end = this->_start + count;
 		}
 
-		template< class InputIt, typename enable_if< !is_integral<InputIt>::value >::type >
-		void assign(InputIt first, InputIt last)
+		template< class InputIt >
+		void assign(InputIt first, InputIt last,
+					typename enable_if< !is_integral<InputIt>::value >::type = 0)
 		{
 			size_type count = static_cast<size_type>(last - first);
 			this->clear();
@@ -316,8 +315,6 @@ namespace ft
 		}
 
 		void swap(vector& other){
-			/*replace with iterators later and maybe use XOR to swap */
-			/* orr just use copy constructor */
 			vector temp(other);
 			other = *this;
 			*this = temp;
