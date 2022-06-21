@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 14:54:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/17 15:02:45 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/21 08:13:57 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "vector.hpp"
 #include "additional.hpp"
-#include "iterator.hpp"
+#include "iterators/iterator.hpp"
+#include "iterators/vectorIterator.hpp"
 
 #endif
