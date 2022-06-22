@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/21 17:59:00 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/22 11:25:04 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,14 @@ int main()
 	typedef std::allocator<int> Alloc;
 	typedef Alloc::rebind<char>::other allocator_type;
 	allocator_type A;
-	Alloc::con
 	A.allocate(1);
+
+	firstMap[1] = "one";
+	firstMap[2] = "two";
+	firstMap.insert(std::make_pair(3, "three"));
+	firstMap.insert(std::make_pair(-1, "minus one"));
+	for(std::map<int, std::string>::iterator it = firstMap.begin(); it!=firstMap.end(); ++it){
+  		std::cout << it->first << " => " << it->second << '\n';
+	}
 	#endif
 }
