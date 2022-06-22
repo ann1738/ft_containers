@@ -6,13 +6,14 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/21 13:26:38 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/21 17:59:00 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <exception>
 #include <vector>
+#include <map>
 #include "shared.hpp"
 #include "testing.hpp"
 
@@ -38,19 +39,11 @@ int main()
 		vector_erase();
 	}
 	#else
-	
-	ft::vector<int> my;
-	for (size_t i = 1; i < 4; ++i)
-		my.push_back(i);
-	// for (ft::vector<int>::iterator it = my.begin(); it != my.end(); ++it)
-	// std::cout << *it << std::endl;	
-
-	my.insert(my.begin(), 5, 42);
-	// sd.insert(sd.begin() + 4, 5, 42);
-	ft::vector<int> comp1(my.begin(), my.end());
-
-	for (ft::vector<int>::iterator it = comp1.begin(); it != comp1.end(); ++it)
-		std::cout << *it << std::endl;	
-
+	std::map<int, std::string> firstMap;
+	typedef std::allocator<int> Alloc;
+	typedef Alloc::rebind<char>::other allocator_type;
+	allocator_type A;
+	Alloc::con
+	A.allocate(1);
 	#endif
 }
