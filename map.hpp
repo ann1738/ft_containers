@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/06/22 18:30:03 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/23 18:01:31 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,44 @@ namespace ft{
 			for (; tmp->_right; ++i)
 				tmp = tmp->_right;
 			return tmp;
+		}
+
+		pointer	getSubMinimum(pointer nod){
+			pointer tmp = nod;
+			
+			for (; tmp->_left; ++i)
+				tmp = tmp->_left;
+			return tmp;
+		}
+
+		pointer	getSubMaximum(){
+			pointer tmp = nod;
+			
+			for (; tmp->_right; ++i)
+				tmp = tmp->_right;
+			return tmp;
+		}
+
+		pointer	getNextMaximum(pointer nod){
+			if (!nod) return NULL;
+	
+			if (nod->_right && !nod->_left)
+				return nod->_right;
+			else if (nod->_right)
+			{
+				if (nod->_right == getSubMinimum(nod->_right))
+					return node->_right;
+				else
+					return getSubMinimum(nod->_right)
+			}
+			
+			if (nod == getMaximum())
+				return NULL;
+			/*knowing that nod is a leaf*/
+
+			while (!amILeft(nod))
+				nod = nod->_parent;
+			return nod->_parent;				
 		}
 		
 		/* returns the parent of the PosInTree */
@@ -211,6 +249,7 @@ namespace ft{
 			rotate_n_recolor(gramma);
 		}
 	public:
+		pointer		getRoot(){return _root;}
 		/**********************************************************************************************************************************/
 		/*			Modifiers			*/
 		pair<iterator,bool> insert (const value_type& val)

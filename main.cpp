@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/22 11:25:04 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/23 15:24:50 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,13 @@ int main()
 	firstMap[2] = "two";
 	firstMap.insert(std::make_pair(3, "three"));
 	firstMap.insert(std::make_pair(-1, "minus one"));
-	for(std::map<int, std::string>::iterator it = firstMap.begin(); it!=firstMap.end(); ++it){
+	std::map<int, std::string>::iterator it = firstMap.begin();
+	for(; it!=firstMap.end(); ++it){
   		std::cout << it->first << " => " << it->second << '\n';
-	}
+	}	
+	std::cout << it->first << " => " << it->second << '\n';
+	++it;
+	std::cout << it->first << " => " << it->second << '\n';
+
 	#endif
 }
