@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/06/23 18:01:31 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/27 17:40:48 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,29 @@
 #include "iterators/iterator.hpp"
 
 namespace ft{
+	template <	class Key, class T, class Compare, class Alloc > class mapIterator;
 	template <	class Key,												// map::key_type
         		class T,												// map::mapped_type
 				class Compare = std::less<Key>,							// map::key_compare
 				class Alloc = std::allocator<ft::pair<const Key, T> >	// map::allocator_type
 			 >
 	class map{
+	struct node;
+	
+	public:
+
 		typedef	pair<const Key, T>						value_type;
 		typedef	Key										key_type;
 		typedef	T										mapped_type;
 		typedef	Compare									key_compare;
-		typedef	Alloc::rebind<node>::other				allocator_type;
+		typedef	typename Alloc::template rebind<node>::other				allocator_type;
 		typedef	value_type &							reference;
 		typedef	const value_type &						const_reference;
 		typedef	node *										pointer;
 		typedef	const node *								const_pointer;
 		// typedef	Alloc::pointer							pointer;
 		// typedef Alloc::const_pointer						const_pointer;
-		// typedef	mapIterator								iterator;
+		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>								iterator;
 		// typedef	const const_mapIterator					const_iterator;
 		// typedef	ft::reverse_iterator<iterator>			reverse_iterator;
 		// typedef	ft::reverse_iterator<const_iterator>	reverse_iterator;
@@ -49,8 +54,8 @@ namespace ft{
 	private:
 		allocator_type	_myAlloc;
 		key_compare		_myComp;
-		pointer			_root = 0;
-		size_type		_size = 0;
+		pointer			_root;
+		size_type		_size;
 			
 		struct node{
 			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
@@ -62,20 +67,25 @@ namespace ft{
 			
 			bool		_color;
 
-			node(value_type nod = _nod(), pointer left = 0, pointer right = 0)
-				: _nod(nod), _left(left), _right(right), _color(RED){}
+			node(value_type info = value_type(), pointer left = 0, pointer right = 0)
+				: _info(info), _left(left), _right(right), _color(RED){}
 			node(const node & rhs)
-				: _nod(rhs.nod), _left(rhs.left), _right(rhs.right), _color(rhs._color){}
+				: _info(rhs._info), _left(rhs._left), _right(rhs._right), _color(rhs._color){}
 			node& operator=(const node & rhs){
-				if (this != &rhs){_nod = rhs.nod; _left = rhs.left; _right = rhs.right; _color = rhs._color;}
+				if (this != &rhs){_info = rhs._info; _left = rhs._left; _right = rhs._right; _color = rhs._color;}
 				return *this;
 			}
 			~node(){}
 		};
 		
 		pointer	init_node(){
-			pointer = tmp = _myAlloc.allocate(1);
+			pointer tmp = _myAlloc.allocate(1);
 			_myAlloc.construct(tmp, node());
+			return tmp;
+		}
+		pointer	init_node(key_type n){
+			pointer tmp = _myAlloc.allocate(1);
+			_myAlloc.construct(tmp, node(ft::make_pair<key_type, mapped_type>(n, 0)));
 			return tmp;
 		}
 
@@ -84,40 +94,36 @@ namespace ft{
 			_myAlloc.deallocate(deleteMe, 1);
 		}
 
-		void	recolor(pointer _nod) {nod->_color == RED ? _nod->color = BLACK : _nod->color = RED;};
+		void	recolor(pointer _nod) {_nod->_color == RED ? _nod->_color = BLACK : _nod->_color = RED;};
 		
 		/*pointer can't be root*/
-		bool	amILeft(pointer _nod) {return _nod == _nod->_parent->left;}
+		bool	amILeft(pointer _nod) {return _nod == _nod->_parent->_left;}
 		
 		pointer	getMinimum(){
 			pointer tmp = _root;
 			
-			for (; tmp->_left; ++i)
-				tmp = tmp->_left;
+			for (; tmp->_left; tmp = tmp->_left);
 			return tmp;
 		}
 
 		pointer	getMaximum(){
 			pointer tmp = _root;
 			
-			for (; tmp->_right; ++i)
-				tmp = tmp->_right;
+			for (; tmp->_right; tmp = tmp->_right);
 			return tmp;
 		}
 
 		pointer	getSubMinimum(pointer nod){
 			pointer tmp = nod;
 			
-			for (; tmp->_left; ++i)
-				tmp = tmp->_left;
+			for (; tmp->_left; tmp = tmp->_left);
 			return tmp;
 		}
 
-		pointer	getSubMaximum(){
+		pointer	getSubMaximum(pointer nod){
 			pointer tmp = nod;
 			
-			for (; tmp->_right; ++i)
-				tmp = tmp->_right;
+			for (; tmp->_right; tmp = tmp->_right);
 			return tmp;
 		}
 
@@ -129,9 +135,9 @@ namespace ft{
 			else if (nod->_right)
 			{
 				if (nod->_right == getSubMinimum(nod->_right))
-					return node->_right;
+					return nod->_right;
 				else
-					return getSubMinimum(nod->_right)
+					return getSubMinimum(nod->_right);
 			}
 			
 			if (nod == getMaximum())
@@ -144,14 +150,14 @@ namespace ft{
 		}
 		
 		/* returns the parent of the PosInTree */
-		pointer	findPosInTree(pointer findMyPlace){
+		pointer	findPosInTree(const value_type & findMyPlace){
 			pointer tmp = _root;
 
 			while (1312)
 			{
-				if (!_myComp(findMyPlace->_info, tmp->_info) && !_myComp(tmp->_info, findMyPlace->_info))
+				if (!_myComp(findMyPlace, tmp->_info) && !_myComp(tmp->_info, findMyPlace))
 					return NULL;
-				if (_myComp(findMyPlace->_info, tmp->_info)
+				if (_myComp(findMyPlace, tmp->_info))
 				{
 					if (!tmp->_left)
 						return tmp;
@@ -210,14 +216,14 @@ namespace ft{
 
 					rotate_left(newNode->_parent->_parent);
 				}
-				else if (amILeft(newNode->_parent) && amILeft(newNode) /* L L */
+				else if (amILeft(newNode->_parent) && amILeft(newNode)) /* L L */
 				{
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
 					rotate_right(newNode->_parent->_parent);
 				}
-				else if (!amILeft(newNode->_parent) && amILeft(newNode) /* R L */
+				else if (!amILeft(newNode->_parent) && amILeft(newNode)) /* R L */
 				{
 					rotate_right(newNode->_parent);
 
@@ -226,7 +232,7 @@ namespace ft{
 
 					rotate_left(newNode->_parent->_parent);					
 				}
-				else// (amILeft(newNode->_parent) && !amILeft(newNode) /* L R */
+				else// (amILeft(newNode->_parent) && !amILeft(newNode)) /* L R */
 				{
 					rotate_left(newNode->_parent);
 
@@ -241,54 +247,107 @@ namespace ft{
 				rnb_recoloring(newNode->_parent->_parent, aunt, newNode->_parent);
 			}
 		}
-		rnb_recoloring(pointer gramma, pointer aunt, pointer parent){
+		void	rnb_recoloring(pointer gramma, pointer aunt, pointer parent){
 			recolor(parent);
 			recolor(aunt);
 			if (gramma != _root)
 				recolor(gramma);
 			rotate_n_recolor(gramma);
 		}
+
+		/*	implement copy constructor and copy assignment before testing this	*/
+		void	deleteNodeFromTree(pointer deleteMyExistance){
+			bool saveColor = deleteMyExistance->_color;
+			pointer x, y;
+			if (!deleteMyExistance->_left)
+			{
+				x = deleteMyExistance->_right;
+				map temp = deleteMyExistance;
+				deleteMyExistance = x;
+				x = temp;
+			}
+			else if (!deleteMyExistance->_right)
+			{
+				x = deleteMyExistance->_left;
+				map temp = deleteMyExistance;
+				deleteMyExistance = x;
+				x = temp;
+			}
+			else
+			{
+				y = getSubMinimum(deleteMyExistance->_right);
+				saveColor = y->_color;
+				x = y->_right;
+				if (y->_parent == deleteMyExistance) /* if y is a child of node to be deleted */
+					x->_parent = y;
+				else
+				{
+					/*	transplant y with y->right_child */
+					map temp = y;
+					y = y->_right;
+					y->_right = temp;
+				}
+				
+				/*	transplant deleteMyExistance with y */
+				map temp = deleteMyExistance;
+				deleteMyExistance = y;
+				y = temp;
+				y->_color = saveColor;
+				if (saveColor ==  BLACK)
+					fixDelete(O);
+			}
+		}
 	public:
+		void erase (iterator position)
+		{
+			
+		}
+
+		/*	!!!!! this is not allowed !!!!	*/
 		pointer		getRoot(){return _root;}
+		/*	*/
 		/**********************************************************************************************************************************/
 		/*			Modifiers			*/
-		pair<iterator,bool> insert (const value_type& val)
+		ft::pair<iterator,bool> insert (const value_type& val)
 		{
 			if (!this->_root)
 			{
 				_root = init_node();
+				_root->_info.second = val.second;
 				recolor(_root);
-				return ft::make_pair<iterator, bool>(iterator(_root), true);
+				return ;
+				// return ft::make_pair<iterator, bool>(iterator(_root), true);
 			}
 			
 			/*	inserting the new node in the risht place in the tree (to keep order) */
 			pointer	newNode;
 			pointer	afterMe = findPosInTree(val);
 			if (!afterMe)
-				return void; /*change return value*/
+				return ft::make_pair<iterator,bool>(iterator(NULL, false)); /*change return val*/
 			if (_myComp(afterMe->_info, val))
 			{
 				afterMe->_left = init_node();
-				afterMe->_left->info = value;
+				afterMe->_left->info = val;
 				newNode = afterMe->_left;
 			}
 			else
 			{
 				afterMe->_right = init_node();
-				afterMe->_right->info = value;
+				afterMe->_right->info = val;
 				newNode = afterMe->_right;
 			}
-			newNode->_parent = addMe;
+			newNode->_parent = afterMe;
 			
 			/* red black tree balancing */
-			if (newNode->_parent->_color == BLACK ) return;
+			if (newNode->_parent->_color == BLACK ) return ft::make_pair<iterator, bool>(iterator(newNode), true);
 			recolor_n_rotate(newNode);
-	
-			
+			++_size;
 		}
 		/*			Constructors		*/
 		explicit map (const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type()){
+			_root = 0;
+			_size = 0;
 			_myComp = comp;
 			_myAlloc = alloc;
 		}
@@ -297,14 +356,21 @@ namespace ft{
 			const key_compare& comp = key_compare(),
 			const allocator_type& alloc = allocator_type())
 		{
+			_root = 0;
+			_size = 0;
 			_myComp = comp;
 			_myAlloc = alloc;
+
+			static_cast<void>(first);
+			static_cast<void>(last);
 			/*code for constructing appropriately*/
 		}
 		// map (const map& x);
 		
 		/*			Destructors			*/
-		~map{
+		~map(){
+			std::string c = "hello";
+			std::cout << c << std::endl;
 			/*deallocates it*/
 		}
 
@@ -317,7 +383,7 @@ namespace ft{
 			return _size;
 		}
 		
-		size_type size() const{
+		size_type max_size() const{
 			return _myAlloc.max_size();
 		}
 

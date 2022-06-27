@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   additional.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/21 16:47:35 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/27 17:02:30 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ namespace ft
 		pair& operator= (const pair& pr){
 			if (this != &pr)
 			{
-				first = pr.first;
+				(first) = (pr.first);
 				second = pr.second;
 			}
 			return *this;
