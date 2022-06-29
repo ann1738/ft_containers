@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   testing.hpp                                        :+:      :+:    :+:   */
+/*   tests.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/17 15:02:04 by ann               #+#    #+#             */
-/*   Updated: 2022/06/29 13:07:17 by ann              ###   ########.fr       */
+/*   Created: 2022/06/29 13:09:23 by ann               #+#    #+#             */
+/*   Updated: 2022/06/29 13:10:04 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TESTING_HPP
-# define TESTING_HPP
+#ifndef TESTS_HPP
+# define TESTS_HPP
 
-#include <iostream>
-#include <assert.h>
-#include "stack.hpp"
-#include "timer.hpp"
-
-#include "vector_tests/vector_tests.hpp"
-
-# define TESTING_MODE 1
-
-# define PASS "\e[32mPASS!\e[0m"
-# define FAIL "\e[31mFAIL ;(\e[0m"
+void	test_stack(); 
 
 #endif

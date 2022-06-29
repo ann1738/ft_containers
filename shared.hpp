@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shared.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 14:54:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/27 14:31:29 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/29 13:11:06 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 # define SHARED_HPP
 
 #include "vector.hpp"
-#include "map.hpp"
+// #include "map.hpp"
 #include "additional.hpp"
 #include "iterators/iterator.hpp"
 #include "iterators/vectorIterator.hpp"
-#include "iterators/mapIterator.hpp"
+// #include "iterators/mapIterator.hpp"
 
 #endif
