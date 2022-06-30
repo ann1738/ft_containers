@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/06/27 16:41:40 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/30 15:54:36 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ namespace ft{
 		typedef typename ft::map<Key, T, Compare, Alloc>::difference_type		difference_type;
 		// typedef typename ft::map<Key, T, Compare, Alloc>::value_type			value_type;
 		typedef typename ft::map<Key, T, Compare, Alloc>::pointer				pointer;
+		// typedef node*					pointer;
+		// typedef const node*				const_pointer;
+		// typedef node&					reference;
+		// typedef const node&				const_reference;
 		typedef typename ft::map<Key, T, Compare, Alloc>::reference			reference;
 		typedef typename ft::map<Key, T, Compare, Alloc>::const_reference		const_reference;
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
@@ -140,6 +144,20 @@ namespace ft{
 		
 		mapIterator	base(void) {return *(this);}
 
+		pointer	getSubMinimum(pointer nod){
+			pointer tmp = nod;
+			
+			for (; tmp->_left; tmp = tmp->_left);
+			return tmp;
+		}
+
+		pointer	getSubMaximum(pointer nod){
+			pointer tmp = nod;
+			
+			for (; tmp->_right; tmp = tmp->_right);
+			return tmp;
+		}
+
 		pointer	getNextMaximum(pointer nod){
 			if (!nod) return NULL;
 	
@@ -187,6 +205,9 @@ namespace ft{
 			}
 			return nod->_parent;				
 		}
+
+		bool	amILeft(pointer _nod) {return _nod == _nod->_parent->_left;}
+
 	};
 
 	template  <	class Key, class T, class Compare, class Alloc >

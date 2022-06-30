@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/06/27 17:40:48 by anasr            ###   ########.fr       */
+/*   Updated: 2022/06/30 15:56:58 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ namespace ft{
 		// typedef Alloc::const_pointer						const_pointer;
 		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>								iterator;
 		// typedef	const const_mapIterator					const_iterator;
-		// typedef	ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef	ft::reverse_iterator<iterator>			reverse_iterator;
 		// typedef	ft::reverse_iterator<const_iterator>	reverse_iterator;
 		typedef	std::ptrdiff_t							difference_type;
 		typedef	size_t									size_type;
@@ -155,9 +155,9 @@ namespace ft{
 
 			while (1312)
 			{
-				if (!_myComp(findMyPlace, tmp->_info) && !_myComp(tmp->_info, findMyPlace))
+				if (!_myComp(findMyPlace.first, tmp->_info.first) && !_myComp(tmp->_info.first, findMyPlace.first))
 					return NULL;
-				if (_myComp(findMyPlace, tmp->_info))
+				if (_myComp(findMyPlace.first, tmp->_info.first))
 				{
 					if (!tmp->_left)
 						return tmp;
@@ -255,23 +255,32 @@ namespace ft{
 			rotate_n_recolor(gramma);
 		}
 
+		/* I AM NOT SURE WHY I DONT FREE HERE */
+		void	transplant(pointer u, pointer v){
+			if (!u->_parent)
+				_root = v;
+			else if (amILeft(u))
+				u->_parent->_left = v;
+			else
+				u->_parent->_right = v;
+			if (!v)
+				v->_parent = u->_parent;
+		}
+
 		/*	implement copy constructor and copy assignment before testing this	*/
 		void	deleteNodeFromTree(pointer deleteMyExistance){
+			pointer y = deleteMyExistance;
 			bool saveColor = deleteMyExistance->_color;
-			pointer x, y;
+			pointer x;
 			if (!deleteMyExistance->_left)
 			{
 				x = deleteMyExistance->_right;
-				map temp = deleteMyExistance;
-				deleteMyExistance = x;
-				x = temp;
+				transplant(deleteMyExistance, deleteMyExistance->_right);
 			}
 			else if (!deleteMyExistance->_right)
 			{
 				x = deleteMyExistance->_left;
-				map temp = deleteMyExistance;
-				deleteMyExistance = x;
-				x = temp;
+				transplant(deleteMyExistance, deleteMyExistance->_left);
 			}
 			else
 			{
@@ -282,33 +291,76 @@ namespace ft{
 					x->_parent = y;
 				else
 				{
-					/*	transplant y with y->right_child */
-					map temp = y;
-					y = y->_right;
-					y->_right = temp;
+					transplant(y, y->_right);
+					y->_right = deleteMyExistance->_right;
+					y->_right->_parent = y;
 				}
-				
-				/*	transplant deleteMyExistance with y */
-				map temp = deleteMyExistance;
-				deleteMyExistance = y;
-				y = temp;
-				y->_color = saveColor;
-				if (saveColor ==  BLACK)
-					fixDelete(O);
+				transplant(deleteMyExistance, y);
+				y->_left = deleteMyExistance->_left;
+				y->_left->_parent = y;
+				y->_color = deleteMyExistance->_color;
 			}
-		}
-	public:
-		void erase (iterator position)
-		{
-			
+			if (saveColor ==  BLACK)
+				fixDelete(x);
+			--_size;
 		}
 
+		void	fixDelete(pointer x){
+			pointer w;
+			while (x != _root && x->_color == BLACK)
+			{
+				if (amILeft(x))
+				{
+					w = x->_parent->_right; //aunt of x
+					if (w->_color == RED) //case 1
+					{
+						w->_color = BLACK;
+						w->_parent->_color = RED;
+						rotate_left(x->_parent);
+						w = x->_parent->_right; //update aunt of x
+					}
+					if ((!w->_left || w->_left->_color == BLACK) && (!w->_right || w->_right->_color == BLACK)) //case 2
+					{
+						w->_color = RED;
+						x = x->_parent;
+					}
+					else //case 3 or 4
+					{
+						if (w->_right->_color == BLACK) //case 3
+						{
+							w->_left->_color = BLACK;
+							w->_color = RED;
+							rotate_right(w);
+							w = x->_parent->_right;
+						}
+						//case 4
+						w->_color = x->_right->_color;
+						w->_parent->_color = BLACK;
+						w->_right->_color = RED;
+						rotate_left(x->_parent);
+						x = _root;
+					}
+				}
+				else
+				{
+					
+				}
+			}
+			x->_color = BLACK;
+		}
+	public:
+		// void erase (iterator position)
+		// {
+			
+		// }
+
 		/*	!!!!! this is not allowed !!!!	*/
-		pointer		getRoot(){return _root;}
+		// pointer		getRoot(){return _root;}
 		/*	*/
 		/**********************************************************************************************************************************/
 		/*			Modifiers			*/
-		ft::pair<iterator,bool> insert (const value_type& val)
+		// ft::pair<iterator,bool> insert (const value_type& val)
+		void insert (const value_type& val)
 		{
 			if (!this->_root)
 			{
@@ -323,26 +375,33 @@ namespace ft{
 			pointer	newNode;
 			pointer	afterMe = findPosInTree(val);
 			if (!afterMe)
-				return ft::make_pair<iterator,bool>(iterator(NULL, false)); /*change return val*/
-			if (_myComp(afterMe->_info, val))
+				return ;
+				// return ft::make_pair<iterator,bool>(NULL, false); /*change return val*/
+			if (_myComp(afterMe->_info.first, val.first))
 			{
-				afterMe->_left = init_node();
-				afterMe->_left->info = val;
+				afterMe->_left = init_node(val.first);
+				afterMe->_left->_info.second = val.second;
 				newNode = afterMe->_left;
 			}
 			else
 			{
-				afterMe->_right = init_node();
-				afterMe->_right->info = val;
+				afterMe->_right = init_node(val.first);
+				afterMe->_right->_info.second = val.second;
 				newNode = afterMe->_right;
 			}
 			newNode->_parent = afterMe;
 			
 			/* red black tree balancing */
-			if (newNode->_parent->_color == BLACK ) return ft::make_pair<iterator, bool>(iterator(newNode), true);
-			recolor_n_rotate(newNode);
+			// if (newNode->_parent->_color == BLACK ) return ft::make_pair<iterator, bool>(iterator(newNode), true);
+			if (newNode->_parent->_color == BLACK ) return ;
+			rotate_n_recolor(newNode);
 			++_size;
 		}
+
+		// mapped_type& operator[](const key_type& k){
+			
+		// }
+
 		/*			Constructors		*/
 		explicit map (const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type()){
@@ -369,10 +428,23 @@ namespace ft{
 		
 		/*			Destructors			*/
 		~map(){
-			std::string c = "hello";
-			std::cout << c << std::endl;
 			/*deallocates it*/
 		}
+
+		/*			Iterators			*/
+		iterator begin(){
+			return (iterator(_root));
+		}
+		// const_iterator begin() const{
+		// 	return (const_iterator(_root));
+		// }
+
+		iterator end(){
+			return (iterator(getMaximum()));
+		}
+		// const_iterator end() const{
+		// 	return (const_iterator(getMaximum()));
+		// }
 
 		/*			Capacity			*/
 		bool empty() const{
@@ -386,8 +458,6 @@ namespace ft{
 		size_type max_size() const{
 			return _myAlloc.max_size();
 		}
-
-		
 	};
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/29 13:10:26 by ann              ###   ########.fr       */
+/*   Updated: 2022/06/30 15:52:23 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,12 @@ int main()
 	#else
 	ft::map<int,std::string>	my;
 	my.insert(ft::make_pair(1, "first"));
+	my.insert(ft::make_pair(2, "two"));
+	my.insert(ft::make_pair(3, "three"));
+	my.insert(ft::make_pair(-1, "minus one"));
 
-
-	std::stack<int>	a;
+	for (ft::map<int, std::string>::iterator it = my.begin(); it != my.end(); ++it)
+		std::cout << it->first << std::endl;
+	
 	#endif
 }
