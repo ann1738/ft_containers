@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/06/30 15:56:58 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/01 17:33:33 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ namespace ft{
 		typedef	typename Alloc::template rebind<node>::other				allocator_type;
 		typedef	value_type &							reference;
 		typedef	const value_type &						const_reference;
-		typedef	node *										pointer;
-		typedef	const node *								const_pointer;
+    	typedef typename allocator_type::pointer			pointer;
+    	typedef typename allocator_type::const_pointer		const_pointer;
 		// typedef	Alloc::pointer							pointer;
 		// typedef Alloc::const_pointer						const_pointer;
 		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>								iterator;
@@ -56,7 +56,7 @@ namespace ft{
 		key_compare		_myComp;
 		pointer			_root;
 		size_type		_size;
-			
+		pointer			_nill;
 		struct node{
 			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
 			value_type	_info;
@@ -77,15 +77,10 @@ namespace ft{
 			}
 			~node(){}
 		};
-		
-		pointer	init_node(){
+
+		pointer	init_node(const key_type & n = key_type(), const mapped_type & m = mapped_type()){
 			pointer tmp = _myAlloc.allocate(1);
-			_myAlloc.construct(tmp, node());
-			return tmp;
-		}
-		pointer	init_node(key_type n){
-			pointer tmp = _myAlloc.allocate(1);
-			_myAlloc.construct(tmp, node(ft::make_pair<key_type, mapped_type>(n, 0)));
+			_myAlloc.construct(tmp, node(ft::make_pair< const key_type, mapped_type>(n, m)));
 			return tmp;
 		}
 
@@ -155,7 +150,7 @@ namespace ft{
 
 			while (1312)
 			{
-				if (!_myComp(findMyPlace.first, tmp->_info.first) && !_myComp(tmp->_info.first, findMyPlace.first))
+				if (!_myComp(findMyPlace.first, tmp->_info.first) && !_myComp(tmp->_info.first, findMyPlace.first)) //if equal
 					return NULL;
 				if (_myComp(findMyPlace.first, tmp->_info.first))
 				{
@@ -173,9 +168,11 @@ namespace ft{
 		}
 
 		void	rotate_left(pointer x){
+			std::cout << "\e[35mrotate left " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_right;
 			x->_right = y->_left;
-			x->_right->_parent = x;
+			if (x->_right)
+				x->_right->_parent = x;
 			y->_parent = x->_parent;
 			if (!x->_parent)
 				_root = y;
@@ -188,9 +185,11 @@ namespace ft{
 		}
 
 		void	rotate_right(pointer x){
+			std::cout << "\e[35mrotate right " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_left;
 			x->_left = y->_right;
-			y->_right->_parent = x;
+			if (y->_right)
+				y->_right->_parent = x;
 			y->_parent = x->_parent;			
 			if (!x->_parent)
 				_root = y;
@@ -207,10 +206,12 @@ namespace ft{
 			if (newNode == _root || newNode->_parent->_color == BLACK) return ;
 			/**/
 			pointer	aunt = amILeft(newNode) ? newNode->_left : aunt = newNode->_right;
-			if (aunt || aunt->_color == BLACK)
+			if (!aunt || aunt->_color == BLACK)
 			{
 				if (!amILeft(newNode->_parent) && !amILeft(newNode)) /* R R */
 				{
+					std::cout << "R R --- " << newNode->_info.first << std::endl;
+					std::cout << "recolor both " << newNode->_parent->_info.first << " and " << newNode->_parent->_parent->_info.first << std::endl;
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
@@ -218,6 +219,8 @@ namespace ft{
 				}
 				else if (amILeft(newNode->_parent) && amILeft(newNode)) /* L L */
 				{
+					std::cout << "L L --- " << newNode->_info.first << std::endl;
+					std::cout << "recolor both " << newNode->_parent->_info.first << " and " << newNode->_parent->_parent->_info.first << std::endl;
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
@@ -225,8 +228,10 @@ namespace ft{
 				}
 				else if (!amILeft(newNode->_parent) && amILeft(newNode)) /* R L */
 				{
+					std::cout << "R L --- " << newNode->_info.first << std::endl;
 					rotate_right(newNode->_parent);
 
+					std::cout << "recolor both " << newNode->_parent->_info.first << " and " << newNode->_parent->_parent->_info.first << std::endl;
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
@@ -234,8 +239,10 @@ namespace ft{
 				}
 				else// (amILeft(newNode->_parent) && !amILeft(newNode)) /* L R */
 				{
+					std::cout << "L R --- " << newNode->_info.first << std::endl;
 					rotate_left(newNode->_parent);
 
+					std::cout << "recolor both " << newNode->_parent->_info.first << " and " << newNode->_parent->_parent->_info.first << std::endl;
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
@@ -244,6 +251,7 @@ namespace ft{
 			}
 			else /* aunt is RED */
 			{
+				std::cout << "\e[31mAUNT IS REDDDD .. rnb recoloring \e[0m" << std::endl;
 				rnb_recoloring(newNode->_parent->_parent, aunt, newNode->_parent);
 			}
 		}
@@ -348,6 +356,13 @@ namespace ft{
 			}
 			x->_color = BLACK;
 		}
+
+
+		/*	BST ALGORITHMS	*/
+		void	bst_insert(const value_type & val){
+			
+			
+		}
 	public:
 		// void erase (iterator position)
 		// {
@@ -355,6 +370,34 @@ namespace ft{
 		// }
 
 		/*	!!!!! this is not allowed !!!!	*/
+		// void	draw(pointer tmp){
+		// 	if (tmp != NULL)
+		// 	{
+		// 		std::string color = tmp->_color == RED ? "\e[31m" : "\e[33m";
+		// 		std::cout << "\t\t\t\t" << color << tmp->_info.first << "\e[0m\n";
+		// 		if (tmp->_left)
+		// 		{
+		// 			if (tmp->_left->_color == RED)
+		// 				std::cout << "\t\t\t\e[31m" << color << tmp->_left->_info.first << "\e[0m";
+		// 			else
+		// 	std::cout << "heyeye\n";
+		// 				std::cout << "\t\t\t\e[33m" << color << tmp->_left->_info.first << "\e[0m";
+		// 		}
+		// 		if (tmp->_right)
+		// 		{
+		// 			if (tmp->_right->_color == RED)
+		// 				std::cout << "\t\t\t\e[31m" << color << tmp->_right->_info.first << "\e[0m\n";
+		// 			else
+		// 				std::cout << "\t\t\t\e[33m" << color << tmp->_right->_info.first << "\e[0m\n";
+		// 		}
+		// 		draw(tmp->_left->_left);
+		// 		if (tmp->_right)
+		// 			draw(tmp->_right->_right);
+		// 	}
+		// }
+
+		// void	draw_every(){draw(_root);}
+
 		// pointer		getRoot(){return _root;}
 		/*	*/
 		/**********************************************************************************************************************************/
@@ -362,14 +405,19 @@ namespace ft{
 		// ft::pair<iterator,bool> insert (const value_type& val)
 		void insert (const value_type& val)
 		{
+			std::cout << "SEGGY IS ROOT?";
 			if (!this->_root)
 			{
-				_root = init_node();
+				std::cout << "	yes\n";
+				_root = init_node(val.first);
 				_root->_info.second = val.second;
+				// _root->_left = _nill;
+				// _root->_right = _nill;
 				recolor(_root);
 				return ;
 				// return ft::make_pair<iterator, bool>(iterator(_root), true);
 			}
+			std::cout << "	no\n";
 			
 			/*	inserting the new node in the risht place in the tree (to keep order) */
 			pointer	newNode;
@@ -377,29 +425,35 @@ namespace ft{
 			if (!afterMe)
 				return ;
 				// return ft::make_pair<iterator,bool>(NULL, false); /*change return val*/
-			if (_myComp(afterMe->_info.first, val.first))
+			std::cout << "SEGGY " << val.first << " ? " << afterMe->_info.first << " (new parent)" << std::endl;
+			if (_myComp(val.first, afterMe->_info.first))
 			{
+				std::cout << "SEGGY_LEFT\n";
 				afterMe->_left = init_node(val.first);
 				afterMe->_left->_info.second = val.second;
 				newNode = afterMe->_left;
 			}
 			else
 			{
+				std::cout << "SEGGY_RIGHT\n";
 				afterMe->_right = init_node(val.first);
 				afterMe->_right->_info.second = val.second;
 				newNode = afterMe->_right;
 			}
 			newNode->_parent = afterMe;
-			
+
 			/* red black tree balancing */
 			// if (newNode->_parent->_color == BLACK ) return ft::make_pair<iterator, bool>(iterator(newNode), true);
-			if (newNode->_parent->_color == BLACK ) return ;
+			std::string str(newNode->_parent->_color == BLACK ? "BLACK" : "RED");
+			std::cout << str << " ? " << "BLACK\n";
+			if (newNode->_parent->_color == BLACK ) {/*newNode->_left = _nill; newNode->_right = _nill;*/ return ;}
 			rotate_n_recolor(newNode);
+			std::cout << "SEGGY_ROT_N_RECOLOR\n";
+			// newNode->_left = _nill; newNode->_right = _nill;
 			++_size;
 		}
 
 		// mapped_type& operator[](const key_type& k){
-			
 		// }
 
 		/*			Constructors		*/
@@ -409,6 +463,8 @@ namespace ft{
 			_size = 0;
 			_myComp = comp;
 			_myAlloc = alloc;
+			_nill = init_node();
+			_nill->_color = BLACK;
 		}
 		template <class InputIterator>
 		map (InputIterator first, InputIterator last,
@@ -433,13 +489,14 @@ namespace ft{
 
 		/*			Iterators			*/
 		iterator begin(){
-			return (iterator(_root));
+			return (iterator(getMinimum()));
 		}
 		// const_iterator begin() const{
-		// 	return (const_iterator(_root));
+		// 	return (const_iterator(getMinimum()));
 		// }
 
 		iterator end(){
+			std::cout << "MAX is " << getMaximum()->_info.first << std::endl;
 			return (iterator(getMaximum()));
 		}
 		// const_iterator end() const{

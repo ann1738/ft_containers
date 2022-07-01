@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/06/30 15:54:36 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/01 11:08:11 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ namespace ft{
 		typedef	Compare									key_compare;
 		typedef typename ft::map<Key, T, Compare, Alloc>::difference_type		difference_type;
 		// typedef typename ft::map<Key, T, Compare, Alloc>::value_type			value_type;
-		typedef typename ft::map<Key, T, Compare, Alloc>::pointer				pointer;
+		// typedef typename ft::map<Key, T, Compare, Alloc>::pointer				pointer;    
+		typedef typename Alloc::pointer			pointer;
+    	typedef typename Alloc::const_pointer		const_pointer;
 		// typedef node*					pointer;
 		// typedef const node*				const_pointer;
 		// typedef node&					reference;
@@ -58,6 +60,7 @@ namespace ft{
 
 		mapIterator operator++(void){
 			this->it_start = getNextMaximum(this->it_start);
+			// std::cout << "getNextMaximum -> " << this->it_start->_info.first << std::endl;
 			return (*this);
 		}
 		mapIterator operator++(int){

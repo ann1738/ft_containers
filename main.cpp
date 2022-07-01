@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/06/30 15:52:23 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/01 16:44:32 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int main()
 	#if TESTING_MODE
 	{
 
-		test_stack();
+		test_stack(); 
 		// std::cout << "\e[33mElement access: \e[0m" << std::endl;
 		// vector_at();
 		// vector_subscript();
@@ -46,14 +46,21 @@ int main()
 		
 	}
 	#else
+
 	ft::map<int,std::string>	my;
 	my.insert(ft::make_pair(1, "first"));
 	my.insert(ft::make_pair(2, "two"));
 	my.insert(ft::make_pair(3, "three"));
-	my.insert(ft::make_pair(-1, "minus one"));
-
-	for (ft::map<int, std::string>::iterator it = my.begin(); it != my.end(); ++it)
-		std::cout << it->first << std::endl;
 	
+	my.insert(ft::make_pair(-1, "minus one"));
+	// my.insert(ft::make_pair(-50, "first"));
+	// my.insert(ft::make_pair(25, "two"));
+	// my.insert(ft::make_pair(21, "three"));
+	// my.insert(ft::make_pair(-2, "minus one"));
+
+	// for (ft::map<int, std::string>::iterator it = my.begin(); it != my.end(); ++it)
+	// 	std::cout << (*it).first << std::endl;
+	
+
 	#endif
 }

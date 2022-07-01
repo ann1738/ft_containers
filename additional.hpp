@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/27 17:02:30 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/01 09:58:09 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,8 @@ namespace ft
 	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs){
 		return !(lhs < rhs);
 	}
-
+	
+	/*		ft::make_pair		*/
 	template <class T1, class T2>
 	ft::pair<T1, T2> make_pair(T1 x, T2 y){
 		return ft::pair<T1, T2>(x, y);
