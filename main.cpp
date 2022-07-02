@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/01 16:44:32 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/02 14:14:08 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,9 @@
 #include <stack>
 #include <map>
 #include "shared.hpp"
-#include "shared.hpp"
 #include "testing.hpp"
 
-#include "tests/tests.hpp"
+// #include "tests/tests.hpp"
 
 int main()
 {
@@ -46,21 +45,18 @@ int main()
 		
 	}
 	#else
+std::map<int, std::string>::value_compare haha;
 
-	ft::map<int,std::string>	my;
-	my.insert(ft::make_pair(1, "first"));
-	my.insert(ft::make_pair(2, "two"));
-	my.insert(ft::make_pair(3, "three"));
-	
-	my.insert(ft::make_pair(-1, "minus one"));
-	// my.insert(ft::make_pair(-50, "first"));
-	// my.insert(ft::make_pair(25, "two"));
-	// my.insert(ft::make_pair(21, "three"));
-	// my.insert(ft::make_pair(-2, "minus one"));
+	ft::map<std::string,int> mymap;
 
-	// for (ft::map<int, std::string>::iterator it = my.begin(); it != my.end(); ++it)
-	// 	std::cout << (*it).first << std::endl;
-	
+	try{	
+		mymap["alpha"];
+		mymap["beta"];
+		mymap["gamma"];
+		mymap.at("alpha1") = 10;
+		mymap.at("beta") = 20;
+		mymap.at("gamma") = 30;
+	}catch (std::exception & e){std::cerr << e.what() << std::endl;}
 
 	#endif
 }

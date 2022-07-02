@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/01 11:08:11 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/02 14:25:52 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ namespace ft{
 		// typedef typename ft::map<Key, T, Compare, Alloc>::pointer				pointer;    
 		typedef typename Alloc::pointer			pointer;
     	typedef typename Alloc::const_pointer		const_pointer;
-		// typedef node*					pointer;
-		// typedef const node*				const_pointer;
+		// typedef ft::map<Key, T, Compare, Alloc>::pointer									pointer;
+		// typedef ft::map<Key, T, Compare, Alloc>::const_pointer									const_pointer;
 		// typedef node&					reference;
 		// typedef const node&				const_reference;
 		typedef typename ft::map<Key, T, Compare, Alloc>::reference			reference;
@@ -54,7 +54,8 @@ namespace ft{
 			return (this->it_start->_info);
 		}
 
-		pointer	operator->(void){
+		/*idk how to do this*/
+		value_type *	operator->(void){
 			return &(this->it_start->_info);
 		}
 
@@ -76,6 +77,7 @@ namespace ft{
 
 		mapIterator operator--(int){
 			mapIterator temp(this->it_start);
+			/*add a line to make it bidirectional*/
 			this->it_start = getNextMinimum(this->it_start);
 			return (temp);
 		}
@@ -147,65 +149,35 @@ namespace ft{
 		
 		mapIterator	base(void) {return *(this);}
 
-		pointer	getSubMinimum(pointer nod){
-			pointer tmp = nod;
-			
-			for (; tmp->_left; tmp = tmp->_left);
-			return tmp;
-		}
+		pointer	getSubMinimum(pointer nod){	pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
-		pointer	getSubMaximum(pointer nod){
-			pointer tmp = nod;
-			
-			for (; tmp->_right; tmp = tmp->_right);
-			return tmp;
-		}
+		pointer	getSubMaximum(pointer nod){	pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
 
 		pointer	getNextMaximum(pointer nod){
 			if (!nod) return NULL;
 	
-			if (nod->_right && !nod->_left)
-				return nod->_right;
-			else if (nod->_right)
-			{
-				if (nod->_right == getSubMinimum(nod->_right))
-					return nod->_right;
-				else
-					return getSubMinimum(nod->_right);
-			}
-			
+			if (nod->_right)
+				return (getSubMinimum(nod->_right));
 			/*knowing that nod is a leaf*/
 
-			while (!amILeft(nod))
-			{
-				if (nod->_parent) /* maximum node */
-					return NULL;
+			while (nod->_parent && !amILeft(nod))
 				nod = nod->_parent;
-			}
+			// if (!nod->_parent)
+			// 	return getSubMinimum(nod);
 			return nod->_parent;				
 		}
 
 		pointer	getNextMinimum(pointer nod){
 			if (!nod) return NULL;
 	
-			if (nod->_left && !nod->_right)
-				return nod->_left;
-			else if (nod->_left)
-			{
-				if (nod->_left == getSubMaximum(nod->_left))
-					return nod->_left;
-				else
-					return getSubMaximum(nod->_left);
-			}
-
+			if (nod->_left)
+				return getSubMaximum(nod->_left);
 			/*knowing that nod is a leaf*/
 
-			while (amILeft(nod))
-			{
-				if (nod->_parent) /* maximum node */
-					return NULL;
+			while (nod->_parent && amILeft(nod))
 				nod = nod->_parent;
-			}
+			// if (!nod->_parent)
+			// 	return getSubMaximum(nod);
 			return nod->_parent;				
 		}
 
