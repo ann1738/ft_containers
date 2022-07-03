@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/02 14:34:18 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/03 14:44:02 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,17 @@ namespace ft{
 		typedef	std::ptrdiff_t							difference_type;
 		typedef	size_t									size_type;
 
-		/*	value_compare class	*/
-		template <class Key, class T, class Compare, class Alloc>
-		class value_compare : public std::binary_function<value_type, value_type, bool>{
-		public:
-			bool	operator()(const value_type & a, const value_type & b) const{
-				return _compObj(a.first, b.first);
-			}
-		protected:
-			Compare	_compObj;
-			value_compare (Compare c) : _compObj(c);
-		};
+		// /*	value_compare class (CONTINUE THIS PLS!!)	*/
+		// template <class Key, class T, class Compare, class Alloc>
+		// class value_compare : public std::binary_function<value_type, value_type, bool>{
+		// public:
+		// 	bool	operator()(const value_type & a, const value_type & b) const{
+		// 		return _compObj(a.first, b.first);
+		// 	}
+		// protected:
+		// 	Compare	_compObj;
+		// 	value_compare (Compare c) : _compObj(c);
+		// };
 
 	private:
 		pointer			_root;
@@ -173,9 +173,114 @@ namespace ft{
 			++_size;
 			return newNode;
 		}
+
+		/*	two things need to be changed: the parent's child pointer and the child's parent pointer*/
+		void	replaceNodePos(pointer toBeReplaced, pointer replacement){
+			/*	changing the parent's (parent of toBeReplaced) child pointer to point at replacement*/
+			if (!toBeReplaced->_parent)
+				_root = replacement;
+			else if (amILeft(toBeReplaced))
+				toBeReplaced->_parent->_left = replacement;
+			else
+				toBeReplaced->_parent->_right = replacement;
+			
+			/*	changing the child's (child of toBeReplaced) parent pointer to point at the parent of toBeReplaced*/
+			if (replacement)
+				replacement->_parent = toBeReplaced->_parent;
+		}
+		/*WHAT IF DELETEME IS ROOT*/
+		void	bst_delete(pointer deleteMe){
+			if (!deleteMe) return ; /*checks if it exists*/
+
+			if (!deleteMe->_left) /* case 1: no child	OR	case 2: one right child */
+				replaceNodePos(deleteMe, deleteMe->_right);
+			else if (!deleteMe->_right) /* case 2: one left child */
+				replaceNodePos(deleteMe, deleteMe->_left);
+			else /* case 3: two children */
+			{
+				pointer successor = getSubMinimum(deleteMe->_right);
+				if (successor->_parent != deleteMe) /*checking whether the successor is a direct child of deleteMe*/
+				{
+					replaceNodePos(successor, successor->_right); /* the right subtree of successor replaces the position of successor (to preserve that subtree)*/
+					successor->_right = deleteMe->_right; /*linking the successor to the right subtree of deleteMe*/
+					deleteMe->_right->_parent = successor;
+				}
+				replaceNodePos(deleteMe, successor); /*successor replacing the position of deleteMe*/
+				successor->_left = deleteMe->_left; /*linking the successor to the left subtree of deleteMe*/
+				deleteMe->_left->_parent = successor;
+			}
+			del_node(deleteMe);
+			--_size;
+		}
+
+		/*	rotation algorithms	*/
+		void		rotate_left(pointer x){
+			std::cout << "\e[35mrotate left " << x->_info.first << "\e[0m" << std::endl;
+			pointer y = x->_right;
+			x->_right = y->_left;
+			if (x->_right)
+				x->_right->_parent = x;
+			y->_parent = x->_parent;
+			if (!x->_parent)
+				_root = y;
+			else if (amILeft(x))
+				x->_parent->_left = y;
+			else
+				x->_parent->_right = y;
+			y->_left = x;
+			x->_parent = y;
+		}
+
+		void	rotate_right(pointer x){
+			std::cout << "\e[35mrotate right " << x->_info.first << "\e[0m" << std::endl;
+			pointer y = x->_left;
+			x->_left = y->_right;
+			if (y->_right)
+				y->_right->_parent = x;
+			y->_parent = x->_parent;			
+			if (!x->_parent)
+				_root = y;
+			else if (amILeft(x))
+				x->_parent->_left = y;
+			else
+				x->_parent->_right = y;
+			y->_right = x;
+			x->_parent = y;
+		}
+
+		/*	AVL ALGORITHMS	*/
+		pointer	avl_insert(const value_type & val){
+			bst_insert(val);
+			
+		}
+
 	public:
 		/*			Modifiers			*/
+		/*TESTED*/
+		void erase (iterator position){
+			bst_delete(bst_find(position->first));
+		}
 
+		/*TESTED*/
+		size_type erase (const key_type& k){
+			pointer tmp = bst_find(k);
+			if (!tmp) return 0;
+			bst_delete(tmp);
+			return 1;
+		}
+
+		/*TESTED*/
+		void erase (iterator first, iterator last){
+			iterator	tmp(first);
+			
+			while (first != last)
+			{
+				std::cout << "heyeye\n";
+				tmp = first++;
+				bst_delete(bst_find(tmp->first));
+			}
+		}
+		
 		/*TESTED*/
 		ft::pair<iterator,bool> insert (const value_type& val)
 		{
@@ -249,7 +354,7 @@ namespace ft{
 		/*		Observers		*/
 		key_compare key_comp() const {return _myComp;}
 		
-		const value_compare value_comp() const {return value_compare(_myComp);}
+		// const value_compare value_comp() const {return value_compare(_myComp);}
 		
 		allocator_type get_allocator() const {return _myAlloc;}
 

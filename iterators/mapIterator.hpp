@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/02 14:25:52 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/03 14:09:18 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ namespace ft{
 		mapIterator		operator+(difference_type n) const{
 			mapIterator temp(*this);
 			for (difference_type i = 0; i < n; ++i) /*i dont know if i have to static cast smth*/
-				temp = getNextMaximum(temp);
+				temp = getNextMaximum(temp.it_start);
 			return (temp);
 		}
 		mapIterator &	operator+=(difference_type n){
@@ -94,21 +94,17 @@ namespace ft{
 			return *(this);
 		}
 
-		mapIterator		operator-(difference_type n)
+		mapIterator		operator-(difference_type n) const
 		{
 			mapIterator temp(*this);
 			for (difference_type i = 0; i < n; ++i)
-				temp = getNextMinimum(temp);
+				temp.it_start = getNextMinimum(temp.it_start);
 			return (temp);
 		}
 
-		difference_type operator-(const mapIterator & rhs){
-			mapIterator temp(*this);
-			difference_type count = 0;
-			for (; rhs.it_start != temp.it_start; ++count)
-				temp = getNextMinimum(temp);
-			return count;
-		}
+		// difference_type operator-(const mapIterator & rhs) const{
+			
+		// }
 
 		mapIterator &	operator-=(difference_type n) 
 		{
@@ -124,12 +120,12 @@ namespace ft{
 		// 	return (this->it_start[n]);
 		// }
 
-		bool operator==(const mapIterator & rhs){return this->it_start == rhs.it_start;}
-		bool operator!=(const mapIterator & rhs){return this->it_start != rhs.it_start;}
-		bool operator>(const mapIterator & rhs){return this->it_start > rhs.it_start;}
-		bool operator>=(const mapIterator & rhs){return this->it_start >= rhs.it_start;}
-		bool operator<(const mapIterator & rhs){return this->it_start < rhs.it_start;}
-		bool operator<=(const mapIterator & rhs){return this->it_start <= rhs.it_start;}
+		bool operator==(const mapIterator & rhs) const{return this->it_start == rhs.it_start;}
+		bool operator!=(const mapIterator & rhs) const{return this->it_start != rhs.it_start;}
+		bool operator>(const mapIterator & rhs) const{return this->it_start > rhs.it_start;}
+		bool operator>=(const mapIterator & rhs) const{return this->it_start >= rhs.it_start;}
+		bool operator<(const mapIterator & rhs) const{return this->it_start < rhs.it_start;}
+		bool operator<=(const mapIterator & rhs) const{return this->it_start <= rhs.it_start;}
 		
 		// template <typename TI>
 		// bool operator==(const const_mapIterator<TI> & rhs){return this->it_start == rhs.it_start;}
@@ -149,11 +145,11 @@ namespace ft{
 		
 		mapIterator	base(void) {return *(this);}
 
-		pointer	getSubMinimum(pointer nod){	pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
+		pointer	getSubMinimum(pointer nod) const{	pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
-		pointer	getSubMaximum(pointer nod){	pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
+		pointer	getSubMaximum(pointer nod) const{	pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
 
-		pointer	getNextMaximum(pointer nod){
+		pointer	getNextMaximum(pointer nod) const{
 			if (!nod) return NULL;
 	
 			if (nod->_right)
@@ -167,7 +163,7 @@ namespace ft{
 			return nod->_parent;				
 		}
 
-		pointer	getNextMinimum(pointer nod){
+		pointer	getNextMinimum(pointer nod) const{
 			if (!nod) return NULL;
 	
 			if (nod->_left)
@@ -181,7 +177,7 @@ namespace ft{
 			return nod->_parent;				
 		}
 
-		bool	amILeft(pointer _nod) {return _nod == _nod->_parent->_left;}
+		bool	amILeft(pointer _nod) const{return _nod == _nod->_parent->_left;}
 
 	};
 
