@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/03 14:44:02 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/04 17:40:55 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,15 @@ namespace ft{
 			pointer		_parent;
 			pointer		_left;
 			pointer		_right;
+
+			size_type	_height;
 			
 			node(value_type info = value_type(), pointer left = 0, pointer right = 0)
-				: _info(info), _left(left), _right(right){}
+				: _info(info), _left(left), _right(right), _height(1) {}
 			node(const node & rhs)
-				: _info(rhs._info), _left(rhs._left), _right(rhs._right){}
+				: _info(rhs._info), _left(rhs._left), _right(rhs._right), _height(rhs._height){}
 			node& operator=(const node & rhs){
-				if (this != &rhs){_info = rhs._info; _left = rhs._left; _right = rhs._right;}
+				if (this != &rhs){_info = rhs._info; _left = rhs._left; _right = rhs._right; _height = rhs._height;}
 				return *this;
 			}
 			~node(){}
@@ -189,16 +191,26 @@ namespace ft{
 				replacement->_parent = toBeReplaced->_parent;
 		}
 		/*WHAT IF DELETEME IS ROOT*/
-		void	bst_delete(pointer deleteMe){
-			if (!deleteMe) return ; /*checks if it exists*/
-
-			if (!deleteMe->_left) /* case 1: no child	OR	case 2: one right child */
+		pointer	bst_delete(pointer deleteMe){
+			if (!deleteMe) return NULL; /*checks if it exists*/
+			pointer save = deleteMe->_parent;
+	
+			if (!deleteMe->_left && !deleteMe->_right)
+				save = deleteMe->_parent;
+			else if (!deleteMe->_left) /* case 1: no child	OR	case 2: one right child */
+			{
+				save = deleteMe->_right;
 				replaceNodePos(deleteMe, deleteMe->_right);
+			}
 			else if (!deleteMe->_right) /* case 2: one left child */
+			{
+				save = deleteMe->_left;
 				replaceNodePos(deleteMe, deleteMe->_left);
+			}
 			else /* case 3: two children */
 			{
 				pointer successor = getSubMinimum(deleteMe->_right);
+				save = successor->_parent;
 				if (successor->_parent != deleteMe) /*checking whether the successor is a direct child of deleteMe*/
 				{
 					replaceNodePos(successor, successor->_right); /* the right subtree of successor replaces the position of successor (to preserve that subtree)*/
@@ -209,13 +221,15 @@ namespace ft{
 				successor->_left = deleteMe->_left; /*linking the successor to the left subtree of deleteMe*/
 				deleteMe->_left->_parent = successor;
 			}
+			std::cout << "deleteMe = " << deleteMe->_info.first << std::endl;
 			del_node(deleteMe);
 			--_size;
+			return save;
 		}
 
 		/*	rotation algorithms	*/
 		void		rotate_left(pointer x){
-			std::cout << "\e[35mrotate left " << x->_info.first << "\e[0m" << std::endl;
+			// std::cout << "\e[35mrotate left " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_right;
 			x->_right = y->_left;
 			if (x->_right)
@@ -229,10 +243,13 @@ namespace ft{
 				x->_parent->_right = y;
 			y->_left = x;
 			x->_parent = y;
+
+			x->_height = 1 + max(getHeight(x->_left), getHeight(x->_right));
+			y->_height = 1 + max(getHeight(y->_left), getHeight(y->_right));
 		}
 
 		void	rotate_right(pointer x){
-			std::cout << "\e[35mrotate right " << x->_info.first << "\e[0m" << std::endl;
+			// std::cout << "\e[35mrotate right " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_left;
 			x->_left = y->_right;
 			if (y->_right)
@@ -244,28 +261,142 @@ namespace ft{
 				x->_parent->_left = y;
 			else
 				x->_parent->_right = y;
+
 			y->_right = x;
 			x->_parent = y;
+
+			x->_height = 1 + max(getHeight(x->_left), getHeight(x->_right));
+			y->_height = 1 + max(getHeight(y->_left), getHeight(y->_right));
+		}
+	public:
+		size_type	pubGetHeight(const key_type & k){
+			pointer tmp = bst_find(k);
+			if (!tmp) return 0;
+			return (tmp->_height);				
+		}
+	private:
+		pointer	findRootOfNewNode(const key_type & k){
+			pointer tmp = _root;
+			while (tmp != NULL)
+			{
+				if (_myComp(k, tmp->_info.first))
+					tmp = tmp->_left;
+				else
+					tmp = tmp->_right;
+			}
+			return tmp->_parent;
+		}
+
+		size_type	max(size_type a, size_type b) {return a > b ? a : b;}
+		
+		int			getBalance(pointer iAmANode){
+			if (!iAmANode)
+				return 0;
+			return (getHeight(iAmANode->_left) - getHeight(iAmANode->_right));
+		}
+
+		size_type	getHeight(pointer _node){
+			if (!_node) return 0;
+			return _node->_height;
+		}
+
+		/*	testing function	*/
+		void	verifyAvl(pointer leaf){
+			pointer tmp = leaf;
+			while (tmp)
+			{
+				assert(getBalance(tmp) >= -1 && getBalance(tmp) <= 1);
+				tmp = tmp->_parent;
+			}
 		}
 
 		/*	AVL ALGORITHMS	*/
 		pointer	avl_insert(const value_type & val){
-			bst_insert(val);
-			
+			/*check if exists!!*/
+			// std::cout << "" << std::endl;
+			pointer		newNode = bst_insert(val);
+			pointer		tmp = newNode->_parent; //initialized as the parent of the newNode
+			key_type	key = newNode->_info.first;
+			int			balanceFactor;
+			while (tmp != NULL)
+			{
+				/*update height of parent*/
+				tmp->_height = 1 + max(getHeight(tmp->_left), getHeight(tmp->_right));
+				// std::cout << tmp->_height << std::endl;
+				
+				/*get balance factor*/
+				balanceFactor = getBalance(tmp);
+
+				/*check if balanced*/
+				if (balanceFactor >= -1 && balanceFactor <= 1) {tmp = tmp->_parent; continue;}
+				
+				/*cases where tree is not balanced*/
+				if (balanceFactor < -1 && _myComp(key, tmp->_right->_info.first)) /*R L*/
+				{
+					rotate_right(tmp->_right);
+					rotate_left(tmp);
+				}
+				else if (balanceFactor < -1 && _myComp(tmp->_right->_info.first, key)) /*R R*/
+					rotate_left(tmp);
+				else if (balanceFactor > 1 && _myComp(key, tmp->_left->_info.first)) /*L L*/
+					rotate_right(tmp);
+				else if (balanceFactor > 1 && _myComp(tmp->_left->_info.first, key)) /*L R*/
+				{
+					rotate_left(tmp->_left);
+					rotate_right(tmp);
+				}
+				tmp = tmp->_parent;
+			}
+			// verifyAvl(newNode);
+			return newNode;
 		}
 
+		void	avl_delete(pointer deleteMe){
+			pointer tmp = bst_delete(deleteMe);
+			if (!tmp) return ;
+			int			balanceFactor;
+			std::cout << "the parent is node with key = " << tmp->_info.first << std::endl;
+			while (tmp != NULL)
+			{
+				/*update height of parent*/
+				tmp->_height = 1 + max(getHeight(tmp->_left), getHeight(tmp->_right));
+				
+				/*get balance factor*/
+				balanceFactor = getBalance(tmp);
+
+				/*check if balanced*/
+				if (balanceFactor >= -1 && balanceFactor <= 1) {tmp = tmp->_parent; continue;}
+				
+				/*cases where tree is not balanced*/
+				if (balanceFactor < -1 && getBalance(tmp->_right) <= 0) /*R R*/
+					rotate_left(tmp);
+				else if (balanceFactor < -1) /*R L*/
+				{
+					rotate_right(tmp->_right);
+					rotate_left(tmp);
+				}
+				else if (balanceFactor > 1 && getBalance(tmp->_left) >= 0) /*L L*/
+					rotate_right(tmp);
+				else if (balanceFactor > 1) /*L R*/
+				{
+					rotate_left(tmp->_left);
+					rotate_right(tmp);
+				}
+				tmp = tmp->_parent;
+			}
+		}
 	public:
 		/*			Modifiers			*/
 		/*TESTED*/
 		void erase (iterator position){
-			bst_delete(bst_find(position->first));
+			avl_delete(bst_find(position->first));
 		}
 
 		/*TESTED*/
 		size_type erase (const key_type& k){
 			pointer tmp = bst_find(k);
 			if (!tmp) return 0;
-			bst_delete(tmp);
+			avl_delete(tmp);
 			return 1;
 		}
 
@@ -275,9 +406,8 @@ namespace ft{
 			
 			while (first != last)
 			{
-				std::cout << "heyeye\n";
 				tmp = first++;
-				bst_delete(bst_find(tmp->first));
+				avl_delete(bst_find(tmp->first));
 			}
 		}
 		
@@ -287,7 +417,7 @@ namespace ft{
 			pointer check = bst_find(val.first);
 			if (check) return ft::make_pair<iterator, bool>(iterator(check), false); /*checks if it exists*/
 
-			check = bst_insert(val); /*reusing check*/
+			check = avl_insert(val); /*reusing check*/
 			return ft::make_pair<iterator, bool>(iterator(check), true);
 		}
 
@@ -297,7 +427,7 @@ namespace ft{
 			pointer check = bst_find(val.first);
 			if (check) return iterator(check); /*checks if it exists*/
 
-			check = bst_insert(val); /*reusing check*/
+			check = avl_insert(val); /*reusing check*/
 			return iterator(check);
 		}
 		
@@ -309,7 +439,7 @@ namespace ft{
 			{
 				check = bst_find((*first).first);
 				if (check) continue; 
-				bst_insert(*first);
+				avl_insert(*first);
 				++first;
 			}
 		}
@@ -324,16 +454,16 @@ namespace ft{
 
 		/*TESTED*/
 		void clear(){
-			pointer tmp = getMinimum();
-			pointer save[size()];
+			pointer tmp;
+			// pointer save[size()];
+			pointer save = getMinimum();
 			size_type i;
-			for (i = 0; tmp; ++i)
+			for (i = 0; save; ++i)
 			{
-				save[i] = tmp;
-				tmp = getNextMaximum(tmp);
+				tmp = save;
+				save = getNextMaximum(save);
+				del_node(tmp);
 			}
-			for (i = 0; i < size(); ++i)
-				del_node(save[i]);
 		}
 
 		/* Not working */
@@ -347,7 +477,7 @@ namespace ft{
 			pointer tmp = bst_find(k);
 			if (tmp) /*if already there*/
 				return (tmp->_info.second);
-			tmp = bst_insert(ft::make_pair<key_type, mapped_type>(k, mapped_type()));
+			tmp = avl_insert(ft::make_pair<key_type, mapped_type>(k, mapped_type()));
 			return tmp->_info.second;		
 		}
 
