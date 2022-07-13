@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/04 17:50:01 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/13 09:25:30 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@
 #include <cstdlib>
 
 // #include "tests/tests.hpp"
-
+// #ifdef STRD
+# define ft std
+// #endif
 int main()
 {
 	#if TESTING_MODE
@@ -46,45 +48,22 @@ int main()
 		
 	}
 	#else
-	std::map<int, std::string> haha;
-	
-	// for (int i = 0; i < 10; ++i) haha[i] = "hehe";
-	// haha.erase(haha.end());
-	// for (std::map<int, std::string>::iterator it = haha.begin(); it != haha.end(); ++it) haha.erase(haha.begin());
-	// for (std::map<int, std::string>::iterator it = haha.begin(); it != haha.end(); ++it) std::cout << it->first << " = " << it->second << std::endl;
+	ft::map<int, char> my;
+	my[1] = 'a';
+	my[2] = 'b';
+	my[3] = 'c';
+	my[4] = 'd';
 
 	
-	ft::map<int, std::string> m;
-	// m[1] = "one";	
-	// m[2] = "one";	
-	// m[3] = "one";	
-	// m[-1] = "one";
-	// m[-50] = "one";
-	// m[-123] = "oneeee";
-	// m[-5] = "one";
-	// m[51] = "one";
+	ft::map<int, char>::iterator it = my.begin();
+	ft::map<int, char>::iterator ite = my.end();
+	ite--;
+	ite++;
+	for (; it != ite; ++it) std::cout << it->first << std::endl;
+
+	// ft::map<int, char>::reverse_iterator rit = my.rbegin();
+	// ft::map<int, char>::reverse_iterator rite = --my.rend() ;
 	
-	// srand(time(0));
-	// {		
-	// 	timer T1;
-	// 	for (int i = 0; i < 10; ++i) m[rand()];
-	// }
-
-	// {		
-	// 	timer T1;
-	// 	for (int i = 0; i < 10000000; ++i) haha[rand()];
-	// }
-
-		timer T1;
-	m[10]; m[5]; m[20]; m[3]; m[22];
-		// for (int i = 0; i < 10; ++i) haha[rand()];
-	m.erase(22);
-	// m.erase(5);
-	// m.erase(m.begin(), --m.end());
-	// std::cout << "\e[35m" << m.erase(12) << "\e[0m\n";
-	// std::cout << "\e[35m" << m.erase(2) << "\e[0m\n";
-	// std::cout << "\e[35m" << m.erase(3) << "\e[0m\n";
-	for (ft::map<int, std::string>::iterator it = m.begin(); it != m.end(); ++it) 
-		std::cout << it->first << " = " << it->second << "\twith height\t" << m.pubGetHeight(it->first) <<  std::endl;
+	// for (; rit != rite; ++rit) std::cout << rit->first << std::endl;
 	#endif
 }

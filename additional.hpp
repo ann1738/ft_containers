@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   additional.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/01 09:58:09 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/07 15:17:04 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 
 namespace ft
 {
+	template< typename T >
+	void	myswap(T & a, T & b){
+		T temp = a;
+		a = b;
+		b = temp;
+	}
+	
 	/*			ft::equal			*/
 	template< class InputIt1, class InputIt2 >
 	bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 ){

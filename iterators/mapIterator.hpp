@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mapIterator.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/03 14:09:18 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/08 18:30:05 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft{
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
 
 		mapIterator(void) : it_start(0) {}
-		mapIterator(pointer temp) : it_start(temp) {}
+		mapIterator(const pointer temp) : it_start(temp) {}
 		mapIterator(mapIterator const & iter) : it_start(iter.it_start) {}
 		mapIterator & operator=(mapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
 		~mapIterator() {}
@@ -66,11 +66,13 @@ namespace ft{
 		}
 		mapIterator operator++(int){
 			mapIterator temp(this->it_start);
+			
 			this->it_start = getNextMaximum(this->it_start);
 			return (temp);
 		}
 
 		mapIterator operator--(void){
+			// if (!this->it_start) this->it_start = getM
 			this->it_start = getNextMinimum(this->it_start);
 			return (*this);
 		}

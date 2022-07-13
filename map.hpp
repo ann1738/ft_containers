@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/04 17:40:55 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/13 09:08:48 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <functional>
 #include "additional.hpp"
 #include "iterators/iterator.hpp"
+#include <cassert>
 
 namespace ft{
 	template <	class Key, class T, class Compare, class Alloc > class mapIterator;
@@ -43,29 +44,32 @@ namespace ft{
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
 		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>		iterator;
-		// typedef	const const_mapIterator					const_iterator;
+		// typedef	const const_mapIterator												const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
-		// typedef	ft::reverse_iterator<const_iterator>	reverse_iterator;
-		typedef	std::ptrdiff_t							difference_type;
-		typedef	size_t									size_type;
+		// typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
+		typedef	std::ptrdiff_t														difference_type;
+		typedef	size_t																size_type;
 
-		// /*	value_compare class (CONTINUE THIS PLS!!)	*/
-		// template <class Key, class T, class Compare, class Alloc>
-		// class value_compare : public std::binary_function<value_type, value_type, bool>{
-		// public:
-		// 	bool	operator()(const value_type & a, const value_type & b) const{
-		// 		return _compObj(a.first, b.first);
-		// 	}
-		// protected:
-		// 	Compare	_compObj;
-		// 	value_compare (Compare c) : _compObj(c);
-		// };
+		/*	value_compare class	*/
+		template <class KeyI, class TI, class CompareI, class AllocI>
+		class value_compare : public std::binary_function<value_type, value_type, bool>{
+			friend class map;
+		public:
+			bool	operator()(const value_type & a, const value_type & b) const{
+				return _compObj(a.first, b.first);
+			}
+		protected:
+			CompareI	_compObj;
+			value_compare (CompareI c) : _compObj(c) {};
+		};
 
 	private:
 		pointer			_root;
 		size_type		_size;
 		key_compare		_myComp;
 		allocator_type	_myAlloc;
+		pointer			_begin_node;
+		pointer			_end_node;
 		struct node{
 			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
 			value_type	_info;
@@ -114,8 +118,6 @@ namespace ft{
 
 			while (nod->_parent && !amILeft(nod))
 				nod = nod->_parent;
-			// if (!nod->_parent)
-			// 	return getSubMinimum(nod);
 			return nod->_parent;				
 		}
 
@@ -128,8 +130,6 @@ namespace ft{
 
 			while (nod->_parent && amILeft(nod))
 				nod = nod->_parent;
-			// if (!nod->_parent)
-			// 	return getSubMaximum(nod);
 			return nod->_parent;				
 		}
 
@@ -137,7 +137,7 @@ namespace ft{
 
 		/*	finds the node with the corresponding key if it exists.. if the key exists it returns a pointer to it	*/
 		/*	otherwise, it returns NULL	*/
-		pointer	bst_find(const key_type & findMe){
+		pointer	bst_find(const key_type & findMe) const{
 			pointer tmp = _root;
 			while (tmp != NULL && !(!_myComp(tmp->_info.first, findMe) && !_myComp(findMe, tmp->_info.first)))
 			{
@@ -151,9 +151,6 @@ namespace ft{
 		
 		/*	doesn't check if key is already there	*/
 		pointer	bst_insert(const value_type & val){
-			/*checker*/
-			// pointer check = bst_find(val.first);
-			// if (check) return pointer; /*checks if it exists*/
 			/*creates the node*/
 			pointer newNode = init_node(val.first, val.second);
 			pointer tmp = _root, saveTmp = 0;
@@ -196,7 +193,10 @@ namespace ft{
 			pointer save = deleteMe->_parent;
 	
 			if (!deleteMe->_left && !deleteMe->_right)
+			{
 				save = deleteMe->_parent;
+				replaceNodePos(deleteMe, deleteMe->_right);
+			}
 			else if (!deleteMe->_left) /* case 1: no child	OR	case 2: one right child */
 			{
 				save = deleteMe->_right;
@@ -210,9 +210,10 @@ namespace ft{
 			else /* case 3: two children */
 			{
 				pointer successor = getSubMinimum(deleteMe->_right);
-				save = successor->_parent;
+				save = successor;
 				if (successor->_parent != deleteMe) /*checking whether the successor is a direct child of deleteMe*/
 				{
+					save = successor->_parent;
 					replaceNodePos(successor, successor->_right); /* the right subtree of successor replaces the position of successor (to preserve that subtree)*/
 					successor->_right = deleteMe->_right; /*linking the successor to the right subtree of deleteMe*/
 					deleteMe->_right->_parent = successor;
@@ -347,15 +348,17 @@ namespace ft{
 				}
 				tmp = tmp->_parent;
 			}
-			// verifyAvl(newNode);
+			verifyAvl(newNode);
 			return newNode;
 		}
 
 		void	avl_delete(pointer deleteMe){
 			pointer tmp = bst_delete(deleteMe);
 			if (!tmp) return ;
+			pointer test = tmp;
 			int			balanceFactor;
 			std::cout << "the parent is node with key = " << tmp->_info.first << std::endl;
+			// std::cout << "the parent of the node = " << tmp->_parent->_info.first << std::endl;
 			while (tmp != NULL)
 			{
 				/*update height of parent*/
@@ -384,35 +387,73 @@ namespace ft{
 				}
 				tmp = tmp->_parent;
 			}
+			verifyAvl(test);
 		}
 	public:
-		/*			Modifiers			*/
-		/*TESTED*/
-		void erase (iterator position){
-			avl_delete(bst_find(position->first));
-		}
+		/*			Constructors		*/
+		explicit map (const key_compare& comp = key_compare(),
+    				  const allocator_type& alloc = allocator_type())
+						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){}
 
-		/*TESTED*/
-		size_type erase (const key_type& k){
-			pointer tmp = bst_find(k);
-			if (!tmp) return 0;
-			avl_delete(tmp);
-			return 1;
-		}
-
-		/*TESTED*/
-		void erase (iterator first, iterator last){
-			iterator	tmp(first);
-			
-			while (first != last)
-			{
-				tmp = first++;
-				avl_delete(bst_find(tmp->first));
-			}
+		template <class InputIterator>
+		map (InputIterator first, InputIterator last,
+			typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0,
+			const key_compare& comp = key_compare(),
+			const allocator_type& alloc = allocator_type())
+				: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){
+			insert(first, last);
 		}
 		
+		map (const map& x)
+			: _root(0), _size(0), _myComp(x._myComp), _myAlloc(x._myAlloc){
+			iterator first = x.begin(), last = x.end();
+			insert(first, last);
+		}
+		
+		/*			Destructors			*/
+		~map (){
+			clear();
+		}
+		
+		/*			Copy assignment		*/
+		map& operator= (const map& x){
+			if (this != &x)
+			{
+				_root = 0;
+				_size = 0;
+				_myComp = x._myComp;
+				_myAlloc = x._myAlloc;
+				insert(x.begin(), x.end());
+			}
+			return *this;
+		}
+
+		/*			Capacity			*/
+		bool			empty() const{
+			return !_root;
+		}
+
+		size_type		size() const{
+			return _size;
+		}
+		
+		size_type		max_size() const{
+			return _myAlloc.max_size();
+		}
+
+		/*			Element access		*/
+		mapped_type&	operator[] (const key_type& k){
+			// pointer tmp = bst_find(k);
+			// if (tmp) /*if already there*/
+			// 	return (tmp->_info.second);
+			// tmp = avl_insert(ft::make_pair<key_type, mapped_type>(k, mapped_type()));
+			// return tmp->_info.second;
+			return ((this->insert(ft::make_pair(k, mapped_type()))).first)->second;
+		}
+
+		/*			Modifiers			*/
 		/*TESTED*/
-		ft::pair<iterator,bool> insert (const value_type& val)
+		ft::pair<iterator,bool>	insert (const value_type& val)
 		{
 			pointer check = bst_find(val.first);
 			if (check) return ft::make_pair<iterator, bool>(iterator(check), false); /*checks if it exists*/
@@ -443,7 +484,85 @@ namespace ft{
 				++first;
 			}
 		}
+		
+		/*TESTED*/
+		void erase (iterator position){
+			avl_delete(bst_find(position->first));
+		}
 
+		/*TESTED*/
+		size_type erase (const key_type& k){
+			pointer tmp = bst_find(k);
+			if (!tmp) return 0;
+			avl_delete(tmp);
+			return 1;
+		}
+
+		/*TESTED*/
+		void erase (iterator first, iterator last){
+			iterator	tmp(first);
+			
+			while (first != last)
+			{
+				tmp = first++;
+				avl_delete(bst_find(tmp->first));
+			}
+		}
+
+		/*TESTED*/
+		void swap (map& x){
+			ft::myswap(_root, x._root);
+			ft::myswap(_size, x._size);
+			ft::myswap(_myComp, x._myComp);
+			ft::myswap(_myAlloc, x._myAlloc);
+		}
+
+		/*TESTED*/
+		void clear(){
+			pointer tmp;
+			pointer save = getMinimum();
+			while (save)
+			{
+				tmp = save;
+				save = getNextMaximum(save);
+				del_node(tmp);
+			}
+		}
+
+		/*		Observers		*/
+		key_compare key_comp() const{return _myComp;}
+		
+		const value_compare<Key, T, Compare, Alloc> value_comp() const{return value_compare<Key, T, Compare, Alloc>(_myComp);}
+
+		/*			Iterators			*/
+		iterator begin(){
+			return iterator(getMinimum());
+		}
+
+		// const_iterator begin() const{
+		// 	return (const_iterator(getMinimum()));
+		// }
+
+		iterator end(){
+			return (iterator(_root));
+		}
+
+		// const_iterator end() const{
+		// 	return (const_iterator(getMaximum()));
+		// }
+
+		reverse_iterator rbegin(){
+			return reverse_iterator(getMaximum());
+		};
+		// const_reverse_iterator rbegin() const;
+
+		reverse_iterator rend(){
+			return reverse_iterator(NULL);
+		}
+		
+		// const_reverse_iterator rend() const;
+
+		/*		Operations		*/
 		iterator find (const key_type& k){
 			return (iterator(bst_find(k)));
 		}
@@ -452,137 +571,55 @@ namespace ft{
 		// 	return (const_iterator(bst_find(k));
 		// }
 
-		/*TESTED*/
-		void clear(){
-			pointer tmp;
-			// pointer save[size()];
-			pointer save = getMinimum();
-			size_type i;
-			for (i = 0; save; ++i)
-			{
-				tmp = save;
-				save = getNextMaximum(save);
-				del_node(tmp);
-			}
-		}
-
-		/* Not working */
 		size_type count (const key_type& k) const{
-			if (!bst_find(k)) return 0;
-			return 1;
-			// return (bst_find(k) == NULL ? 0 : 1);
+			return (bst_find(k) ? 1 : 0);
+		}	
+
+		iterator lower_bound (const key_type& k){
+			iterator	tmp = begin();
+			while (tmp != end() && _myComp(tmp->first, k))
+				++tmp;
+			return tmp;
 		}
 		
-		mapped_type& operator[] (const key_type& k){
-			pointer tmp = bst_find(k);
-			if (tmp) /*if already there*/
-				return (tmp->_info.second);
-			tmp = avl_insert(ft::make_pair<key_type, mapped_type>(k, mapped_type()));
-			return tmp->_info.second;		
+		// const_iterator lower_bound (const key_type& k) const;
+
+		iterator upper_bound (const key_type& k){
+			iterator	tmp = begin();
+			while (tmp != end() && !_myComp(k, tmp->first))
+				++tmp;	
+			return tmp;
 		}
 
-		/*		Observers		*/
-		key_compare key_comp() const {return _myComp;}
-		
-		// const value_compare value_comp() const {return value_compare(_myComp);}
-		
-		allocator_type get_allocator() const {return _myAlloc;}
+		// const_iterator upper_bound (const key_type& k) const;
 
-		
-		/*	*/
-		/**********************************************************************************************************************************/
-
-		/*			Constructors		*/
-		explicit map (const key_compare& comp = key_compare(),
-    				  const allocator_type& alloc = allocator_type())
-						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){}
-
-		template <class InputIterator>
-		map (InputIterator first, InputIterator last,
-			typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0,
-			const key_compare& comp = key_compare(),
-			const allocator_type& alloc = allocator_type())
-				: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){
-			insert(first, last);
-		}
-		// map (const map& x);
-		
-		/*			Destructors			*/
-		~map(){
-			clear();
-		}
-
-     	mapped_type& at (const key_type& k){
-			pointer tmp = bst_find(k);
-			if (tmp) return tmp->_info.second;
-			throw std::out_of_range("map::at:  key not found");
+		ft::pair<iterator,iterator>	equal_range (const key_type& k){
+			return ft::make_pair<iterator, iterator>(lower_bound(k), upper_bound(k));
 		}
 		
-		const mapped_type& at (const key_type& k) const{
-			pointer tmp = bst_find(k);
-			if (tmp) return tmp->_info.second;
-			throw std::out_of_range("map::at:  key not found");
-		}
+		// pair<const_iterator,const_iterator>	equal_range (const key_type& k) const;
 
-		/*			Iterators			*/
-		iterator begin(){
-			return (iterator(getMinimum()));
-		}
-		// const_iterator begin() const{
-		// 	return (const_iterator(getMinimum()));
-		// }
-
-		iterator end(){
-			return (iterator(NULL));
-		}
-		// const_iterator end() const{
-		// 	return (const_iterator(getMaximum()));
-		// }
-
-		/*			Capacity			*/
-		bool empty() const{
-			return !_root;
-		}
-
-		size_type size() const{
-			return _size;
-		}
-		
-		size_type max_size() const{
-			return _myAlloc.max_size();
+		/*		Operations		*/
+		allocator_type get_allocator() const{
+			return _myAlloc;
 		}
 	};
 }
 
-/*	!!!!! this is not allowed !!!!	*/
-		// void	draw(pointer tmp){
-		// 	if (tmp != NULL)
-		// 	{
-		// 		std::string color = tmp->_color == RED ? "\e[31m" : "\e[33m";
-		// 		std::cout << "\t\t\t\t" << color << tmp->_info.first << "\e[0m\n";
-		// 		if (tmp->_left)
-		// 		{
-		// 			if (tmp->_left->_color == RED)
-		// 				std::cout << "\t\t\t\e[31m" << color << tmp->_left->_info.first << "\e[0m";
-		// 			else
-		// 	std::cout << "heyeye\n";
-		// 				std::cout << "\t\t\t\e[33m" << color << tmp->_left->_info.first << "\e[0m";
-		// 		}
-		// 		if (tmp->_right)
-		// 		{
-		// 			if (tmp->_right->_color == RED)
-		// 				std::cout << "\t\t\t\e[31m" << color << tmp->_right->_info.first << "\e[0m\n";
-		// 			else
-		// 				std::cout << "\t\t\t\e[33m" << color << tmp->_right->_info.first << "\e[0m\n";
-		// 		}
-		// 		draw(tmp->_left->_left);
-		// 		if (tmp->_right)
-		// 			draw(tmp->_right->_right);
-		// 	}
+
+
+
+
+
+     	// mapped_type& at (const key_type& k){
+		// 	pointer tmp = bst_find(k);
+		// 	if (tmp) return tmp->_info.second;
+		// 	throw std::out_of_range("map::at:  key not found");
 		// }
-
-		// void	draw_every(){draw(_root);}
-
-		// pointer		getRoot(){return _root;}
-
+		
+		// const mapped_type& at (const key_type& k) const{
+		// 	pointer tmp = bst_find(k);
+		// 	if (tmp) return tmp->_info.second;
+		// 	throw std::out_of_range("map::at:  key not found");
+		// }
 #endif

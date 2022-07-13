@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 14:02:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/06/20 16:50:01 by anasr            ###   ########.fr       */
+/*   Updated: 2022/07/13 08:57:37 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,9 @@ namespace ft
 		
 		/*check pls*/
 		pointer operator->() const{
-			return pointer(&*(current - 1));
+			iterator_type	temp = current;
+			--temp;
+			return pointer(temp);
 		}
 
 		reference operator[]( difference_type n ) const{
