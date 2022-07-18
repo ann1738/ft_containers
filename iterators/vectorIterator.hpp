@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/06/21 08:18:18 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/15 21:09:50 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,12 @@
 # define VECTORITERATOR_HPP
 
 #include "iterator.hpp"
-#include "../vector.hpp"
+// #include "../vector.hpp"
 
 namespace ft{
+	// template < typename T, typename _Alloc >  class	vector;
+	// template < typename T, typename _Alloc = std::allocator<T> >  class	vector;
+
 	template <typename T> class const_vectorIterator;
 
 	/*		ft::vector iterator				*/

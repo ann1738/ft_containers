@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/13 09:25:30 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/15 16:35:10 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,43 @@
 #include "testing.hpp"
 #include <cstdlib>
 
-// #include "tests/tests.hpp"
+#include "tests/tests.hpp"
 // #ifdef STRD
-# define ft std
+// # define ft std
 // #endif
-int main()
+int main(int argc, char **argv)
 {
 	#if TESTING_MODE
 	{
-
-		test_stack(); 
+		if (argc != 2)
+		{
+			std::cout << "\e[31mInvalid Input\e[0m" << std::endl
+			<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
+			return 1;
+		}
+		std::string possible[] = {"vector", "map", "stack", "all"};
+		int	test_index = 0;
+		for (; test_index < 4 && argv[1] != possible[test_index]; ++test_index);
+		switch (test_index)
+		{
+		case 0: //vector
+			test_vector();
+			break;
+		case 1: //vector
+			//test_vector();
+			break;
+		case 2: //stack
+			test_stack();
+			break;
+		case 3: //vector
+			//test_vector();
+			break;
+		default:
+			std::cout << "\e[31mInvalid Input\e[0m" << std::endl
+			<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
+			break;
+		}
+		// test_stack(); 
 		// std::cout << "\e[33mElement access: \e[0m" << std::endl;
 		// vector_at();
 		// vector_subscript();
@@ -48,22 +75,28 @@ int main()
 		
 	}
 	#else
-	ft::map<int, char> my;
-	my[1] = 'a';
-	my[2] = 'b';
-	my[3] = 'c';
-	my[4] = 'd';
+		(void)argc;
+		(void)argv;
+		ft::vector<int> mine;
+		mine.reserve(10);
+		std::vector<int> strd;
+		strd.reserve(10);
 
+		for (int i = 0; i < 10; ++i)
+		{
+			mine.push_back(i);
+			strd.push_back(i);
+		}
 	
-	ft::map<int, char>::iterator it = my.begin();
-	ft::map<int, char>::iterator ite = my.end();
-	ite--;
-	ite++;
-	for (; it != ite; ++it) std::cout << it->first << std::endl;
+		ft::vector<int> mineIns(3, 42);
+		std::vector<int> strdIns(3, 42);
 
-	// ft::map<int, char>::reverse_iterator rit = my.rbegin();
-	// ft::map<int, char>::reverse_iterator rite = --my.rend() ;
-	
-	// for (; rit != rite; ++rit) std::cout << rit->first << std::endl;
+		mineIns.insert(mineIns.begin() + 1, mine.begin(), mine.begin() + 3);
+		// strdIns.insert(strdIns.begin() + 1, strd.begin(), strd.begin() + 3);
+		std::cout << "?\n";
+
+		for (ft::vector<int>::iterator it = mineIns.begin(); it != mineIns.end(); ++it)
+			std::cout << *it << std::endl;
+		
 	#endif
 }

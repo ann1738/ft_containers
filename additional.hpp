@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/07 15:17:04 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/13 11:46:35 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ namespace ft
 		b = temp;
 	}
 	
+	template< class Iterator, typename T >
+	Iterator	find(Iterator first, Iterator last, T findMe){
+		for (; first != last && *first != findMe; ++first);
+		return first;
+	}
+
 	/*			ft::equal			*/
 	template< class InputIt1, class InputIt2 >
 	bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 ){

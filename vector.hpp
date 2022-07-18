@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/06/21 13:31:40 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/15 21:09:47 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 #include <memory>
 #include <limits>
 #include "iterators/iterator.hpp"
+// #include "iterators/vectorIterator.hpp"
 #include "additional.hpp"
 
 namespace ft
 {
-
 	template <typename T> class vectorIterator;
 	template <typename T> class const_vectorIterator;
 	template < typename T, typename _Alloc = std::allocator<T> > 
@@ -52,12 +52,13 @@ namespace ft
 			/* allocate and construct copies of previous memory */
 			pointer temp = _myAlloc.allocate(new_capacity);
 			size_type temp_size = this->size();
+			size_type temp_capacity = this->capacity();
 			for (size_type i = 0; i < temp_size; ++i)
 				_myAlloc.construct(temp + i, *(this->_start + i));
 
 			/* destroy and deallocate */
 			for (size_type i = 0; i < temp_size; ++i) _myAlloc.destroy(this->_start + i);
-			_myAlloc.deallocate(this->_start, temp_size);
+			_myAlloc.deallocate(this->_start, temp_capacity);
 			
 			/* replace the old memory (maybe i could use swap) */
 			this->_start = temp;
@@ -65,7 +66,6 @@ namespace ft
 			this->_end_of_memory = temp + new_capacity;
 		}
 	public:
-
 		/*			Constuctors			*/
 		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {}
 
@@ -116,6 +116,7 @@ namespace ft
 
 		/*			Destructor		*/
 		~vector(){		
+			std::cout << "the capacity is: " << this->capacity() << std::endl;
 			clear();
 			_myAlloc.deallocate(this->_start, this->capacity());
 		}
@@ -213,8 +214,15 @@ namespace ft
 				for (size_type i = new_size; i < this->size(); ++i) _myAlloc.destroy(this->_start + i);
 				this->_end = this->_start + new_size;
 			}
-			else if (new_size > this->size())
+			else if (new_size > this->size() && new_size <= this->capacity())
 				for (size_type i = this->size(); i < new_size; ++i) this->push_back(value);
+			else if (new_size > this->size() && new_size > this->capacity())
+			{
+				realloc_vec(new_size);
+				for (size_type i = this->size(); i < new_size; ++i) _myAlloc.construct(this->_start + i, value);
+				this->_end = this->_start + new_size;
+				
+			}
 		}
 
 		size_type	capacity(void) const{
@@ -238,7 +246,7 @@ namespace ft
 
 		template< class InputIt >
 		void assign(InputIt first, InputIt last,
-					typename enable_if< !is_integral<InputIt>::value >::type = 0)
+					typename enable_if< !is_integral<InputIt>::value >::type* = 0)
 		{
 			size_type count = static_cast<size_type>(last - first);
 			this->clear();
@@ -284,7 +292,7 @@ namespace ft
 			size_type offset = static_cast<size_type>(last - first);
 
 			if (first >= last) return(last);
-			for (; first < last && first + offset != this->end(); ++first, ++save)
+			for (; first + offset != this->end(); ++first, ++save)
 				_myAlloc.construct(save, *(save + offset));
 			for (iterator it = this->end() - offset;  it != this->end(); ++it)
 				_myAlloc.destroy(&*it);
@@ -293,11 +301,13 @@ namespace ft
 			return (iterator(re));
 		}
 
-		iterator insert( iterator pos, const T& value ){
+		iterator insert( iterator pos, const T& value ){ //fix issues
 			push_back(value);
-			for (iterator it = this->end() - 2; it != pos - 1 && it != this->begin() - 1; --it)
-				_myAlloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */	
-			_myAlloc.construct(&(*pos), value);
+			iterator it = this->end() - 2;
+			for (; it != pos - 1 && it != this->begin() - 1; --it)
+				_myAlloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
+			std::cout << "\e[31m" << *++it << "\e[0m\n";
+			_myAlloc.construct(&(*pos), value); //do i need to delete here
 			return (pos);
 		}
 
@@ -312,6 +322,35 @@ namespace ft
 			for (i = 0; i < count; ++i, ++offset)
 				_myAlloc.construct(this->_start + offset, value);
 			this->_end += count;
+		}
+
+		template <class InputIterator>
+   		void insert (iterator position, InputIterator first, InputIterator last,
+		typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
+			if (first >= last) return ; //do i need this
+			size_type range = static_cast<size_type>(last - first);
+
+			if (range + size() > capacity())
+			{
+				// if (range + size() <= size() * 2)
+				// 	realloc_vec(size() * 2);
+				// else
+				// 	realloc_vec(range + size());
+				std::cout << "hello" << (range + size() <= size() * 2 ? size() * 2 : range + size()) << " and range is " << range << std::endl;
+				realloc_vec(range + size() <= size() * 2 ? size() * 2 : range + size());
+			}
+
+			for (iterator it = end() - 1; it >= position; --it)
+			{
+				// std::cout<<"one\n";
+				_myAlloc.construct(&*it + range, *it);
+				// _myAlloc.destroy(&*it);
+			}
+
+			for (; first < last; ++first, ++position)
+				_myAlloc.construct(&*position, *first);
+			std::cout << "heyeye\n";
+			this->_end += range;
 		}
 
 		void swap(vector& other){
@@ -342,7 +381,7 @@ namespace ft
 	}
 	template< typename T, typename _Alloc >
 	bool operator<=( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
-		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		return !(ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
 	}
 	
 	template< typename T, typename _Alloc >
@@ -351,7 +390,7 @@ namespace ft
 	}
 	template< typename T, typename _Alloc >
 	bool operator>=( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
-		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
 	/*		std::swap specialization		*/
