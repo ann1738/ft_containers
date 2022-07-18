@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/07/15 21:09:47 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/18 19:14:00 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 #include <memory>
 #include <limits>
 #include "iterators/iterator.hpp"
-// #include "iterators/vectorIterator.hpp"
 #include "additional.hpp"
+#include "iterators/vectorIterator.hpp"
 
 namespace ft
 {
-	template <typename T> class vectorIterator;
-	template <typename T> class const_vectorIterator;
+	// template <typename T> class vectorIterator;
+	// template <typename T> class const_vectorIterator;
 	template < typename T, typename _Alloc = std::allocator<T> > 
 	class	vector
 	{
@@ -34,8 +34,8 @@ namespace ft
 		typedef const value_type&							const_reference;
     	typedef typename allocator_type::pointer			pointer;
     	typedef typename allocator_type::const_pointer		const_pointer;
-		typedef	ft::vectorIterator<T>						iterator;
-		typedef	ft::const_vectorIterator<T>					const_iterator;
+		typedef	ft::vectorIterator<T, _Alloc>						iterator;
+		typedef	ft::vectorIterator<const T, _Alloc>					const_iterator;
 		typedef ft::reverse_iterator<iterator>				reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 		typedef std::ptrdiff_t 								difference_type;
@@ -81,7 +81,10 @@ namespace ft
 		vector(InputIt first, InputIt last, 
 			typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type* = 0, const allocator_type& alloc = allocator_type())
 			: _myAlloc(alloc){
-			size_type count = static_cast<size_type>(last - first);
+			// size_type count = static_cast<size_type>(last - first);
+			size_type count = 0;
+			for (InputIt it = first; it != last; ++it, ++count);
+				
 			this->_start = _myAlloc.allocate(count);
 			for (size_type i = 0; first != last; ++first, ++i) _myAlloc.construct(this->_start + i, *first);
 			this->_end = this->_start + count;
@@ -105,18 +108,17 @@ namespace ft
 				clear();
 				if (this->capacity())
 					_myAlloc.deallocate(this->_start, this->capacity());
-		
-				this->_start = _myAlloc.allocate(other.capacity());
+				// std::cout << "other cap is " << other.capacity() << std::endl;
+				this->_start = _myAlloc.allocate(other.size());
 				for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 				this->_end = this->_start + other.size();
-				this->_end_of_memory = this->_start + other.capacity();
+				this->_end_of_memory = this->_start + other.size();
 			}
 			return *(this);
 		}
 
 		/*			Destructor		*/
 		~vector(){		
-			std::cout << "the capacity is: " << this->capacity() << std::endl;
 			clear();
 			_myAlloc.deallocate(this->_start, this->capacity());
 		}
@@ -248,7 +250,9 @@ namespace ft
 		void assign(InputIt first, InputIt last,
 					typename enable_if< !is_integral<InputIt>::value >::type* = 0)
 		{
-			size_type count = static_cast<size_type>(last - first);
+			// size_type count = static_cast<size_type>(last - first);
+			size_type count = 0;
+			for (InputIt it = first; it != last; ++it, ++count);
 			this->clear();
 			if (count > this->capacity())
 				realloc_vec(count);
@@ -275,6 +279,7 @@ namespace ft
 		}
 
 		iterator erase(iterator pos){
+			pointer save = &(*pos);
 			pointer temp = &(*pos);
 			
 			for (; pos < this->end() - 1; ++pos, ++temp)
@@ -282,7 +287,7 @@ namespace ft
 			_myAlloc.destroy(temp);
 			--this->_end;
 
-			return (pos);
+			return (iterator(save));
 		}
 		
 		iterator erase(iterator first, iterator last)
@@ -398,6 +403,7 @@ namespace ft
 	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ){
 		lhs.swap(rhs);
 	}
+	
 }
 
 #endif

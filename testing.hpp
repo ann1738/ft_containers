@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 15:02:04 by ann               #+#    #+#             */
-/*   Updated: 2022/07/15 16:31:27 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/18 16:06:59 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <iostream>
 #include <assert.h>
 #include "vector.hpp"
-#include "iterators/vectorIterator.hpp"
 #include "additional.hpp"
 #include "stack.hpp"
 #include "timer.hpp"
