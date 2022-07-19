@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/13 09:08:48 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 14:45:21 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 #include "additional.hpp"
 #include "iterators/iterator.hpp"
 #include <cassert>
+#include "iterators/mapIterator.hpp"
 
 namespace ft{
-	template <	class Key, class T, class Compare, class Alloc > class mapIterator;
 	template <	class Key,												// map::key_type
         		class T,												// map::mapped_type
 				class Compare = std::less<Key>,							// map::key_compare
@@ -44,9 +44,9 @@ namespace ft{
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
 		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>		iterator;
-		// typedef	const const_mapIterator												const_iterator;
+		typedef	mapIterator<const key_type, const mapped_type, key_compare, allocator_type>		const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
-		// typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
+		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 		typedef	std::ptrdiff_t														difference_type;
 		typedef	size_t																size_type;
 
@@ -539,17 +539,17 @@ namespace ft{
 			return iterator(getMinimum());
 		}
 
-		// const_iterator begin() const{
-		// 	return (const_iterator(getMinimum()));
-		// }
+		const_iterator begin() const{
+			return (const_iterator(getMinimum()));
+		}
 
 		iterator end(){
 			return (iterator(_root));
 		}
 
-		// const_iterator end() const{
-		// 	return (const_iterator(getMaximum()));
-		// }
+		const_iterator end() const{
+			return (const_iterator(getMaximum()));
+		}
 
 		reverse_iterator rbegin(){
 			return reverse_iterator(getMaximum());

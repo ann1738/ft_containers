@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/19 12:55:41 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 13:49:23 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ namespace ft{
 		
 
 		// template <class TI, class _AllocI>
-		// friend bool operator==(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start == rhs.it_start;}
+		// bool operator==(const vectorIterator<  TI, _AllocI> & lhs, const vectorIterator< const TI, _AllocI> & rhs){return lhs.base() == rhs.base();}
 		// template <typename TI, typename _AllocI>
 		// friend bool operator!=(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start != rhs.it_start;}
 		// template <typename TI, typename _AllocI>

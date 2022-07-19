@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/08 18:30:05 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 15:54:56 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,17 @@
 
 #include <memory>
 #include "iterator.hpp"
-#include "../map.hpp"
+#include "../additional.hpp"
+// #include "../map.hpp"
 
 namespace ft{
 	// template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > class const_mapIterator;
-
+	template <	class Key,												// map::key_type
+        		class T,												// map::mapped_type
+				class Compare,							// map::key_compare
+				class Alloc	// map::allocator_type
+			 >class map;
+	
 	/*		ft::map iterator				*/
 	template <	class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
 	class mapIterator
@@ -48,6 +54,10 @@ namespace ft{
 		mapIterator & operator=(mapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
 		~mapIterator() {}
 
+		operator	mapIterator<const Key, const T, Compare, Alloc>() const{
+			return mapIterator<const Key, const T, Compare, Alloc>(it_start);
+		}
+
 		/*YOU HAVE TO IMPLEMENT '->' also !!!*/
 
 		reference	operator*(void){
@@ -64,6 +74,7 @@ namespace ft{
 			// std::cout << "getNextMaximum -> " << this->it_start->_info.first << std::endl;
 			return (*this);
 		}
+
 		mapIterator operator++(int){
 			mapIterator temp(this->it_start);
 			

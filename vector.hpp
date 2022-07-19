@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/07/19 12:32:51 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 14:17:46 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ namespace ft
 		vector(InputIt first, InputIt last, 
 			typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type* = 0, const allocator_type& alloc = allocator_type())
 			: _myAlloc(alloc){
-			// size_type count = static_cast<size_type>(last - first);
 			size_type count = 0;
 			for (InputIt it = first; it != last; ++it, ++count);
 				
@@ -94,7 +93,6 @@ namespace ft
 		/*		Copy constructor and copy assignment		*/
 		vector(const vector& other) : _myAlloc(other._myAlloc){
 			this->_start = _myAlloc.allocate(other.capacity());
-
 			for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 			this->_end = this->_start + other.size();
 			this->_end_of_memory = this->_start + other.capacity();
@@ -104,11 +102,9 @@ namespace ft
 			if (this != &other)
 			{
 				_myAlloc = other._myAlloc;
-
 				clear();
 				if (this->capacity())
 					_myAlloc.deallocate(this->_start, this->capacity());
-				// std::cout << "other cap is " << other.capacity() << std::endl;
 				this->_start = _myAlloc.allocate(other.size());
 				for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 				this->_end = this->_start + other.size();
@@ -212,7 +208,6 @@ namespace ft
 		void resize(size_type new_size, T value = T() ){
 			if (new_size < this->size())
 			{
-				/* maybe when i figure out how to implement erase() i can use erase here */
 				for (size_type i = new_size; i < this->size(); ++i) _myAlloc.destroy(this->_start + i);
 				this->_end = this->_start + new_size;
 			}
@@ -223,7 +218,6 @@ namespace ft
 				realloc_vec(new_size);
 				for (size_type i = this->size(); i < new_size; ++i) _myAlloc.construct(this->_start + i, value);
 				this->_end = this->_start + new_size;
-				
 			}
 		}
 
@@ -250,7 +244,6 @@ namespace ft
 		void assign(InputIt first, InputIt last,
 					typename enable_if< !is_integral<InputIt>::value >::type* = 0)
 		{
-			// size_type count = static_cast<size_type>(last - first);
 			size_type count = 0;
 			for (InputIt it = first; it != last; ++it, ++count);
 			this->clear();
@@ -336,25 +329,20 @@ namespace ft
 		typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
 			// if (first >= last) return ; //do i need this
 			size_type pos_offset = static_cast<size_type>(position - begin());
-			// size_type range = static_cast<size_type>(last - first);
 			size_type range = 0;
 			for (InputIterator it = first; it != last; ++it, ++range);
 			if (range + size() > capacity())
 			{
-				// std::cout << "hello" << (range + size() <= size() * 2 ? size() * 2 : range + size()) << " and range is " << range << std::endl;
 				realloc_vec(range + size() <= size() * 2 ? size() * 2 : range + size());
 				position = iterator(this->_start + pos_offset);
 			}
 			for (iterator it = end() - 1; it >= position; --it)
 			{
-				// std::cout<<"one\n";
 				_myAlloc.construct(&*it + range, *it);
 				// _myAlloc.destroy(&*it);
 			}
-
 			for (; first != last; ++first, ++position)
 				_myAlloc.construct(&*position, *first);
-			// std::cout << "heyeye\n";
 			this->_end += range;
 		}
 
@@ -363,11 +351,6 @@ namespace ft
 			ft::myswap<pointer>(this->_end, other._end);
 			ft::myswap<pointer>(this->_end_of_memory, other._end_of_memory);
 			ft::myswap<allocator_type>(this->_myAlloc, other._myAlloc);
-			
-			// vector temp(other);
-			
-			// other = *this;
-			// *this = temp;
 		}
 	};
 
@@ -390,15 +373,17 @@ namespace ft
 	bool operator<( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
 		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
+
 	template< typename T, typename _Alloc >
 	bool operator<=( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
 		return !(ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
 	}
-	
+
 	template< typename T, typename _Alloc >
 	bool operator>( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
 		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
 	}
+
 	template< typename T, typename _Alloc >
 	bool operator>=( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
 		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
@@ -409,7 +394,6 @@ namespace ft
 	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ){
 		lhs.swap(rhs);
 	}
-	
 }
 
 #endif
