@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/18 19:15:30 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 12:33:25 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,50 @@
 
 
 // # define ft std
-# define TESTED_TYPE std::string
+# define TESTED_TYPE int
+// #define TESTED_TYPE foo<int>
+// # define TESTED_TYPE std::string
 # define TESTED_NAMESPACE ft
 #define DEGUB() (std::cout << "\e[33mDEBUGGING\e[0m\n")
+
+
+
+/**/
+template <typename T>
+class foo {
+	public:
+		typedef T	value_type;
+
+		foo(void) : value(), _verbose(false) { };
+		foo(value_type src, const bool verbose = false) : value(src), _verbose(verbose) { };
+		foo(foo const &src, const bool verbose = false) : value(src.value), _verbose(verbose) { };
+		~foo(void) { if (this->_verbose) std::cout << "~foo::foo()" << std::endl; };
+		void m(void) { std::cout << "foo::m called [" << this->value << "]" << std::endl; };
+		void m(void) const { std::cout << "foo::m const called [" << this->value << "]" << std::endl; };
+		foo &operator=(value_type src) { this->value = src; return *this; };
+		foo &operator=(foo const &src) {
+			if (this->_verbose || src._verbose)
+				std::cout << "foo::operator=(foo) CALLED" << std::endl;
+			this->value = src.value;
+			return *this;
+		};
+		value_type	getValue(void) const { return this->value; };
+		void		switchVerbose(void) { this->_verbose = !(this->_verbose); };
+
+		operator value_type(void) const {
+			return value_type(this->value);
+		}
+	private:
+		value_type	value;
+		bool		_verbose;
+};
+
+template <typename T>
+std::ostream	&operator<<(std::ostream &o, foo<T> const &bar) {
+	o << bar.getValue();
+	return o;
+}
+/**/
 
 
 void	printSize(const TESTED_NAMESPACE::vector<TESTED_TYPE> & cont)
@@ -43,14 +84,13 @@ void	printSize(const TESTED_NAMESPACE::vector<TESTED_TYPE> & cont)
 }
 
 
-void	checkErase(TESTED_NAMESPACE::vector<TESTED_TYPE> const &vct,
-					TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator const &it)
-{
-	static int i = 0;
-	std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
-	printSize(vct);
-}
-
+// void	checkErase(TESTED_NAMESPACE::vector<TESTED_TYPE> const &vct,
+// 					TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator const &it)
+// {
+// 	static int i = 0;
+// 	std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
+// 	printSize(vct);
+// }
 int main(int argc, char **argv)
 {
 	#if TESTING_MODE
@@ -103,29 +143,31 @@ int main(int argc, char **argv)
 		
 	}
 	#else
+	TESTED_NAMESPACE::vector<TESTED_TYPE> foo(3, 15);
+	TESTED_NAMESPACE::vector<TESTED_TYPE> bar(5, 42);
+	
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator it_foo = foo.begin();
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator it_bar = bar.begin();
 
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(5);
-	TESTED_NAMESPACE::vector<TESTED_TYPE> vct2;
-	const int cut = 3;
+	std::cout << "BEFORE SWAP" << std::endl;
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		vct[i] = (vct.size() - i) * 7;
-	printSize(vct);
+	std::cout << "foo contains:" << std::endl;
+	printSize(foo);
+	std::cout << "bar contains:" << std::endl;
+	printSize(bar);
 
-	vct2.insert(vct2.begin(), vct.begin(), vct.begin() + cut);
-	printSize(vct2);
-	vct2.insert(vct2.begin(), vct.begin() + cut, vct.end());
-	printSize(vct2);
-	vct2.insert(vct2.end(), vct.begin(), vct.begin() + cut);
-	printSize(vct2);
+	foo.swap(bar);
 
-	std::cout << "insert return:" << std::endl;
+	std::cout << "AFTER SWAP" << std::endl;
 
-	std::cout << *vct2.insert(vct2.end(), 42) << std::endl;
-	std::cout << *vct2.insert(vct2.begin() + 5, 84) << std::endl;
-	std::cout << "----------------------------------------" << std::endl;
+	std::cout << "foo contains:" << std::endl;
+	printSize(foo);
+	std::cout << "bar contains:" << std::endl;
+	printSize(bar);
 
-	printSize(vct2);
+	std::cout << "Iterator validity:" << std::endl;
+	std::cout << (it_foo == bar.begin()) << std::endl;
+	std::cout << (it_bar == foo.begin()) << std::endl;
 		(void)argc;
 		(void)argv;
 

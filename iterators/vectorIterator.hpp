@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/18 19:07:04 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 12:55:41 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ namespace ft{
 	template <typename T, typename _Alloc >
 	class vectorIterator
 	{
-		vectorIterator	base(void) {return *(this);}
 	public:
 		typedef typename ft::vector<T, _Alloc>::difference_type		difference_type;
 		typedef typename ft::vector<T, _Alloc>::value_type			value_type;
@@ -35,6 +34,7 @@ namespace ft{
 		typedef typename ft::vector<T, _Alloc>::const_reference		const_reference;
 		typedef typename ft::random_access_iterator_tag		iterator_category;
 
+		vectorIterator	base(void) {return *(this);}
 		vectorIterator(void) : it_start(0) {}
 		vectorIterator(pointer temp) : it_start(temp) {}
 		vectorIterator(vectorIterator const & iter) : it_start(iter.it_start) {}
@@ -118,6 +118,35 @@ namespace ft{
 		bool operator>=(const vectorIterator & rhs) const{return this->it_start >= rhs.it_start;}
 		bool operator<(const vectorIterator & rhs) const{return this->it_start < rhs.it_start;}
 		bool operator<=(const vectorIterator & rhs) const{return this->it_start <= rhs.it_start;}
+
+		// friend bool operator==(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start == rhs.it_start;}
+		// friend bool operator!=(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start != rhs.it_start;}
+		// bool operator>(const vectorIterator & rhs) const{return this->it_start > rhs.it_start;}
+		// bool operator>=(const vectorIterator & rhs) const{return this->it_start >= rhs.it_start;}
+		// bool operator<(const vectorIterator & rhs) const{return this->it_start < rhs.it_start;}
+		// bool operator<=(const vectorIterator & rhs) const{return this->it_start <= rhs.it_start;}
+
+		// bool operator==(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start == rhs.it_start;}
+		// bool operator!=(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start != rhs.it_start;}
+		// bool operator>(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start > rhs.it_start;}
+		// bool operator>=(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start >= rhs.it_start;}
+		// bool operator<(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start < rhs.it_start;}
+		// bool operator<=(const vectorIterator<const T, _Alloc> & rhs) const{return this->it_start <= rhs.it_start;}
+		
+
+		// template <class TI, class _AllocI>
+		// friend bool operator==(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start == rhs.it_start;}
+		// template <typename TI, typename _AllocI>
+		// friend bool operator!=(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start != rhs.it_start;}
+		// template <typename TI, typename _AllocI>
+		// friend bool operator<(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start < rhs.it_start;}
+		// template <typename TI, typename _AllocI>
+		// friend bool operator<=(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start <= rhs.it_start;}
+		// template <typename TI, typename _AllocI>
+		// friend bool operator>(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start > rhs.it_start;}
+		// template <typename TI, typename _AllocI>
+		// friend bool operator>=(const vectorIterator<TI, _AllocI> & lhs, const vectorIterator<const TI, _AllocI> & rhs){return lhs.it_start >= rhs.it_start;}
+		
 		
 		// template <typename TI>
 		// bool operator==(const const_vectorIterator<TI> & rhs){return this->it_start == rhs.it_start;}
@@ -142,7 +171,24 @@ namespace ft{
 	vectorIterator<T, _Alloc> operator+(typename vectorIterator<T, _Alloc>::difference_type n, const vectorIterator<T, _Alloc>& it){
 		return vectorIterator<T, _Alloc>(it + n);
 	}
-	
+
+		// template< typename iterator_left, typename iterator_right >
+		// bool operator==(const iterator_left & lhs, const iterator_right & rhs) {return lhs.base() == rhs.base();}
+		// template< typename iterator_left, typename iterator_right >
+		// bool operator!=(const iterator_left & lhs, const iterator_right & rhs) {return lhs.base() != rhs.base();}
+		// template< typename iterator_left, typename iterator_right >
+		// bool operator<(const iterator_left & lhs, const iterator_right & rhs) {return lhs.base() < rhs.base();}
+		// template< typename iterator_left, typename iterator_right >
+		// bool operator<=(const iterator_left & lhs, const iterator_right & rhs) {return lhs.base() <= rhs.base();}
+		// bool operator!=(const vectorIterator<T, _Alloc> & rhs) const{return this->it_start != rhs.it_start;}
+		// bool operator>(const vectorIterator<T, _Alloc> & rhs) const{return this->it_start > rhs.it_start;}
+		// bool operator>=(const vectorIterator<T, _Alloc> & rhs) const{return this->it_start >= rhs.it_start;}
+		// bool operator<(const vectorIterator<T, _Alloc> & rhs) const{return this->it_start < rhs.it_start;}
+		// bool operator<=(const vectorIterator<T, _Alloc> & rhs) const{return this->it_start <= rhs.it_start;}
+
+
+		// temp
+		
 	
 // 	/*		const vector iterator		*/
 // 	template <typename T>

@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/07/18 19:14:00 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/19 12:32:51 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,13 +307,15 @@ namespace ft
 		}
 
 		iterator insert( iterator pos, const T& value ){ //fix issues
+			size_type offset = pos - begin();
 			push_back(value);
 			iterator it = this->end() - 2;
-			for (; it != pos - 1 && it != this->begin() - 1; --it)
+			iterator	update_pos(this->_start + offset);
+			for (; it >= update_pos && it >= this->begin(); --it)
 				_myAlloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
-			std::cout << "\e[31m" << *++it << "\e[0m\n";
-			_myAlloc.construct(&(*pos), value); //do i need to delete here
-			return (pos);
+			// std::cout << "\e[31m" << *++it << "\e[0m\n";
+			_myAlloc.construct(this->_start + offset, value); //do i need to delete here
+			return (update_pos);
 		}
 
 		void insert( iterator pos, size_type count, const T& value ){
@@ -332,19 +334,17 @@ namespace ft
 		template <class InputIterator>
    		void insert (iterator position, InputIterator first, InputIterator last,
 		typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
-			if (first >= last) return ; //do i need this
-			size_type range = static_cast<size_type>(last - first);
-
+			// if (first >= last) return ; //do i need this
+			size_type pos_offset = static_cast<size_type>(position - begin());
+			// size_type range = static_cast<size_type>(last - first);
+			size_type range = 0;
+			for (InputIterator it = first; it != last; ++it, ++range);
 			if (range + size() > capacity())
 			{
-				// if (range + size() <= size() * 2)
-				// 	realloc_vec(size() * 2);
-				// else
-				// 	realloc_vec(range + size());
-				std::cout << "hello" << (range + size() <= size() * 2 ? size() * 2 : range + size()) << " and range is " << range << std::endl;
+				// std::cout << "hello" << (range + size() <= size() * 2 ? size() * 2 : range + size()) << " and range is " << range << std::endl;
 				realloc_vec(range + size() <= size() * 2 ? size() * 2 : range + size());
+				position = iterator(this->_start + pos_offset);
 			}
-
 			for (iterator it = end() - 1; it >= position; --it)
 			{
 				// std::cout<<"one\n";
@@ -352,16 +352,22 @@ namespace ft
 				// _myAlloc.destroy(&*it);
 			}
 
-			for (; first < last; ++first, ++position)
+			for (; first != last; ++first, ++position)
 				_myAlloc.construct(&*position, *first);
-			std::cout << "heyeye\n";
+			// std::cout << "heyeye\n";
 			this->_end += range;
 		}
 
 		void swap(vector& other){
-			vector temp(other);
-			other = *this;
-			*this = temp;
+			ft::myswap<pointer>(this->_start, other._start);
+			ft::myswap<pointer>(this->_end, other._end);
+			ft::myswap<pointer>(this->_end_of_memory, other._end_of_memory);
+			ft::myswap<allocator_type>(this->_myAlloc, other._myAlloc);
+			
+			// vector temp(other);
+			
+			// other = *this;
+			// *this = temp;
 		}
 	};
 
