@@ -1,7 +1,7 @@
 NAME = main
 VECTOR_TESTS = vector_tests/element_access.cpp vector_tests/capacity.cpp vector_tests/modifiers.cpp
 
-SRC = main.cpp tests/vector_tests.cpp tests/stack_tests.cpp #$(VECTOR_TESTS)
+SRC = main.cpp tests/vector_tests.cpp tests/stack_tests.cpp tests/map_tests #$(VECTOR_TESTS)
 OBJ = $(SRC:%.cpp=%.o)
 CXX = c++
 CPPFLAGS = -Wall -Werror -Wextra -c -std=c++98 -g

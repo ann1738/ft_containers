@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/19 15:54:13 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/20 17:06:30 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,14 @@
 // #include <cstdlib>
 
 #include "tests/tests.hpp"
-// #ifdef STRD
-// #endif
-	// # define TESTED_TYPE int
-	// # define TESTED_NAMESPACE ft
-# include <list>
 
+// # include <list>
+
+// #define TESTED_TYPE foo<int>
+// # define TESTED_TYPE std::string
 
 // # define ft std
 # define TESTED_TYPE int
-// #define TESTED_TYPE foo<int>
-// # define TESTED_TYPE std::string
 # define TESTED_NAMESPACE ft
 #define DEGUB() (std::cout << "\e[33mDEBUGGING\e[0m\n")
 
@@ -143,46 +140,62 @@ void	ft_const_bound(const MAP &mp, const T1 &param)
 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
 }
 
-int		main(void)
-{
-	// std::map<int,std::string> m;
-	// m[0];
-	// m[1];
-	// m[2];
-	// m[3];
-	// std::map<int,std::string>::const_iterator it = m.begin();
+// int		main(void)
+// {
+// 	// std::map<int,std::string> m;
+// 	// m[0];
+// 	// m[1];
+// 	// m[2];
+// 	// m[3];
+// 	// std::map<int,std::string>::const_iterator it = m.begin();
 	
-	// it->second = "heheh";
-	// std::list<T3> lst;
-	// unsigned int lst_size = 10;
-	// for (unsigned int i = 0; i < lst_size; ++i)
-	// 	lst.push_back(T3(i + 1, (i + 1) * 3));
-	// TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
-	// printSize(mp);
+// 	// it->second = "heheh";
+// 	// std::list<T3> lst;
+// 	// unsigned int lst_size = 10;
+// 	// for (unsigned int i = 0; i < lst_size; ++i)
+// 	// 	lst.push_back(T3(i + 1, (i + 1) * 3));
+// 	// TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
+// 	// printSize(mp);
 
-	// ft_const_bound(mp, -10);
-	// ft_const_bound(mp, 1);
-	// ft_const_bound(mp, 5);
-	// ft_const_bound(mp, 10);
-	// ft_const_bound(mp, 50);
+// 	// ft_const_bound(mp, -10);
+// 	// ft_const_bound(mp, 1);
+// 	// ft_const_bound(mp, 5);
+// 	// ft_const_bound(mp, 10);
+// 	// ft_const_bound(mp, 50);
 
-	// printSize(mp);
+// 	// printSize(mp);
 
-	// mp.lower_bound(3)->second = 404;
-	// mp.upper_bound(7)->second = 842;
-	// ft_bound(mp, 5);
-	// ft_bound(mp, 7);
+// 	// mp.lower_bound(3)->second = 404;
+// 	// mp.upper_bound(7)->second = 842;
+// 	// ft_bound(mp, 5);
+// 	// ft_bound(mp, 7);
 
-	// printSize(mp);
-	return (0);
-}
+// 	// printSize(mp);
+	
+// 	// ft::map<int,std::string> m;
+// 	// std::map<int,std::string> s;
+// 	// assert(m.max_size() == s.max_size());
+
+// 	// ft::map<char,std::string> m1;
+// 	// std::map<char,std::string> s1;
+// 	// assert(m1.max_size() == s1.max_size());
+
+// 	// ft::map<char, int> m2;
+// 	// std::map<char,int> s2;
+// 	// assert(m2.max_size() == s2.max_size());
+	
+// 	// ft::map<char, ft::vector<int> > m3;
+// 	// std::map<char,ft::vector<int> > s3;
+// 	// assert(m3.max_size() == s3.max_size());
+// 	return (0);
+// }
 
 
-#if 0
+// #if 1
 int main(int argc, char **argv)
 {
-	#if TESTING_MODE
-	{
+	// #if TESTING_MODE
+	// {
 		if (argc != 2)
 		{
 			std::cout << "\e[31mInvalid Input\e[0m" << std::endl
@@ -197,8 +210,8 @@ int main(int argc, char **argv)
 		case 0: //vector
 			test_vector();
 			break;
-		case 1: //vector
-			//test_vector();
+		case 1: //map
+			test_map();
 			break;
 		case 2: //stack
 			test_stack();
@@ -211,6 +224,10 @@ int main(int argc, char **argv)
 			<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
 			break;
 		}
+		// std::vector<int>::iterator it;
+		// it.base
+		// std::map<int, char>::iterator it;
+		// it.base();
 		// test_stack(); 
 		// std::cout << "\e[33mElement access: \e[0m" << std::endl;
 		// vector_at();
@@ -230,14 +247,5 @@ int main(int argc, char **argv)
 		// vector_erase();
 		
 	}
-	#else
-	// ft::map< int, std::string > m;
-	// for (int i = 0; i < 10; ++i) m[i];
-	// const	ft::map< int, std::string > con;
-	// ft::map< int, std::string >::const_iterator it = m.begin();
-		(void)argc;
-		(void)argv;
 
-	#endif
-}
-#endif
+// #endif

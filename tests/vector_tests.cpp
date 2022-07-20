@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 11:10:24 by ann               #+#    #+#             */
-/*   Updated: 2022/07/15 16:28:35 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/20 15:01:36 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #include <vector>
 #include <algorithm>
 
-#define	myAssert(expr) (static_cast <bool> (expr) ? void (0) : static_cast <void> (std::cout << "\e[31mFailed\e[0m\n"))
-#define DEGUB() (std::cout << "\e[33mDEBUGGING\e[0m\n")
+// #define	myAssert(expr) (static_cast <bool> (expr) ? void (0) : static_cast <void> (std::cout << "\e[31mFailed\e[0m\n"))
 
 void	test_accuracy()
 {
@@ -229,7 +228,7 @@ void	test_accuracy()
 		// mineRange.insert(mineRange.begin(), 15, 42);
 		// strdRange.insert(strdRange.begin(), 15, 42);
 
-		DEGUB();
+		DEBUG();
 		// mineRange.insert(mineRange.begin(), mine.begin(), mine.begin() + 6);
 		// strdRange.insert(strdRange.begin(), strd.begin(), strd.begin() + 6);
 
@@ -260,10 +259,10 @@ void	test_accuracy()
 		strdIns.insert(strdIns.begin() + 1, strd.begin(), strd.begin() + 3);
 
 	}
-	DEGUB();
+	DEBUG();
 }
 
-void	test_performance()
+static void	test_performance()
 {
 	int amount = 100000000;
 	std::cout << "\e[34mInsertion: (" << amount << " elements)\e[0m" << std::endl;
@@ -325,5 +324,5 @@ void	test_performance()
 void	test_vector()
 {
 	test_accuracy();
-	// test_performance();
+	test_performance();
 }

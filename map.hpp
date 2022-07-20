@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/19 14:45:21 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/20 17:12:42 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ namespace ft{
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
 		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>		iterator;
-		typedef	mapIterator<const key_type, const mapped_type, key_compare, allocator_type>		const_iterator;
+		typedef	constMapIterator<const key_type,  mapped_type, key_compare, allocator_type>		const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 		typedef	std::ptrdiff_t														difference_type;
@@ -101,9 +101,9 @@ namespace ft{
 
 		bool	amILeft(pointer _nod) {return _nod == _nod->_parent->_left;}
 
-		pointer	getMinimum(){ if (empty()) return NULL; pointer tmp = _root; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
+		pointer	getMinimum() const{ if (empty()) return NULL; pointer tmp = _root; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
-		pointer	getMaximum(){ if (empty()) return NULL; pointer tmp = _root; for (; tmp->_right; tmp = tmp->_right) {};	return tmp; }
+		pointer	getMaximum() const{ if (empty()) return NULL; pointer tmp = _root; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
 
 		pointer	getSubMinimum(pointer nod){ pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
@@ -222,7 +222,7 @@ namespace ft{
 				successor->_left = deleteMe->_left; /*linking the successor to the left subtree of deleteMe*/
 				deleteMe->_left->_parent = successor;
 			}
-			std::cout << "deleteMe = " << deleteMe->_info.first << std::endl;
+			// std::cout << "deleteMe = " << deleteMe->_info.first << std::endl;
 			del_node(deleteMe);
 			--_size;
 			return save;
@@ -357,7 +357,7 @@ namespace ft{
 			if (!tmp) return ;
 			pointer test = tmp;
 			int			balanceFactor;
-			std::cout << "the parent is node with key = " << tmp->_info.first << std::endl;
+			// std::cout << "the parent is node with key = " << tmp->_info.first << std::endl;
 			// std::cout << "the parent of the node = " << tmp->_parent->_info.first << std::endl;
 			while (tmp != NULL)
 			{
