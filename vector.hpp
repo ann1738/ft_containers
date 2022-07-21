@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/07/19 14:17:46 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/21 11:09:46 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 
 namespace ft
 {
-	// template <typename T> class vectorIterator;
-	// template <typename T> class const_vectorIterator;
 	template < typename T, typename _Alloc = std::allocator<T> > 
 	class	vector
 	{
