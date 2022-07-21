@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/21 18:26:51 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/21 18:58:47 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ namespace ft{
 		}
 
 		/* how do i make this const? */
-		// bool operator==( const mapIterator & rhs) {return !_myComp(this->it_start->_info, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
-		// bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
+		bool operator==( const mapIterator & rhs) {return !_myComp(this->it_start->_info, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
+		bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
 
 	private:
 		pointer	it_start;
@@ -129,10 +129,10 @@ namespace ft{
 
 	};
 	
-	template <typename Iter1, typename Iter2>
-	bool operator==(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base()->_info.first == rhs.base()->info.first;}
-	template <typename Iter1, typename Iter2>
-	bool operator!=(const Iter1 & lhs, const Iter2 & rhs) {return !(lhs == rhs);}
+	// template <typename Iter1, typename Iter2>
+	// bool operator==(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base()->_info.first == rhs.base()->info.first;}
+	// template <typename Iter1, typename Iter2>
+	// bool operator!=(const Iter1 & lhs, const Iter2 & rhs) {return !(lhs == rhs);}
 	
 	/* ignorant attempt at making random access iterator instead of bidirectional because i forgot to check the reference */
 

@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:52:38 by ann               #+#    #+#             */
-/*   Updated: 2022/07/20 15:54:47 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/21 11:30:21 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 static void	test_performance()
 {
-	int amount = 1000000;
+	int amount = 100000;
 	std::cout << "\e[34mInsertion: (" << amount << " elements)\e[0m" << std::endl;
 	{
 		std::cout << "ft::map:" << std::endl;

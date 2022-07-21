@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/21 16:30:58 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/21 18:28:54 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ namespace ft{
 	vectorIterator<T, _Alloc> operator+(typename vectorIterator<T, _Alloc>::difference_type n, const vectorIterator<T, _Alloc>& it){
 		return vectorIterator<T, _Alloc>(it + n);
 	}
-
 	template <typename Iter1, typename Iter2>
 	bool operator==(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() == rhs.base();}
 	template <typename Iter1, typename Iter2>

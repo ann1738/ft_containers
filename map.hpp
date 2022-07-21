@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/20 17:12:42 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/21 15:05:06 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,10 @@ namespace ft{
 		size_type		_size;
 		key_compare		_myComp;
 		allocator_type	_myAlloc;
-		pointer			_begin_node;
-		pointer			_end_node;
+
+	template <	class KeyI, class TI, class CompareI, class AllocI >
+	friend class mapIterator;
+
 		struct node{
 			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
 			value_type	_info;
@@ -269,24 +271,24 @@ namespace ft{
 			x->_height = 1 + max(getHeight(x->_left), getHeight(x->_right));
 			y->_height = 1 + max(getHeight(y->_left), getHeight(y->_right));
 		}
-	public:
-		size_type	pubGetHeight(const key_type & k){
-			pointer tmp = bst_find(k);
-			if (!tmp) return 0;
-			return (tmp->_height);				
-		}
+	// public:
+	// 	size_type	pubGetHeight(const key_type & k){
+	// 		pointer tmp = bst_find(k);
+	// 		if (!tmp) return 0;
+	// 		return (tmp->_height);				
+	// 	}
 	private:
-		pointer	findRootOfNewNode(const key_type & k){
-			pointer tmp = _root;
-			while (tmp != NULL)
-			{
-				if (_myComp(k, tmp->_info.first))
-					tmp = tmp->_left;
-				else
-					tmp = tmp->_right;
-			}
-			return tmp->_parent;
-		}
+		// pointer	findRootOfNewNode(const key_type & k){
+		// 	pointer tmp = _root;
+		// 	while (tmp != NULL)
+		// 	{
+		// 		if (_myComp(k, tmp->_info.first))
+		// 			tmp = tmp->_left;
+		// 		else
+		// 			tmp = tmp->_right;
+		// 	}
+		// 	return tmp->_parent;
+		// }
 
 		size_type	max(size_type a, size_type b) {return a > b ? a : b;}
 		
@@ -393,7 +395,14 @@ namespace ft{
 		/*			Constructors		*/
 		explicit map (const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type())
-						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){}
+						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){
+							// _begin_node = _myAlloc.allocate(1);
+							// _myAlloc.construct(_begin_node, node());
+							// _begin_node->_info = NULL;
+							// _end_node = _myAlloc.allocate(1);
+							// _myAlloc.construct(_end_node, node());
+							// _end_node->_info = NULL;
+						}
 
 		template <class InputIterator>
 		map (InputIterator first, InputIterator last,
@@ -462,6 +471,7 @@ namespace ft{
 			return ft::make_pair<iterator, bool>(iterator(check), true);
 		}
 
+		/*	Make this actually check the hint	*/
 		iterator insert (iterator position, const value_type& val)
 		{
 			static_cast<void>(position);
@@ -544,7 +554,7 @@ namespace ft{
 		}
 
 		iterator end(){
-			return (iterator(_root));
+			return (iterator(getMaximum()));
 		}
 
 		const_iterator end() const{

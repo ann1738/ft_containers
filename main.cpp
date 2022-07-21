@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/20 17:06:30 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/21 18:52:01 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 // #define TESTED_TYPE foo<int>
 // # define TESTED_TYPE std::string
 
-// # define ft std
+# define ft std
 # define TESTED_TYPE int
 # define TESTED_NAMESPACE ft
 #define DEGUB() (std::cout << "\e[33mDEBUGGING\e[0m\n")
@@ -72,16 +72,6 @@ std::ostream	&operator<<(std::ostream &o, foo<T> const &bar) {
 /**/
 
 
-
-
-
-// void	checkErase(TESTED_NAMESPACE::vector<TESTED_TYPE> const &vct,
-// 					TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator const &it)
-// {
-// 	static int i = 0;
-// 	std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
-// 	printSize(vct);
-// }
 #define _pair TESTED_NAMESPACE::pair
 
 #define T1 int
@@ -90,55 +80,55 @@ typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
 typedef TESTED_NAMESPACE::map<T1, T2>::iterator ft_iterator;
 typedef TESTED_NAMESPACE::map<T1, T2>::const_iterator ft_const_iterator;
 
-template <typename T>
-std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
-{
-	o << "key: " << iterator->first << " | value: " << iterator->second;
-	if (nl)
-		o << std::endl;
-	return ("");
-}
+// template <typename T>
+// std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
+// {
+// 	o << "key: " << iterator->first << " | value: " << iterator->second;
+// 	if (nl)
+// 		o << std::endl;
+// 	return ("");
+// }
 
 
-void	printSize(const TESTED_NAMESPACE::map<T1,T2> & cont)
-{
-	std::cout << "Size is " << cont.size() << std::endl; 
-	std::cout << "content is " << std::endl;
-	for (TESTED_NAMESPACE::map<T1, T2>::const_iterator it = cont.begin(); it != cont.end(); ++it)
-		std::cout << it->first << "->" << it->second << std::endl;
-}
+// void	printSize(const TESTED_NAMESPACE::map<T1,T2> & cont)
+// {
+// 	std::cout << "Size is " << cont.size() << std::endl; 
+// 	std::cout << "content is " << std::endl;
+// 	for (TESTED_NAMESPACE::map<T1, T2>::const_iterator it = cont.begin(); it != cont.end(); ++it)
+// 		std::cout << it->first << "->" << it->second << std::endl;
+// }
 
-static int iter = 0;
+// static int iter = 0;
 
-template <typename MAP>
-void	ft_bound(MAP &mp, const T1 &param)
-{
-	ft_iterator ite = mp.end(), it[2];
-	_pair<ft_iterator, ft_iterator> ft_range;
+// template <typename MAP>
+// void	ft_bound(MAP &mp, const T1 &param)
+// {
+// 	ft_iterator ite = mp.end(), it[2];
+// 	_pair<ft_iterator, ft_iterator> ft_range;
 
-	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-	std::cout << "with key [" << param << "]:" << std::endl;
-	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
-	ft_range = mp.equal_range(param);
-	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
-	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
-	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
-}
+// 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
+// 	std::cout << "with key [" << param << "]:" << std::endl;
+// 	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
+// 	ft_range = mp.equal_range(param);
+// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
+// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
+// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
+// }
 
-template <typename MAP>
-void	ft_const_bound(const MAP &mp, const T1 &param)
-{
-	ft_const_iterator ite = mp.end(), it[2];
-	_pair<ft_const_iterator, ft_const_iterator> ft_range;
+// template <typename MAP>
+// void	ft_const_bound(const MAP &mp, const T1 &param)
+// {
+// 	ft_const_iterator ite = mp.end(), it[2];
+// 	_pair<ft_const_iterator, ft_const_iterator> ft_range;
 
-	std::cout << "\t-- [" << iter++ << "] (const) --" << std::endl;
-	std::cout << "with key [" << param << "]:" << std::endl;
-	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
-	ft_range = mp.equal_range(param);
-	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
-	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
-	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
-}
+// 	std::cout << "\t-- [" << iter++ << "] (const) --" << std::endl;
+// 	std::cout << "with key [" << param << "]:" << std::endl;
+// 	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
+// 	ft_range = mp.equal_range(param);
+// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
+// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
+// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
+// }
 
 // int		main(void)
 // {
@@ -189,41 +179,70 @@ void	ft_const_bound(const MAP &mp, const T1 &param)
 // 	// assert(m3.max_size() == s3.max_size());
 // 	return (0);
 // }
-
-
+// #define ft std
+#include "set.hpp"
 // #if 1
 int main(int argc, char **argv)
 {
+	(void)argc;
+	(void)argv;
+	ft::set<int> my;
+	my.insert(3);
+	my.insert(21);
+	my.insert(32);
+	my.insert(15);
+	size_t i = 0;
+	for(ft::set<int>::iterator it = my.begin(); i < my.size(); ++it, ++i)
+	{
+		std::cout << *it << "\tcolor is "; my.printColor(*it); std::cout << std::endl;
+	}
+
+	// ft::map<int,int>::iterator i;
+	// i == i;
+	// i != i;
+		// ft::map<int, char> m; m[0]; m[1]; m [10];
+		// ft::map<int, char>::iterator it = m.begin();
+		// ft::map<int, char>::iterator ite = m.end();
+		// for(; ite != it; --ite)
+		// {
+		// 	if (ite != m.end())
+		// 		std::cout << it->first << std::endl;
+		// 	// ++it;
+		// }
+		// std::vector<int>::iterator it;
+		// it < it;
 	// #if TESTING_MODE
 	// {
-		if (argc != 2)
-		{
-			std::cout << "\e[31mInvalid Input\e[0m" << std::endl
-			<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
-			return 1;
-		}
-		std::string possible[] = {"vector", "map", "stack", "all"};
-		int	test_index = 0;
-		for (; test_index < 4 && argv[1] != possible[test_index]; ++test_index);
-		switch (test_index)
-		{
-		case 0: //vector
-			test_vector();
-			break;
-		case 1: //map
-			test_map();
-			break;
-		case 2: //stack
-			test_stack();
-			break;
-		case 3: //vector
-			//test_vector();
-			break;
-		default:
-			std::cout << "\e[31mInvalid Input\e[0m" << std::endl
-			<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
-			break;
-		}
+		// if (argc != 2)
+		// {
+		// 	std::cout << "\e[31mInvalid Input\e[0m" << std::endl
+		// 	<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
+		// 	return 1;
+		// }
+		// std::string possible[] = {"vector", "map", "stack", "all"};
+		// int	test_index = 0;
+		// for (; test_index < 4 && argv[1] != possible[test_index]; ++test_index);
+		// switch (test_index)
+		// {
+		// case 0: //vector
+		// 	test_vector();
+		// 	break;
+		// case 1: //map
+		// 	test_map();
+		// 	break;
+		// case 2: //stack
+		// 	test_stack();
+		// 	break;
+		// case 3: //vector
+		// 	//test_vector();
+		// 	break;
+		// default:
+		// 	std::cout << "\e[31mInvalid Input\e[0m" << std::endl
+		// 	<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
+		// 	break;
+		// }
+		
+
 		// std::vector<int>::iterator it;
 		// it.base
 		// std::map<int, char>::iterator it;
