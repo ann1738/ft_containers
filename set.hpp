@@ -6,12 +6,14 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/21 18:58:07 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/22 13:32:51 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SET_HPP
 # define SET_HPP
+
+# define RB_DEBUG 0
 
 #include <memory>
 #include "iterators/setIterator.hpp"
@@ -79,7 +81,7 @@ namespace ft
 			_myAlloc.deallocate(deleteMe, 1);
 		}
 
-		void	recolor(pointer _nod) {_nod->_color == RED ? _nod->_color = BLACK : _nod->_color = RED;};
+		void	recolor(pointer _nod) {if (RB_DEBUG) std::cout << "recolor: " << _nod->_info << std::endl; _nod->_color == RED ? _nod->_color = BLACK : _nod->_color = RED;};
 		
 		/*pointer can't be root*/
 		bool	amILeft(pointer _nod) {return _nod == _nod->_parent->_left;}
@@ -130,13 +132,22 @@ namespace ft
 		/*	otherwise, it returns NULL	*/
 		pointer	bst_find(const key_type & findMe) const{
 			pointer tmp = _root;
+			#if RB_DEBUG
+			size_type count = 0;
+			#endif
 			while (tmp != NULL && !(!_myComp(tmp->_info, findMe) && !_myComp(findMe, tmp->_info)))
 			{
 				if (_myComp(findMe, tmp->_info))
 					tmp = tmp->_left;
 				else
 					tmp = tmp->_right;
+				#if RB_DEBUG
+				++count;
+				#endif
 			}
+			#if RB_DEBUG
+			std::cout << "\e[36mbst_find(): number of operations (how many loops) to find the node is \e[0m" << count << std::endl;
+			#endif
 			return tmp;
 		}
 		
@@ -223,7 +234,7 @@ namespace ft
 
 		/*	rotation algorithms	*/
 		void	rotate_left(pointer x){
-			std::cout << "\e[35mrotate left " << x->_info << "\e[0m" << std::endl;
+			if (RB_DEBUG) std::cout << "\e[35mrotate left " << x->_info << "\e[0m" << std::endl;
 			pointer y = x->_right;
 			x->_right = y->_left;
 			if (x->_right)
@@ -240,7 +251,7 @@ namespace ft
 		}
 
 		void	rotate_right(pointer x){
-			std::cout << "\e[35mrotate right " << x->_info << "\e[0m" << std::endl;
+			if (RB_DEBUG) std::cout << "\e[35mrotate right " << x->_info << "\e[0m" << std::endl;
 			pointer y = x->_left;
 			x->_left = y->_right;
 			if (y->_right)
@@ -261,13 +272,15 @@ namespace ft
 			/* base condition */
 			if (newNode == _root || newNode->_parent->_color == BLACK) return ;
 			/**/
-			pointer	aunt = amILeft(newNode->_parent) ? newNode->_parent->_right : newNode->_parent->_left; //check
+			pointer	aunt = amILeft(newNode->_parent) ? newNode->_parent->_parent->_right : newNode->_parent->_parent->_left; //check
+			if (RB_DEBUG && aunt) std::cout << "aunt is " << aunt->_info << std::endl; 
 			if (!aunt || aunt->_color == BLACK)
 			{
+				if (RB_DEBUG)
+					std::cout << "aunt is \e[30mBLACK\e[0m" << std::endl; 
 				if (!amILeft(newNode->_parent) && !amILeft(newNode)) /* R R */
 				{
-					std::cout << "R R --- " << newNode->_info << std::endl;
-					std::cout << "recolor both " << newNode->_parent->_info << " and " << newNode->_parent->_parent->_info << std::endl;
+					if (RB_DEBUG) std::cout << "R R" << std::endl;
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
@@ -275,8 +288,7 @@ namespace ft
 				}
 				else if (amILeft(newNode->_parent) && amILeft(newNode)) /* L L */ 
 				{
-					std::cout << "L L --- " << newNode->_info << std::endl;
-					std::cout << "recolor both " << newNode->_parent->_info << " and " << newNode->_parent->_parent->_info << std::endl;
+					if (RB_DEBUG) std::cout << "L L" << std::endl;
 					recolor(newNode->_parent);
 					recolor(newNode->_parent->_parent);
 
@@ -284,31 +296,28 @@ namespace ft
 				}
 				else if (!amILeft(newNode->_parent) && amILeft(newNode)) /* R L */
 				{
-					std::cout << "R L --- " << newNode->_info << std::endl;
+					if (RB_DEBUG) std::cout << "R L" << std::endl;
 					rotate_right(newNode->_parent);
 
-					std::cout << "recolor both " << newNode->_parent->_info << " and " << newNode->_parent->_parent->_info << std::endl;
+					recolor(newNode);
 					recolor(newNode->_parent);
-					recolor(newNode->_parent->_parent);
 
-					rotate_left(newNode->_parent->_parent);					
+					rotate_left(newNode->_parent);					
 				}
 				else// (amILeft(newNode->_parent) && !amILeft(newNode)) /* L R */
 				{
-					std::cout << "L R --- " << newNode->_info << std::endl;
+					if (RB_DEBUG) std::cout << "L R" << std::endl;
 					rotate_left(newNode->_parent);
 
-					std::cout << "recolor both " << newNode->_parent->_info << " and " << newNode->_parent->_parent->_info << std::endl;
+					recolor(newNode);
 					recolor(newNode->_parent);
-					recolor(newNode->_parent->_parent);
 
-					rotate_right(newNode->_parent->_parent);	
+					rotate_right(newNode->_parent);	
 				}	
 			}
 			else /* aunt is RED */
 			{
-				std::cout << "new node is " << newNode->_info << std::endl;
-				std::cout << "\e[31mAUNT IS REDDDD .. rb recoloring " << newNode->_parent->_parent->_info << " recolored, " << aunt->_info << " recolored, " << newNode->_parent->_info << " recolored" << "\e[0m" << std::endl;
+				if (RB_DEBUG) std::cout << "aunt is \e[31mRED\e[0m" << std::endl; 
 				rb_recoloring(newNode->_parent->_parent, aunt, newNode->_parent);
 			}
 		}
@@ -431,6 +440,8 @@ namespace ft
 
 		/*	assuming key doesn't exist already	*/
 		pointer	rb_insert(const value_type& val){
+			if (RB_DEBUG)
+				std::cout << "\e[35m***************************** rb insert of " << val << "\e[0m" << std::endl;
 			/* bst insertion */
 			pointer		newNode = bst_insert(val);
 			
@@ -440,6 +451,7 @@ namespace ft
 			/* if parent of the inserted node is black */
 			if (newNode->_parent->_color == BLACK) return newNode;
 
+			/* if parent of the inserted node is red */
 			rotate_n_recolor(newNode);
 			return newNode;
 		}
@@ -478,6 +490,18 @@ namespace ft
 		}
 		
 		/* !!! remove this !!! */
+		void	printColorAndParent(const key_type & k){
+			pointer tmp = bst_find(k);
+			if (tmp->_color == RED)
+				std::cout << "\e[31mRED\e[0m";
+			else
+				std::cout << "\e[30mBLACK\e[0m";
+			if (tmp->_parent)
+				std::cout << "\e[0m with parent\e[32m\t" << tmp->_parent->_info << "\e[0m\n";
+			else
+				std::cout << "\e[0m with no parent\t\e[32m(ROOT)" << "\e[0m\n";
+				
+		}
 		void	printColor(const key_type & k){
 			pointer tmp = bst_find(k);
 			if (tmp->_color == RED)
@@ -521,6 +545,14 @@ namespace ft
 			return _myAlloc.max_size();
 		}
 		
+		/*	Operations	*/
+		iterator find (const value_type& val) const{
+			pointer tmp = bst_find(val);
+			if (!bst_find) return end();
+			return iterator(tmp);
+		}
+		
+
 	};
 
 } // namespace ft
