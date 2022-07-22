@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/22 13:32:51 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/22 13:46:09 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,30 +329,6 @@ namespace ft
 				recolor(gramma);
 			rotate_n_recolor(gramma);
 		}
-
-		// void	rb_auntIsRed_recolor(pointer gramma, pointer aunt, pointer parent){
-		// 	parent->_color = BLACK;
-		// 	aunt->_color = BLACK;
-		// 	if (gramma != _root)
-		// 		gramma->_color = red;
-		// }
-
-
-		/* - nod and nod->_parent should not be null */
-		// void	rb_auntIsRed(pointer nod){
-		// 		pointer	parent = nod->_parent;
-		// 		pointer gramma = nod->_parent;
-		// 		pointer	aunt = amILeft(nod->_parent) ? nod->_parent->_right : nod->_parent->_left;
-
-		// 		while (1)
-		// 		{
-		// 			recolor(parent); //should change color to black
-		// 			recolor(aunt); //should change color to black
-		// 			if (gramma != _root)
-		// 				recolor(gramma); //should change color to red
-					
-		// 		}
-		// }
 	
 		/*	implement copy constructor and copy assignment before testing this	*/
 		void	deleteNodeFromTree(pointer deleteMyExistance){
