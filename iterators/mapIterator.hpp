@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/21 18:58:47 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/22 11:54:02 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ namespace ft{
 		}
 
 		/* how do i make this const? */
-		bool operator==( const mapIterator & rhs) {return !_myComp(this->it_start->_info, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
+		bool operator==(  mapIterator & rhs) {return !_myComp(this->it_start->_info.first, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
 		bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
 
 	private:

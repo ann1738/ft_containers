@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/21 18:52:01 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/22 13:54:00 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,15 +187,31 @@ int main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	ft::set<int> my;
-	my.insert(3);
-	my.insert(21);
-	my.insert(32);
-	my.insert(15);
-	size_t i = 0;
-	for(ft::set<int>::iterator it = my.begin(); i < my.size(); ++it, ++i)
+	int amount = 10000000;
+	for (int i = 0; i < amount; ++i) my.insert(i);
+
 	{
-		std::cout << *it << "\tcolor is "; my.printColor(*it); std::cout << std::endl;
+		timer T;
+		my.find(amount - 1);
 	}
+	{
+		timer T;
+		my.find(amount / 10);
+	}
+	{
+		timer T;
+		my.find(amount / 5);
+	}
+	{
+		timer T;
+		my.find(amount / 7);
+	}
+	// size_t i = 0;
+	// std::cout << std::endl << "\e[33mBEGINNING OF MAIN()\e[0m" << std::endl;
+	// for(ft::set<int>::iterator it = my.begin(); i < my.size(); ++it, ++i)
+	// {
+	// 	std::cout << *it << "\tcolor is "; my.printColorAndParent(*it); std::cout << std::endl;
+	// }
 
 	// ft::map<int,int>::iterator i;
 	// i == i;

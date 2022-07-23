@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/22 13:46:09 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/23 18:54:02 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,45 +191,56 @@ namespace ft
 				replacement->_parent = toBeReplaced->_parent;
 		}
 		
+		/*	creates a nill node with a link to the parent (but the parent is not linked to it) */
+		pointer	createNillNode(){
+			pointer tmp = init_node();
+			tmp->_color = BLACK;
+			return tmp;
+		}
+
+		bool	isNillNode(pointer amINillNode){
+			return amINillNode->_right = amINillNode;
+		}
+
 		/*	- decrements _size	*/
-		pointer	bst_delete(pointer deleteMe){
+		/*	this method is modified to assist rb tree:	*/
+		/*		- it will return the replacement node (which can be nill node)	*/
+		/*		- in the case of no children for the deleted node, then a nill_node is created, */
+		/*		this will be deleted when the deletion is done (thus this should not be used by */
+		/*		itself as it will leak) 														*/
+		pointer	bst_delete_modified(pointer deleteMe){
 			if (!deleteMe) return NULL; /*checks if it exists*/
-			pointer save = deleteMe->_parent;
+			pointer replacementNode = 0;
 	
-			if (!deleteMe->_left && !deleteMe->_right)
+			if (deleteMe->_left && deleteMe->_right) /* case 3: two children */
 			{
-				save = deleteMe->_parent;
-				replaceNodePos(deleteMe, deleteMe->_right);
+				pointer successor = getSubMinimum(deleteMe->_right);
+				deleteMe->_info = successor->_info; //copy the data of the 
+				// now successor needs to be deleted
+				ft::myswap(successor, deleteMe);
+				// now deleteMe is what is to be deleted
 			}
-			else if (!deleteMe->_left) /* case 1: no child	OR	case 2: one right child */
+			/* fall through */
+			if (!deleteMe->_left && !deleteMe->_right) /* case 1: no child */
 			{
-				save = deleteMe->_right;
+				replacementNode = createNillNode();
+				replaceNodePos(deleteMe, replacementNode);
+				replacementNode->_right = replacementNode; /* marker for identification (i can put this in createNillNode()) */
+			}
+			else if (!deleteMe->_left) /* case 2: one right child */
+			{
+				replacementNode = deleteMe->_right;
 				replaceNodePos(deleteMe, deleteMe->_right);
 			}
 			else if (!deleteMe->_right) /* case 2: one left child */
 			{
-				save = deleteMe->_left;
+				replacementNode = deleteMe->_left;
 				replaceNodePos(deleteMe, deleteMe->_left);
-			}
-			else /* case 3: two children */
-			{
-				pointer successor = getSubMinimum(deleteMe->_right);
-				save = successor;
-				if (successor->_parent != deleteMe) /*checking whether the successor is a direct child of deleteMe*/
-				{
-					save = successor->_parent;
-					replaceNodePos(successor, successor->_right); /* the right subtree of successor replaces the position of successor (to preserve that subtree)*/
-					successor->_right = deleteMe->_right; /*linking the successor to the right subtree of deleteMe*/
-					deleteMe->_right->_parent = successor;
-				}
-				replaceNodePos(deleteMe, successor); /*successor replacing the position of deleteMe*/
-				successor->_left = deleteMe->_left; /*linking the successor to the left subtree of deleteMe*/
-				deleteMe->_left->_parent = successor;
 			}
 			std::cout << "deleteMe = " << deleteMe->_info << std::endl;
 			del_node(deleteMe);
 			--_size;
-			return save;
+			return replacementNode;
 		}
 
 		/*	rotation algorithms	*/
@@ -329,6 +340,61 @@ namespace ft
 				recolor(gramma);
 			rotate_n_recolor(gramma);
 		}
+	
+		bool	getColor(pointer _node){
+			return (_node && _node->_red ? RED : BLACK);
+		}
+
+		/* - assuming it exists */
+		/* - note for future: i could make this function take a pointer to node that should optimize the code (less bst_find() calls) */
+		void	rb_delete(pointer deleteMe){
+			/* if deleteMe node is red, then it is a simple case */
+			bool	save_deleteMe_color = deleteMe->_color;
+			if (deleteMe->_left && deleteMe->_right) save_deleteMe_color = getSubMinimum(deleteMe->_right)->_color; /* can be optimized */
+			pointer replacementNode = bst_delete_modified(deleteMe);
+
+			/* if the deleted node was red, we can simply remove it */
+			if (save_deleteMe_color == RED) return ; /* maybe we need to check if createNillNode was used before returning*/
+
+			/* if deleted node is black, we have to adjust the tree to maintain rb properties */
+
+			/*find the sibling*/
+			sibling = amILeft(replacementNode) ? replacementNode->_right : replacementNode->_left;
+
+			/*	if the deleted node is black, we have six cases:	*/
+			/*		case 1: deleteMe is _root																					*/
+			/*		case 2: sibling of deleteMe is red																			*/
+			/*		case 3: sibling of deleteMe is black, both sibling's children are black, parent is red						*/
+			/*		case 4: sibling of deleteMe is black, both sibling's children are black, parent is black					*/
+			/*		case 5: sibling of deleteMe is black, at least one of sibling's children is red, sibling->_right is black	*/
+			/*		case 6: sibling of deleteMe is black, at least one of sibling's children is red, sibling->_right is red		*/
+
+			/* if sibling is black and (at least) one of the sibling children is red */
+			if (sibling->_color == BLACK && (getColor(sibling->_left) == RED || getColor(sibling->_right) == RED))
+			{
+				pointer redChild = getColor(sibling->_left) == RED ? sibling->_left : sibling->_right;
+				if (amILeft(sibling) && amILeft(redChild)) /*L L*/
+				{
+					
+				}
+			}
+			/* sibling is black and both children are black*/
+			if (sibling->_color == BLACK && (getColor(sibling->_left) == BLACK && getColor(sibling->_right) == BLACK))
+			{
+				
+			}
+
+
+			if (isNillNode(replacementNode))
+			{
+				replaceNodePos(replacementNode, NULL);
+				del_node(replacementNode);
+			}
+
+			
+			
+		}
+
 	
 		/*	implement copy constructor and copy assignment before testing this	*/
 		void	deleteNodeFromTree(pointer deleteMyExistance){
@@ -464,6 +530,15 @@ namespace ft
 			check = rb_insert(val);
 			return ft::make_pair<iterator, bool>(iterator(check), true);
 		}
+		
+		/* !!!  NOT DONE !!! */
+    	// void erase (iterator position);
+		
+		/* !!!  NOT DONE !!! */
+		size_type erase (const value_type& val); // <--- DO THIS!
+		
+		/* !!!  NOT DONE !!! */
+     	// void erase (iterator first, iterator last);
 		
 		/* !!! remove this !!! */
 		void	printColorAndParent(const key_type & k){
