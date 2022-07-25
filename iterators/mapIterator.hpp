@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/22 11:54:02 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 11:50:41 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,11 @@ namespace ft{
 		typedef typename ft::map<Key, T, Compare, Alloc>::const_reference		const_reference;
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
 
-		mapIterator(void) : it_start(0) {_myComp = key_compare();}
-		mapIterator(const pointer temp) : it_start(temp) {_myComp = key_compare();}
-		mapIterator(mapIterator const & iter) : it_start(iter.it_start) {}//account for _myComp
+	private:
+		mapIterator(const pointer temp, const pointer small, const pointer large) : it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
+	public:	
+		mapIterator(void) : it_start(0), _smallest_node(0), _largest_node(0), _myComp(0){}
+		mapIterator(mapIterator const & iter) : it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}//account for _myComp
 		mapIterator & operator=(mapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
 		~mapIterator() {}
 
@@ -70,27 +72,30 @@ namespace ft{
 		}
 
 		mapIterator operator++(void){
-			this->it_start = getNextMaximum(this->it_start);
+			if (it_start == NULL) it_start = _smallest_node;
+			else this->it_start = getNextMaximum(this->it_start);
 			// std::cout << "getNextMaximum -> " << this->it_start->_info.first << std::endl;
 			return (*this);
 		}
 
 		mapIterator operator++(int){
 			mapIterator temp(this->it_start);
-			
-			this->it_start = getNextMaximum(this->it_start);
+			if (it_start == NULL) it_start = _smallest_node;
+			else this->it_start = getNextMaximum(this->it_start);
 			return (temp);
 		}
 
 		mapIterator operator--(void){
-			this->it_start = getNextMinimum(this->it_start);
+			if (it_start == NULL) it_start = _largest_node;
+			else this->it_start = getNextMinimum(this->it_start);
 			return (*this);
 		}
 
 		mapIterator operator--(int){
 			mapIterator temp(this->it_start);
 			/*add a line to make it bidirectional*/
-			this->it_start = getNextMinimum(this->it_start);
+			if (it_start == NULL) it_start = _largest_node;
+			else this->it_start = getNextMinimum(this->it_start);
 			return (temp);
 		}
 
@@ -100,6 +105,8 @@ namespace ft{
 
 	private:
 		pointer	it_start;
+		pointer	_smallest_node;
+		pointer	_largest_node;
 		key_compare _myComp;
 		
 
@@ -195,7 +202,9 @@ namespace ft{
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
 
 		constMapIterator(void) : it_start(0) {_myComp = key_compare();}
+	private:c
 		constMapIterator(const pointer temp) : it_start(temp) {_myComp = key_compare();}
+	public:	
 		constMapIterator(constMapIterator const & iter) : it_start(iter.it_start) {}
 		constMapIterator & operator=(constMapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
 		~constMapIterator() {}
