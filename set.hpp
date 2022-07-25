@@ -6,14 +6,20 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/23 18:54:02 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 11:31:03 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SET_HPP
 # define SET_HPP
 
-# define RB_DEBUG 0
+# define RED 0
+# define BLACK 1
+
+# define RB_DEBUG 1
+# define RB_DEL_DEBUG 1
+# define BST_FIND_DEBUG 0
+# define BST_DEL_DEBUG 1
 
 #include <memory>
 #include "iterators/setIterator.hpp"
@@ -126,14 +132,22 @@ namespace ft
 			return nod->_parent;				
 		}
 
+		void	clear_tree(pointer _node){
+			if (!_node) return ;
+			if (_node->_left)
+				clear_tree(_node->_left);
+			if (_node->_right)
+				clear_tree(_node->_right);
+			del_node(_node);
+		}
 		/*	BST ALGORITHMS	*/
 
 		/*	finds the node with the corresponding key if it exists.. if the key exists it returns a pointer to it	*/
 		/*	otherwise, it returns NULL	*/
 		pointer	bst_find(const key_type & findMe) const{
 			pointer tmp = _root;
-			#if RB_DEBUG
-			size_type count = 0;
+			#if BST_FIND_DEBUG
+				size_type count = 0;
 			#endif
 			while (tmp != NULL && !(!_myComp(tmp->_info, findMe) && !_myComp(findMe, tmp->_info)))
 			{
@@ -141,12 +155,12 @@ namespace ft
 					tmp = tmp->_left;
 				else
 					tmp = tmp->_right;
-				#if RB_DEBUG
+				#if BST_FIND_DEBUG
 				++count;
 				#endif
 			}
-			#if RB_DEBUG
-			std::cout << "\e[36mbst_find(): number of operations (how many loops) to find the node is \e[0m" << count << std::endl;
+			#if BST_FIND_DEBUG
+				std::cout << "\e[36mbst_find(): number of operations (how many loops) to find the node is \e[0m" << count << std::endl;
 			#endif
 			return tmp;
 		}
@@ -195,11 +209,12 @@ namespace ft
 		pointer	createNillNode(){
 			pointer tmp = init_node();
 			tmp->_color = BLACK;
+			tmp->_right = tmp; /* marker for identification (i can put this in createNillNode()) */
 			return tmp;
 		}
 
 		bool	isNillNode(pointer amINillNode){
-			return amINillNode->_right = amINillNode;
+			return amINillNode->_right == amINillNode;
 		}
 
 		/*	- decrements _size	*/
@@ -214,30 +229,42 @@ namespace ft
 	
 			if (deleteMe->_left && deleteMe->_right) /* case 3: two children */
 			{
+			// std::cout << "\e[31mbst_delete_modified: successor delete\e[0m" << std::endl;
 				pointer successor = getSubMinimum(deleteMe->_right);
 				deleteMe->_info = successor->_info; //copy the data of the 
 				// now successor needs to be deleted
+			// std::cout << "in order successor is " << successor->_info << std::endl;
 				ft::myswap(successor, deleteMe);
+			// std::cout << "AFTER SWAP: delete_me is " << deleteMe->_info << std::endl;
 				// now deleteMe is what is to be deleted
 			}
 			/* fall through */
 			if (!deleteMe->_left && !deleteMe->_right) /* case 1: no child */
 			{
+				#if BST_DEL_DEBUG
+				std::cout << "\e[31mbst_delete_modified: no child - nill node created\e[0m" << std::endl;
+				#endif
+			// std::cout << "\e[31mbst_delete_modified: no child - nill node created\e[0m" << std::endl;
 				replacementNode = createNillNode();
 				replaceNodePos(deleteMe, replacementNode);
-				replacementNode->_right = replacementNode; /* marker for identification (i can put this in createNillNode()) */
+				// replacementNode->_right = replacementNode; /* marker for identification (i can put this in createNillNode()) */
 			}
 			else if (!deleteMe->_left) /* case 2: one right child */
 			{
+				#if BST_DEL_DEBUG
+				std::cout << "\e[31mbst_delete_modified: one child (right) \e[0m" << std::endl;
+				#endif
 				replacementNode = deleteMe->_right;
 				replaceNodePos(deleteMe, deleteMe->_right);
 			}
 			else if (!deleteMe->_right) /* case 2: one left child */
 			{
+				#if BST_DEL_DEBUG
+				std::cout << "\e[31mbst_delete_modified: one child (left) \e[0m" << std::endl;
+				#endif
 				replacementNode = deleteMe->_left;
 				replaceNodePos(deleteMe, deleteMe->_left);
 			}
-			std::cout << "deleteMe = " << deleteMe->_info << std::endl;
 			del_node(deleteMe);
 			--_size;
 			return replacementNode;
@@ -245,7 +272,9 @@ namespace ft
 
 		/*	rotation algorithms	*/
 		void	rotate_left(pointer x){
-			if (RB_DEBUG) std::cout << "\e[35mrotate left " << x->_info << "\e[0m" << std::endl;
+			# if RB_DEBUG
+			std::cout << "\e[35mrotate left " << x->_info << "\e[0m" << std::endl;
+			# endif
 			pointer y = x->_right;
 			x->_right = y->_left;
 			if (x->_right)
@@ -262,7 +291,9 @@ namespace ft
 		}
 
 		void	rotate_right(pointer x){
-			if (RB_DEBUG) std::cout << "\e[35mrotate right " << x->_info << "\e[0m" << std::endl;
+			# if RB_DEBUG
+			std::cout << "\e[35mrotate right " << x->_info << "\e[0m" << std::endl;
+			# endif
 			pointer y = x->_left;
 			x->_left = y->_right;
 			if (y->_right)
@@ -342,24 +373,72 @@ namespace ft
 		}
 	
 		bool	getColor(pointer _node){
-			return (_node && _node->_red ? RED : BLACK);
+			return (_node && _node->_color == RED ? RED : BLACK);
+		}
+
+		void	changeColor(pointer _node, bool color){
+			_node->_color = color;
+			#if RB_DEL_DEBUG
+			std::cout << "recolor " << _node->_info << " to ";
+			if (color == RED) std::cout << "\e[31mred\e[0m" << std::endl;
+			else std::cout << "\e[30mblack\e[0m" << std::endl;
+			# endif
+		}
+
+		void	deallocateIfNillNode(pointer _node){
+			if (isNillNode(_node))
+			{
+				#if RB_DEL_DEBUG
+				std::cout << "\e[31mDetected Nill Node\e[0m" << std::endl;
+				#endif
+				replaceNodePos(_node, NULL);
+				del_node(_node);
+			}
 		}
 
 		/* - assuming it exists */
-		/* - note for future: i could make this function take a pointer to node that should optimize the code (less bst_find() calls) */
 		void	rb_delete(pointer deleteMe){
+			#if RB_DEL_DEBUG
+			std::cout << "\e[31m************************************rb delete of " << deleteMe->_info << "\e[0m" << std::endl;
+			#endif
 			/* if deleteMe node is red, then it is a simple case */
 			bool	save_deleteMe_color = deleteMe->_color;
+
 			if (deleteMe->_left && deleteMe->_right) save_deleteMe_color = getSubMinimum(deleteMe->_right)->_color; /* can be optimized */
 			pointer replacementNode = bst_delete_modified(deleteMe);
 
 			/* if the deleted node was red, we can simply remove it */
-			if (save_deleteMe_color == RED) return ; /* maybe we need to check if createNillNode was used before returning*/
+			if (save_deleteMe_color == RED) /* maybe we need to check if createNillNode was used before returning*/
+			{
+				#if RB_DEL_DEBUG
+				std::cout << "\e[34msimple case: deleted node is RED\e[0m" << std::endl;
+				#endif
+				deallocateIfNillNode(replacementNode);
+				return ;
+			}	
 
 			/* if deleted node is black, we have to adjust the tree to maintain rb properties */
 
+		while (1)
+		{
+			/*		case 1: deleteMe is _root																					*/
+			if (replacementNode == _root)
+			{
+				#if RB_DEL_DEBUG
+				std::cout << "\e[34mCase 1 detected (deleted node is the root)\e[0m" << std::endl;
+				#endif
+				changeColor(replacementNode, BLACK);
+				return ;
+			}
+
 			/*find the sibling*/
-			sibling = amILeft(replacementNode) ? replacementNode->_right : replacementNode->_left;
+			pointer sibling = amILeft(replacementNode) ? replacementNode->_parent->_right : replacementNode->_parent->_left;
+
+			#if RB_DEL_DEBUG
+			if (replacementNode) std::cout << "replacementNode is " << replacementNode->_info << std::endl;
+			if (sibling) std::cout << "sibling is " << sibling->_info << std::endl;
+			else std::cout << "sibling is " << "\e[31mNULL\e[0m" << std::endl;
+			#endif
 
 			/*	if the deleted node is black, we have six cases:	*/
 			/*		case 1: deleteMe is _root																					*/
@@ -369,113 +448,107 @@ namespace ft
 			/*		case 5: sibling of deleteMe is black, at least one of sibling's children is red, sibling->_right is black	*/
 			/*		case 6: sibling of deleteMe is black, at least one of sibling's children is red, sibling->_right is red		*/
 
-			/* if sibling is black and (at least) one of the sibling children is red */
-			if (sibling->_color == BLACK && (getColor(sibling->_left) == RED || getColor(sibling->_right) == RED))
+			/*	case 1 is above	*/
+
+			/*		case 2: sibling of deleteMe is red																			*/
+			if (getColor(sibling) == RED)
 			{
-				pointer redChild = getColor(sibling->_left) == RED ? sibling->_left : sibling->_right;
-				if (amILeft(sibling) && amILeft(redChild)) /*L L*/
+				#if RB_DEL_DEBUG
+				std::cout << "\e[34mCase 2 detected (sibling is red)\e[0m" << std::endl;
+				#endif
+				changeColor(sibling, BLACK);
+				changeColor(sibling->_parent, RED);
+				if (!amILeft(sibling)) /*the deleted node is on the left*/
+					rotate_left(sibling->_parent);
+				else
+					rotate_right(sibling->_parent);
+				sibling = amILeft(replacementNode) ? replacementNode->_parent->_right : replacementNode->_parent->_left; /* update the sibling after the rotation */
+			}
+
+			/* FALLTHROUGH	*/
+
+			/*		case 3: sibling of deleteMe is black, both sibling's children are black, parent is red						*/
+			/*		case 4: sibling of deleteMe is black, both sibling's children are black, parent is black					*/
+			if (getColor(sibling) == BLACK && (getColor(sibling->_left) == BLACK && getColor(sibling->_right) == BLACK))
+			{
+				changeColor(sibling, RED);
+				if (getColor(sibling->_parent) == RED)
 				{
-					
+					#if RB_DEL_DEBUG
+					std::cout << "\e[34mCase 3 detected (sibling is black with two black children -- parent is red)\e[0m" << std::endl;
+					#endif	
+					changeColor(sibling->_parent, BLACK);
+				}
+				else
+				{
+					#if RB_DEL_DEBUG
+					std::cout << "\e[34mCase 4 detected (sibling is black with two black children -- parent is black)\e[0m" << std::endl;
+					#endif
+					pointer save = replacementNode->_parent;
+					deallocateIfNillNode(replacementNode);
+					replacementNode = save;
+					continue ;
 				}
 			}
-			/* sibling is black and both children are black*/
-			if (sibling->_color == BLACK && (getColor(sibling->_left) == BLACK && getColor(sibling->_right) == BLACK))
-			{
-				
-			}
-
-
-			if (isNillNode(replacementNode))
-			{
-				replaceNodePos(replacementNode, NULL);
-				del_node(replacementNode);
-			}
-
-			
-			
-		}
-
-	
-		/*	implement copy constructor and copy assignment before testing this	*/
-		void	deleteNodeFromTree(pointer deleteMyExistance){
-			pointer y = deleteMyExistance;
-			bool saveColor = deleteMyExistance->_color;
-			pointer x;
-			if (!deleteMyExistance->_left)
-			{
-				x = deleteMyExistance->_right;
-				replaceNodePos(deleteMyExistance, deleteMyExistance->_right);
-			}
-			else if (!deleteMyExistance->_right)
-			{
-				x = deleteMyExistance->_left;
-				replaceNodePos(deleteMyExistance, deleteMyExistance->_left);
-			}
+			/*		case 5: sibling of deleteMe is black, at least one of sibling's children is red, outer nephew (the sibling's child that is opposite to direction of the deleted node) is black	*/
+			/*		case 6: sibling of deleteMe is black, at least one of sibling's children is red, outer nephew is red		*/
 			else
 			{
-				y = getSubMinimum(deleteMyExistance->_right);
-				saveColor = y->_color;
-				x = y->_right;
-				if (y->_parent == deleteMyExistance) /* if y is a child of node to be deleted */
-					x->_parent = y;
-				else
+				/*	case 5	*/
+				if (amILeft(replacementNode) && getColor(sibling->_right) == BLACK) /* right child of the sibling is black */
 				{
-					replaceNodePos(y, y->_right);
-					y->_right = deleteMyExistance->_right;
-					y->_right->_parent = y;
-				}
-				replaceNodePos(deleteMyExistance, y);
-				y->_left = deleteMyExistance->_left;
-				y->_left->_parent = y;
-				y->_color = deleteMyExistance->_color;
-			}
-			if (saveColor ==  BLACK)
-				fixDelete(x);
-			--_size;
-		}
+					#if RB_DEL_DEBUG
+					std::cout << "\e[34mCase 5 detected (sibling is black with at least one red child -- outer nephew is black)\e[0m" << std::endl;
+					#endif
+					changeColor(sibling, RED);
+					changeColor(sibling->_left, BLACK);
+					rotate_right(sibling);
 
-		void	fixDelete(pointer x){
-			pointer w;
-			while (x != _root && x->_color == BLACK)
-			{
-				if (amILeft(x))
+					sibling = amILeft(replacementNode) ? replacementNode->_parent->_right : replacementNode->_parent->_left;
+				}
+				else if (!amILeft(replacementNode) && getColor(sibling->_left) == BLACK)
 				{
-					w = x->_parent->_right; //aunt of x
-					if (w->_color == RED) //case 1
-					{
-						w->_color = BLACK;
-						w->_parent->_color = RED;
-						rotate_left(x->_parent);
-						w = x->_parent->_right; //update aunt of x
-					}
-					if ((!w->_left || w->_left->_color == BLACK) && (!w->_right || w->_right->_color == BLACK)) //case 2
-					{
-						w->_color = RED;
-						x = x->_parent;
-					}
-					else //case 3 or 4
-					{
-						if (w->_right->_color == BLACK) //case 3
-						{
-							w->_left->_color = BLACK;
-							w->_color = RED;
-							rotate_right(w);
-							w = x->_parent->_right;
-						}
-						//case 4
-						w->_color = x->_right->_color;
-						w->_parent->_color = BLACK;
-						w->_right->_color = RED;
-						rotate_left(x->_parent);
-						x = _root;
-					}
+					#if RB_DEL_DEBUG
+					std::cout << "\e[34mCase 5 detected (sibling is black with at least one red child -- outer nephew is black)\e[0m" << std::endl;
+					#endif
+					changeColor(sibling, RED);
+					changeColor(sibling->_right, BLACK);
+					rotate_left(sibling);
+					sibling = amILeft(replacementNode) ? replacementNode->_parent->_right : replacementNode->_parent->_left;
+				}
+
+				/*	FALL THROUGH */
+
+				/*	case 6	*/
+				#if RB_DEL_DEBUG
+				std::cout << "\e[34mCase 6 detected (sibling is black with at least one red child -- outer nephew is red)\e[0m" << std::endl;
+				#endif
+				changeColor(sibling, getColor(sibling->_parent)); /*recoloring the new sibling with the its parent's color*/
+				changeColor(sibling->_parent, BLACK);
+				if (amILeft(replacementNode))
+				{
+					changeColor(sibling->_right, BLACK);
+					rotate_left(sibling->_parent);
 				}
 				else
 				{
-					
+					changeColor(sibling->_left, BLACK);
+					rotate_right(sibling->_parent);
 				}
 			}
-			x->_color = BLACK;
+			break ;
+			// if (isNillNode(replacementNode))
+			// {
+			// 	#if RB_DEL_DEBUG
+			// 	std::cout << "\e[31mDetected Nill Node\e[0m" << std::endl;
+			// 	#endif
+			// 	replaceNodePos(replacementNode, NULL);
+			// 	del_node(replacementNode);
+			// }
+			}
+			
+			deallocateIfNillNode(replacementNode);
+
 		}
 		
 		/*	Red-Black Tree Algorithms	*/
@@ -516,7 +589,7 @@ namespace ft
 
 		/*		Destructor		*/
 		~set(){
-			
+			clear();
 		}
 		
 		/*		Copy Assignment Operator		*/
@@ -532,16 +605,29 @@ namespace ft
 		}
 		
 		/* !!!  NOT DONE !!! */
+		// iterator insert (iterator position, const value_type& val);
+
+		/* !!!  NOT DONE !!! */
+		// template <class InputIterator>
+  		// void insert (InputIterator first, InputIterator last);
+		
+		/* !!!  NOT DONE !!! */
     	// void erase (iterator position);
 		
 		/* !!!  NOT DONE !!! */
-		size_type erase (const value_type& val); // <--- DO THIS!
+		size_type erase (const value_type& val){
+			pointer check = bst_find(val);
+			if (!check) return 0;
+			rb_delete(check);
+			return 1;
+		}
 		
 		/* !!!  NOT DONE !!! */
      	// void erase (iterator first, iterator last);
 		
 		/* !!! remove this !!! */
 		void	printColorAndParent(const key_type & k){
+			// std::cout << k << std::endl;
 			pointer tmp = bst_find(k);
 			if (tmp->_color == RED)
 				std::cout << "\e[31mRED\e[0m";
@@ -561,12 +647,10 @@ namespace ft
 				std::cout << "\e[30mBLACK\e[0m\n";			
 		}
 		
-		/* !!!  NOT DONE !!! */
-		// iterator insert (iterator position, const value_type& val);
-
-		/* !!!  NOT DONE !!! */
-		// template <class InputIterator>
-  		// void insert (InputIterator first, InputIterator last);
+		/* has invalid reads pls fix */
+		void clear(){
+			clear_tree(_root);
+		}
 
 		/*		Iterators		*/
 		iterator begin(){
