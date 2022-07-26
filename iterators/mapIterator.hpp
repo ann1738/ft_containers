@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/25 11:50:41 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 15:23:33 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,28 @@ namespace ft{
 		typedef typename ft::map<Key, T, Compare, Alloc>::const_reference		const_reference;
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
 
-	private:
+	// private:
 		mapIterator(const pointer temp, const pointer small, const pointer large) : it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
 	public:	
-		mapIterator(void) : it_start(0), _smallest_node(0), _largest_node(0), _myComp(0){}
+		mapIterator(void) : it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()){}
 		mapIterator(mapIterator const & iter) : it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}//account for _myComp
 		mapIterator & operator=(mapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
 		~mapIterator() {}
 
-		const pointer &	base(void) const{return it_start;}
+		const pointer	base(void) const {return it_start;}
+		// const pointer	base(void) const{return it_start;}
 
 		reference	operator*(void){
 			return (this->it_start->_info);
 		}
+		
+		// /*am i allowed to have a const version */
+		// const value_type *	operator->(void) const{
+		// 	return &(this->it_start->_info);
+		// }
 
 		/*idk how to do this*/
-		value_type *	operator->(void){
+		value_type *	operator->(void) const{
 			return &(this->it_start->_info);
 		}
 
@@ -79,7 +85,7 @@ namespace ft{
 		}
 
 		mapIterator operator++(int){
-			mapIterator temp(this->it_start);
+			mapIterator temp(this->it_start, _smallest_node, _largest_node);
 			if (it_start == NULL) it_start = _smallest_node;
 			else this->it_start = getNextMaximum(this->it_start);
 			return (temp);
@@ -92,16 +98,24 @@ namespace ft{
 		}
 
 		mapIterator operator--(int){
-			mapIterator temp(this->it_start);
+			mapIterator temp(this->it_start, _smallest_node, _largest_node);
 			/*add a line to make it bidirectional*/
 			if (it_start == NULL) it_start = _largest_node;
 			else this->it_start = getNextMinimum(this->it_start);
 			return (temp);
 		}
 
-		/* how do i make this const? */
-		bool operator==(  mapIterator & rhs) {return !_myComp(this->it_start->_info.first, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
+
+		bool operator==( mapIterator & rhs) {
+			if (base() && rhs.base()) return !_myComp(base()->_info.first, rhs.base()->_info.first) && !_myComp(rhs.base()->_info.first, base()->_info.first);
+			if (!base() && !rhs.base()) return true;
+			return false;
+			}
 		bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
+		
+		/* how do i make this const? */
+		// bool operator==(  mapIterator & rhs) {return !_myComp(this->it_start->_info.first, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
+		// bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
 
 	private:
 		pointer	it_start;
@@ -201,12 +215,13 @@ namespace ft{
 		typedef typename ft::map<Key, T, Compare, Alloc>::const_reference		const_reference;
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
 
-		constMapIterator(void) : it_start(0) {_myComp = key_compare();}
-	private:c
-		constMapIterator(const pointer temp) : it_start(temp) {_myComp = key_compare();}
+
+	// private:
+		constMapIterator(const pointer temp, const pointer small, const pointer large) : it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
 	public:	
-		constMapIterator(constMapIterator const & iter) : it_start(iter.it_start) {}
-		constMapIterator & operator=(constMapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
+		constMapIterator(void) : it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()){}
+		constMapIterator(constMapIterator const & iter) : it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}//account for _myComp
+		constMapIterator & operator=(constMapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; _smallest_node = iter._smallest_node; _largest_node = iter._largest_node; return *(this);}
 		~constMapIterator() {}
 
 		const_reference	operator*(void) const{
@@ -225,7 +240,7 @@ namespace ft{
 		}
 
 		constMapIterator operator++(int){
-			constMapIterator temp(this->it_start);
+			constMapIterator temp(this->it_start, _smallest_node, _largest_node);
 			
 			this->it_start = getNextMaximum(this->it_start);
 			return (temp);
@@ -237,20 +252,28 @@ namespace ft{
 		}
 
 		constMapIterator operator--(int){
-			constMapIterator temp(this->it_start);
+			constMapIterator temp(this->it_start, _smallest_node, _largest_node);
 			/*add a line to make it bidirectional*/
 			this->it_start = getNextMinimum(this->it_start);
 			return (temp);
 		}
 
-		bool operator==( constMapIterator & rhs) {return !_myComp(this->it_start->_info.first, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
-		bool operator!=( constMapIterator & rhs) {return !(*this == rhs);}
+		bool operator==( const constMapIterator & rhs) {
+			if (base() && rhs.base()) return !_myComp(base()->_info.first, rhs.base()->_info.first) && !_myComp(rhs.base()->_info.first, base()->_info.first);
+			if (!base() && !rhs.base()) return true;
+			return false;
+			}
+		bool operator!=( const constMapIterator & rhs) {return !(*this == rhs);}
+		// bool operator==( constMapIterator & rhs) {return !_myComp(this->it_start->_info.first, rhs.it_start->_info.first) && !_myComp(rhs.it_start->_info.first, this->it_start->_info.first);}
+		// bool operator!=( constMapIterator & rhs) {return !(*this == rhs);}
 
+		const pointer	base(void) const {return it_start;}
 	private:
 		pointer	it_start;
+		pointer	_smallest_node;
+		pointer	_largest_node;
 		key_compare _myComp;
 		
-		constMapIterator	base(void) {return *(this);}
 
 		pointer	getSubMinimum(pointer nod) const{	pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 

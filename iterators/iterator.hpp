@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/12 14:02:48 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/19 11:56:42 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 16:01:29 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ namespace ft
 		pointer operator->() const{
 			iterator_type	temp = current;
 			--temp;
-			return pointer(temp);
+			return pointer(&*temp);
 		}
 
 		reference operator[]( difference_type n ){

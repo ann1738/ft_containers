@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 15:02:04 by ann               #+#    #+#             */
-/*   Updated: 2022/07/20 14:53:51 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/24 15:40:03 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <iostream>
 #include <assert.h>
 #include "vector.hpp"
-#include "map.hpp"
+// #include "map.hpp"
 #include "stack.hpp"
 #include "additional.hpp"
 #include "timer.hpp"

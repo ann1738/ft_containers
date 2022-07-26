@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 14:32:41 by ann               #+#    #+#             */
-/*   Updated: 2022/07/25 11:51:08 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 12:13:16 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ namespace ft{
 		typedef typename ft::set<T, Compare, Alloc>::const_reference		const_reference;
 		typedef typename ft::bidirectional_iterator_tag						iterator_category;
 
-	private:
+	// private:
 		setIterator(const pointer temp) : it_start(temp) {_myComp = key_compare();}
 	public:
 		setIterator(void) : it_start(0) {_myComp = key_compare();}

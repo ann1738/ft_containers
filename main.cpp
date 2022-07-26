@@ -6,7 +6,7 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/07/22 13:54:00 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 16:02:01 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,9 @@
 #include <exception>
 #include <vector>
 #include <map>
-// #include <stack>
-// #include <map>
+
 #include "shared.hpp"
-#include "testing.hpp"
-// #include <cstdlib>
-
-#include "tests/tests.hpp"
-
-// # include <list>
-
-// #define TESTED_TYPE foo<int>
-// # define TESTED_TYPE std::string
-
-# define ft std
-# define TESTED_TYPE int
-# define TESTED_NAMESPACE ft
-#define DEGUB() (std::cout << "\e[33mDEBUGGING\e[0m\n")
-
-
+// #include "testing.hpp"
 
 /**/
 template <typename T>
@@ -70,163 +54,106 @@ std::ostream	&operator<<(std::ostream &o, foo<T> const &bar) {
 	return o;
 }
 /**/
-
+/********************************************************************************************/
+// #define ft std
+#define TESTED_NAMESPACE ft
 
 #define _pair TESTED_NAMESPACE::pair
 
-#define T1 int
-#define T2 foo<int>
-typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
-typedef TESTED_NAMESPACE::map<T1, T2>::iterator ft_iterator;
-typedef TESTED_NAMESPACE::map<T1, T2>::const_iterator ft_const_iterator;
 
-// template <typename T>
-// std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
-// {
-// 	o << "key: " << iterator->first << " | value: " << iterator->second;
-// 	if (nl)
-// 		o << std::endl;
-// 	return ("");
-// }
-
-
-// void	printSize(const TESTED_NAMESPACE::map<T1,T2> & cont)
-// {
-// 	std::cout << "Size is " << cont.size() << std::endl; 
-// 	std::cout << "content is " << std::endl;
-// 	for (TESTED_NAMESPACE::map<T1, T2>::const_iterator it = cont.begin(); it != cont.end(); ++it)
-// 		std::cout << it->first << "->" << it->second << std::endl;
-// }
-
-// static int iter = 0;
-
-// template <typename MAP>
-// void	ft_bound(MAP &mp, const T1 &param)
-// {
-// 	ft_iterator ite = mp.end(), it[2];
-// 	_pair<ft_iterator, ft_iterator> ft_range;
-
-// 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-// 	std::cout << "with key [" << param << "]:" << std::endl;
-// 	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
-// 	ft_range = mp.equal_range(param);
-// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
-// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
-// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
-// }
-
-// template <typename MAP>
-// void	ft_const_bound(const MAP &mp, const T1 &param)
-// {
-// 	ft_const_iterator ite = mp.end(), it[2];
-// 	_pair<ft_const_iterator, ft_const_iterator> ft_range;
-
-// 	std::cout << "\t-- [" << iter++ << "] (const) --" << std::endl;
-// 	std::cout << "with key [" << param << "]:" << std::endl;
-// 	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
-// 	ft_range = mp.equal_range(param);
-// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
-// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
-// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
-// }
-
-// int		main(void)
-// {
-// 	// std::map<int,std::string> m;
-// 	// m[0];
-// 	// m[1];
-// 	// m[2];
-// 	// m[3];
-// 	// std::map<int,std::string>::const_iterator it = m.begin();
-	
-// 	// it->second = "heheh";
-// 	// std::list<T3> lst;
-// 	// unsigned int lst_size = 10;
-// 	// for (unsigned int i = 0; i < lst_size; ++i)
-// 	// 	lst.push_back(T3(i + 1, (i + 1) * 3));
-// 	// TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
-// 	// printSize(mp);
-
-// 	// ft_const_bound(mp, -10);
-// 	// ft_const_bound(mp, 1);
-// 	// ft_const_bound(mp, 5);
-// 	// ft_const_bound(mp, 10);
-// 	// ft_const_bound(mp, 50);
-
-// 	// printSize(mp);
-
-// 	// mp.lower_bound(3)->second = 404;
-// 	// mp.upper_bound(7)->second = 842;
-// 	// ft_bound(mp, 5);
-// 	// ft_bound(mp, 7);
-
-// 	// printSize(mp);
-	
-// 	// ft::map<int,std::string> m;
-// 	// std::map<int,std::string> s;
-// 	// assert(m.max_size() == s.max_size());
-
-// 	// ft::map<char,std::string> m1;
-// 	// std::map<char,std::string> s1;
-// 	// assert(m1.max_size() == s1.max_size());
-
-// 	// ft::map<char, int> m2;
-// 	// std::map<char,int> s2;
-// 	// assert(m2.max_size() == s2.max_size());
-	
-// 	// ft::map<char, ft::vector<int> > m3;
-// 	// std::map<char,ft::vector<int> > s3;
-// 	// assert(m3.max_size() == s3.max_size());
-// 	return (0);
-// }
+/********************************************************************************************/
 // #define ft std
-#include "set.hpp"
-// #if 1
-int main(int argc, char **argv)
+#include <list>
+
+
+template <typename T>
+std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
 {
-	(void)argc;
-	(void)argv;
-	ft::set<int> my;
-	int amount = 10000000;
-	for (int i = 0; i < amount; ++i) my.insert(i);
+	o << "key: " << iterator->first << " | value: " << iterator->second;
+	if (nl)
+		o << std::endl;
+	return ("");
+}
 
+template <typename T_MAP>
+void	printSize(T_MAP const &mp, bool print_content = 1)
+{
+	std::cout << "size: " << mp.size() << std::endl;
+	std::cout << "max_size: " << mp.max_size() << std::endl;
+	if (print_content)
 	{
-		timer T;
-		my.find(amount - 1);
+		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
+		std::cout << std::endl << "Content is:" << std::endl;
+		for (; it != ite; ++it)
+			std::cout << "- " << printPair(it, false) << std::endl;
 	}
-	{
-		timer T;
-		my.find(amount / 10);
-	}
-	{
-		timer T;
-		my.find(amount / 5);
-	}
-	{
-		timer T;
-		my.find(amount / 7);
-	}
-	// size_t i = 0;
-	// std::cout << std::endl << "\e[33mBEGINNING OF MAIN()\e[0m" << std::endl;
-	// for(ft::set<int>::iterator it = my.begin(); i < my.size(); ++it, ++i)
-	// {
-	// 	std::cout << *it << "\tcolor is "; my.printColorAndParent(*it); std::cout << std::endl;
-	// }
+	std::cout << "###############################################" << std::endl;
+}
 
-	// ft::map<int,int>::iterator i;
-	// i == i;
-	// i != i;
-		// ft::map<int, char> m; m[0]; m[1]; m [10];
-		// ft::map<int, char>::iterator it = m.begin();
-		// ft::map<int, char>::iterator ite = m.end();
-		// for(; ite != it; --ite)
-		// {
-		// 	if (ite != m.end())
-		// 		std::cout << it->first << std::endl;
-		// 	// ++it;
-		// }
-		// std::vector<int>::iterator it;
-		// it < it;
+
+#define T1 float
+#define T2 foo<int>
+typedef _pair<const T1, T2> T3;
+
+int		main(void)
+{
+	std::list<T3> lst;
+	unsigned int lst_size = 5;
+	for (unsigned int i = 0; i < lst_size; ++i)
+		lst.push_back(T3(2.5 - i, (i + 1) * 7));
+
+	TESTED_NAMESPACE::map<T1, T2> mp(lst.begin(), lst.end());
+	TESTED_NAMESPACE::map<T1, T2>::reverse_iterator it(mp.rbegin());
+	TESTED_NAMESPACE::map<T1, T2>::const_reverse_iterator ite(mp.rbegin());
+	printSize(mp);
+
+	printPair(++ite);
+	printPair(ite++);
+	printPair(ite++);
+	printPair(++ite);
+
+	it->second.m();
+	ite->second.m();
+
+	printPair(++it);
+	printPair(it++);
+	printPair(it++);
+	printPair(++it);
+
+	printPair(--ite);
+	printPair(ite--);
+	printPair(--ite);
+	printPair(ite--);
+
+	(*it).second.m();
+	(*ite).second.m();
+
+	printPair(--it);
+	printPair(it--);
+	printPair(it--);
+	printPair(--it);
+
+	return (0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* DONT DELETE -> THIS IS THE MAIN TEST */
+// int main(int argc, char **argv)
+// {
+// 	(void)argc;
+// 	(void)argv;
+
+
 	// #if TESTING_MODE
 	// {
 		// if (argc != 2)
@@ -281,6 +208,6 @@ int main(int argc, char **argv)
 		// // vector_insert();
 		// vector_erase();
 		
-	}
+	// }
 
 // #endif

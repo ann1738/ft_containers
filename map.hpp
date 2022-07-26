@@ -6,15 +6,12 @@
 /*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/21 15:05:06 by ann              ###   ########.fr       */
+/*   Updated: 2022/07/25 15:47:39 by ann              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 # define MAP_HPP
-
-# define RED 0
-# define BLACK 1
 
 #include <memory>
 #include <functional>
@@ -44,7 +41,7 @@ namespace ft{
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
 		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>		iterator;
-		typedef	constMapIterator<const key_type,  mapped_type, key_compare, allocator_type>		const_iterator;
+		typedef	constMapIterator<key_type,  mapped_type, key_compare, allocator_type>		const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 		typedef	std::ptrdiff_t														difference_type;
@@ -189,6 +186,7 @@ namespace ft{
 			if (replacement)
 				replacement->_parent = toBeReplaced->_parent;
 		}
+		
 		/*WHAT IF DELETEME IS ROOT*/
 		pointer	bst_delete(pointer deleteMe){
 			if (!deleteMe) return NULL; /*checks if it exists*/
@@ -231,7 +229,7 @@ namespace ft{
 		}
 
 		/*	rotation algorithms	*/
-		void		rotate_left(pointer x){
+		void	rotate_left(pointer x){
 			// std::cout << "\e[35mrotate left " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_right;
 			x->_right = y->_left;
@@ -277,18 +275,7 @@ namespace ft{
 	// 		if (!tmp) return 0;
 	// 		return (tmp->_height);				
 	// 	}
-	private:
-		// pointer	findRootOfNewNode(const key_type & k){
-		// 	pointer tmp = _root;
-		// 	while (tmp != NULL)
-		// 	{
-		// 		if (_myComp(k, tmp->_info.first))
-		// 			tmp = tmp->_left;
-		// 		else
-		// 			tmp = tmp->_right;
-		// 	}
-		// 	return tmp->_parent;
-		// }
+	// private:
 
 		size_type	max(size_type a, size_type b) {return a > b ? a : b;}
 		
@@ -395,14 +382,7 @@ namespace ft{
 		/*			Constructors		*/
 		explicit map (const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type())
-						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){
-							// _begin_node = _myAlloc.allocate(1);
-							// _myAlloc.construct(_begin_node, node());
-							// _begin_node->_info = NULL;
-							// _end_node = _myAlloc.allocate(1);
-							// _myAlloc.construct(_end_node, node());
-							// _end_node->_info = NULL;
-						}
+						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){}
 
 		template <class InputIterator>
 		map (InputIterator first, InputIterator last,
@@ -415,7 +395,7 @@ namespace ft{
 		
 		map (const map& x)
 			: _root(0), _size(0), _myComp(x._myComp), _myAlloc(x._myAlloc){
-			iterator first = x.begin(), last = x.end();
+			const_iterator first = x.begin(), last = x.end();
 			insert(first, last);
 		}
 		
@@ -426,6 +406,7 @@ namespace ft{
 		
 		/*			Copy assignment		*/
 		map& operator= (const map& x){
+			// std::cout << "operator=: i am here" << std::endl;
 			if (this != &x)
 			{
 				_root = 0;
@@ -465,10 +446,10 @@ namespace ft{
 		ft::pair<iterator,bool>	insert (const value_type& val)
 		{
 			pointer check = bst_find(val.first);
-			if (check) return ft::make_pair<iterator, bool>(iterator(check), false); /*checks if it exists*/
+			if (check) return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), false); /*checks if it exists*/
 
 			check = avl_insert(val); /*reusing check*/
-			return ft::make_pair<iterator, bool>(iterator(check), true);
+			return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), true);
 		}
 
 		/*	Make this actually check the hint	*/
@@ -476,10 +457,10 @@ namespace ft{
 		{
 			static_cast<void>(position);
 			pointer check = bst_find(val.first);
-			if (check) return iterator(check); /*checks if it exists*/
+			if (check) return iterator(check, getMinimum(), getMaximum()); /*checks if it exists*/
 
 			check = avl_insert(val); /*reusing check*/
-			return iterator(check);
+			return iterator(check, getMinimum(), getMaximum());
 		}
 		
 		template <class InputIterator>
@@ -493,6 +474,7 @@ namespace ft{
 				avl_insert(*first);
 				++first;
 			}
+
 		}
 		
 		/*TESTED*/
@@ -529,14 +511,15 @@ namespace ft{
 
 		/*TESTED*/
 		void clear(){
-			pointer tmp;
-			pointer save = getMinimum();
-			while (save)
-			{
-				tmp = save;
-				save = getNextMaximum(save);
-				del_node(tmp);
-			}
+			// pointer tmp;
+			// pointer save = getMinimum();
+			// while (save)
+			// {
+			// 	tmp = save;
+			// 	save = getNextMaximum(save);
+			// 	del_node(tmp);
+			// }
+			erase(begin(), end());
 		}
 
 		/*		Observers		*/
@@ -546,68 +529,85 @@ namespace ft{
 
 		/*			Iterators			*/
 		iterator begin(){
-			return iterator(getMinimum());
+			return iterator(getMinimum(), getMinimum(), getMaximum());
 		}
 
 		const_iterator begin() const{
-			return (const_iterator(getMinimum()));
+			return const_iterator(getMinimum(), getMinimum(), getMaximum());
 		}
 
 		iterator end(){
-			return (iterator(getMaximum()));
+			return (iterator(NULL, getMinimum(), getMaximum()));
 		}
 
 		const_iterator end() const{
-			return (const_iterator(getMaximum()));
+			return (const_iterator(NULL, getMinimum(), getMaximum()));
 		}
 
 		reverse_iterator rbegin(){
 			return reverse_iterator(getMaximum());
 		};
-		// const_reverse_iterator rbegin() const;
+
+		const_reverse_iterator rbegin() const{
+			return const_reverse_iterator(getMaximum());
+		}
 
 		reverse_iterator rend(){
 			return reverse_iterator(NULL);
 		}
 		
-		// const_reverse_iterator rend() const;
+		const_reverse_iterator rend() const{
+			return const_reverse_iterator(NULL);
+		}
 
 		/*		Operations		*/
 		iterator find (const key_type& k){
-			return (iterator(bst_find(k)));
+			return (iterator(bst_find(k), getMinimum(), getMaximum()));
 		}
 
-		// const_iterator find (const key_type& k) const{
-		// 	return (const_iterator(bst_find(k));
-		// }
+		const_iterator find (const key_type& k) const{
+			return (const_iterator(bst_find(k), getMinimum(), getMaximum()));
+		}
 
 		size_type count (const key_type& k) const{
 			return (bst_find(k) ? 1 : 0);
 		}	
 
-		iterator lower_bound (const key_type& k){
+		iterator lower_bound (const key_type& k) {
 			iterator	tmp = begin();
 			while (tmp != end() && _myComp(tmp->first, k))
 				++tmp;
 			return tmp;
 		}
 		
-		// const_iterator lower_bound (const key_type& k) const;
+		const_iterator lower_bound (const key_type& k) const{
+			const_iterator	tmp = begin();
+			while (tmp != end() && _myComp(tmp->first, k))
+				++tmp;
+			return tmp;
+		}
 
-		iterator upper_bound (const key_type& k){
+		iterator upper_bound (const key_type& k) {
 			iterator	tmp = begin();
 			while (tmp != end() && !_myComp(k, tmp->first))
 				++tmp;	
 			return tmp;
 		}
 
-		// const_iterator upper_bound (const key_type& k) const;
+		const_iterator upper_bound (const key_type& k) const {
+			const_iterator	tmp = begin();
+			while (tmp != end() && !_myComp(k, tmp->first))
+				++tmp;	
+			return tmp;
+		}
 
-		ft::pair<iterator,iterator>	equal_range (const key_type& k){
+		ft::pair<iterator,iterator>	equal_range (const key_type& k) {
 			return ft::make_pair<iterator, iterator>(lower_bound(k), upper_bound(k));
 		}
 		
-		// pair<const_iterator,const_iterator>	equal_range (const key_type& k) const;
+		pair<const_iterator,const_iterator>	equal_range (const key_type& k) const{
+			return ft::make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
+		}
 
 		/*		Operations		*/
 		allocator_type get_allocator() const{
@@ -615,10 +615,6 @@ namespace ft{
 		}
 	};
 }
-
-
-
-
 
 
      	// mapped_type& at (const key_type& k){
