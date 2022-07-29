@@ -42,8 +42,8 @@ namespace ft{
 		typedef typename ft::map<Key, T, Compare, Alloc>::difference_type		difference_type;
 		// typedef typename ft::map<Key, T, Compare, Alloc>::value_type			value_type;
 		// typedef typename ft::map<Key, T, Compare, Alloc>::pointer				pointer;    
-		typedef typename Alloc::pointer			pointer;
-    	typedef typename Alloc::const_pointer		const_pointer;
+		typedef typename Alloc::pointer			node_pointer;
+    	// typedef typename Alloc::const_pointer		const_pointerI;
 		// typedef ft::map<Key, T, Compare, Alloc>::pointer									pointer;
 		// typedef ft::map<Key, T, Compare, Alloc>::const_pointer									const_pointer;
 		// typedef node&					reference;
@@ -52,8 +52,12 @@ namespace ft{
 		typedef typename ft::map<Key, T, Compare, Alloc>::const_reference		const_reference;
 		typedef typename ft::bidirectional_iterator_tag		iterator_category;
 
+			// public:
+		typedef value_type *			pointer;
+    	typedef const pointer		const_pointer;
+
 	// private:
-		mapIterator(const pointer temp, const pointer small, const pointer large) : it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
+		mapIterator(const node_pointer temp, const node_pointer small, const node_pointer large) : it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
 	public:	
 		mapIterator(void) : it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()){}
 		mapIterator(mapIterator const & iter) : it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}//account for _myComp
@@ -64,10 +68,10 @@ namespace ft{
 			return mapIterator<Key, const T, Compare, Alloc>(it_start, _smallest_node, _largest_node);
 		}
 
-		const pointer	base(void) const {return it_start;}
+		const node_pointer	base(void) const {return it_start;}
 		// const pointer	base(void) const{return it_start;}
 
-		reference	operator*(void){
+		value_type	operator*(void){
 			return (this->it_start->_info);
 		}
 		
@@ -77,7 +81,7 @@ namespace ft{
 		// }
 
 		/*idk how to do this*/
-		value_type *	operator->(void) const{
+		value_type *	operator->(void) {
 			return &(this->it_start->_info);
 		}
 
@@ -122,17 +126,17 @@ namespace ft{
 		// bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
 
 	private:
-		pointer	it_start;
-		pointer	_smallest_node;
-		pointer	_largest_node;
+		node_pointer	it_start;
+		node_pointer	_smallest_node;
+		node_pointer	_largest_node;
 		key_compare _myComp;
 		
 
-		pointer	getSubMinimum(pointer nod) const{	pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
+		node_pointer	getSubMinimum(node_pointer nod) const{	node_pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
-		pointer	getSubMaximum(pointer nod) const{	pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
+		node_pointer	getSubMaximum(node_pointer nod) const{	node_pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
 
-		pointer	getNextMaximum(pointer nod) const{
+		node_pointer	getNextMaximum(node_pointer nod) const{
 			if (!nod) return NULL;
 			if (nod->_right)
 				return (getSubMinimum(nod->_right));
@@ -141,7 +145,7 @@ namespace ft{
 			return nod->_parent;				
 		}
 
-		pointer	getNextMinimum(pointer nod) const{
+		node_pointer	getNextMinimum(node_pointer nod) const{
 			if (!nod) return NULL;
 			if (nod->_left)
 				return getSubMaximum(nod->_left);
@@ -150,7 +154,9 @@ namespace ft{
 			return nod->_parent;				
 		}
 
-		bool	amILeft(pointer _nod) const{return _nod == _nod->_parent->_left;}
+		bool	amILeft(node_pointer _nod) const{return _nod == _nod->_parent->_left;}
+
+
 
 	};
 	
