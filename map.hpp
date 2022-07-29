@@ -545,19 +545,19 @@ namespace ft{
 		}
 
 		reverse_iterator rbegin(){
-			return reverse_iterator(getMaximum());
+			return reverse_iterator(end());
 		};
 
 		const_reverse_iterator rbegin() const{
-			return const_reverse_iterator(getMaximum());
+			return const_reverse_iterator(end());
 		}
 
 		reverse_iterator rend(){
-			return reverse_iterator(NULL);
+			return reverse_iterator(begin());
 		}
 		
 		const_reverse_iterator rend() const{
-			return const_reverse_iterator(NULL);
+			return const_reverse_iterator(begin());
 		}
 
 		/*		Operations		*/
