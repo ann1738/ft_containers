@@ -22,4 +22,8 @@ re: fclean all
 valgrind: all
 	valgrind --leak-check=full --show-leak-kinds=all ./main
 
+sanitize: re
+	clang++ $(OBJ) -o $(NAME) -g -fsanitize=address
+	clear
+	./$(NAME)
 .PHONY: all clean fclean re

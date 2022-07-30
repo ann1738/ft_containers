@@ -38,6 +38,7 @@ namespace ft
 		typedef typename _iter::difference_type  	difference_type;
 		typedef typename _iter::value_type       	value_type;
 		typedef typename _iter::pointer         	pointer;
+		typedef typename _iter::const_pointer         	const_pointer;
 		typedef typename _iter::reference        	reference;
 		typedef typename _iter::iterator_category	iterator_category;
 	protected:
@@ -69,7 +70,7 @@ namespace ft
 		pointer operator->() const{
 			iterator_type	temp = current;
 			--temp;
-			return pointer(&*temp);
+			return temp.operator->();
 		}
 
 		reference operator[]( difference_type n ){

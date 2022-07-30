@@ -26,6 +26,7 @@ namespace ft{
 		typedef typename ft::vector<T, _Alloc>::difference_type		difference_type;
 		typedef typename ft::vector<T, _Alloc>::value_type			value_type;
 		typedef typename ft::vector<T, _Alloc>::pointer				pointer;
+		typedef typename ft::vector<T, _Alloc>::const_pointer		const_pointer;
 		typedef typename ft::vector<T, _Alloc>::reference			reference;
 		typedef typename ft::vector<T, _Alloc>::const_reference		const_reference;
 		typedef typename ft::random_access_iterator_tag		iterator_category;
