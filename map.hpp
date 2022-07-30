@@ -40,8 +40,9 @@ namespace ft{
 		typedef	const value_type &													const_reference;
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
-		typedef	mapIterator<key_type, mapped_type, key_compare, allocator_type>		iterator;
-		typedef	mapIterator<key_type,  const mapped_type, key_compare, allocator_type>		const_iterator;
+		typedef	mapIterator<value_type, key_compare, allocator_type>				iterator;
+		typedef	mapIterator<const value_type, key_compare, allocator_type>			const_iterator;
+		// typedef	constMapIterator<key_type, mapped_type, key_compare, allocator_type>		const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 		typedef	std::ptrdiff_t														difference_type;
@@ -66,8 +67,8 @@ namespace ft{
 		key_compare		_myComp;
 		allocator_type	_myAlloc;
 
-	template <	class KeyI, class TI, class CompareI, class AllocI >
-	friend class mapIterator;
+	// template <	class KeyI, class TI, class CompareI, class AllocI >
+	// friend class mapIterator;
 
 		struct node{
 			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
