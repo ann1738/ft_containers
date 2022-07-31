@@ -471,7 +471,7 @@ namespace ft{
 			while (first != last)
 			{
 				check = bst_find((*first).first);
-				if (check) continue; 
+				if (check) {++first; continue;} 
 				avl_insert(*first);
 				++first;
 			}
