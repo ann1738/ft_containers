@@ -52,7 +52,7 @@ namespace ft{
 			return (this->it_start);
 		}
 
-		vectorIterator operator++(void){
+		vectorIterator & operator++(void){
 			++this->it_start;
 			return (*this);
 		}
@@ -64,7 +64,7 @@ namespace ft{
 		}
 
 		/* --(--ite) --> this doesn't work */
-		vectorIterator operator--(void){
+		vectorIterator & operator--(void){
 			--this->it_start;
 			return (*this);
 		}
@@ -96,7 +96,7 @@ namespace ft{
 
 		template <typename TY, typename _AllocY>
 		typename vectorIterator<TY, _AllocY>::difference_type operator-(const vectorIterator<TY, _AllocY> & rhs) const{
-			return this->it_start - rhs.it_start;
+			return base() - rhs.base();
 		}
 
 		vectorIterator &	operator-=(difference_type n) 
@@ -104,7 +104,30 @@ namespace ft{
 			this->it_start -= n;
 			return *(this);
 		}
+
 		reference	operator[](difference_type n) {return (this->it_start[n]);}
+
+		/*original*/
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator==(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() == rhs.base();}
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator!=(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() != rhs.base();}
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator<(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() < rhs.base();}
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator<=(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() <= rhs.base();}
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator>(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() > rhs.base();}
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator>=(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() >= rhs.base();}
+
+		/*experiment*/
+		bool operator==(const vectorIterator<const T, _Alloc> & rhs) const{return base() == rhs.base();}
+		bool operator!=(const vectorIterator<const T, _Alloc> & rhs) const{return base() != rhs.base();}
+		bool operator<(const vectorIterator<const T, _Alloc> & rhs) const{return base() < rhs.base();}
+		bool operator<=(const vectorIterator<const T, _Alloc> & rhs) const{return base() <= rhs.base();}
+		bool operator>(const vectorIterator<const T, _Alloc> & rhs) const{return base() > rhs.base();}
+		bool operator>=(const vectorIterator<const T, _Alloc> & rhs) const{return base() >= rhs.base();}
 
 	private:
 		pointer	it_start;
@@ -114,18 +137,20 @@ namespace ft{
 	vectorIterator<T, _Alloc> operator+(typename vectorIterator<T, _Alloc>::difference_type n, const vectorIterator<T, _Alloc>& it){
 		return vectorIterator<T, _Alloc>(it + n);
 	}
-	template <typename Iter1, typename Iter2>
-	bool operator==(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() == rhs.base();}
-	template <typename Iter1, typename Iter2>
-	bool operator!=(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() != rhs.base();}
-	template <typename Iter1, typename Iter2>
-	bool operator<(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() < rhs.base();}
-	template <typename Iter1, typename Iter2>
-	bool operator<=(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() <= rhs.base();}
-	template <typename Iter1, typename Iter2>
-	bool operator>(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() > rhs.base();}
-	template <typename Iter1, typename Iter2>
-	bool operator>=(const Iter1 & lhs, const Iter2 & rhs) {return lhs.base() >= rhs.base();}
+
+	// template <typename TI, typename AllocI>
+	// bool operator==(const vectorIterator<TI, AllocI> & lhs, const vectorIterator<TI, AllocI>  & rhs) {return lhs.base() == rhs.base();}
+	// template <typename TI, typename AllocI>
+	// bool operator!=(const vectorIterator<TI, AllocI> & lhs, const vectorIterator<TI, AllocI> & rhs) {return lhs.base() != rhs.base();}
+	// template <typename TI, typename AllocI>
+	// bool operator<(const vectorIterator<TI, AllocI> & lhs, const vectorIterator<TI, AllocI> & rhs) {return lhs.base() < rhs.base();}
+	// template <typename TI, typename AllocI>
+	// bool operator<=(const vectorIterator<TI, AllocI> & lhs, const vectorIterator<TI, AllocI> & rhs) {return lhs.base() <= rhs.base();}
+	// template <typename TI, typename AllocI>
+	// bool operator>(const vectorIterator<TI, AllocI> & lhs, const vectorIterator<TI, AllocI> & rhs) {return lhs.base() > rhs.base();}
+	// template <typename TI, typename AllocI>
+	// bool operator>=(const vectorIterator<TI, AllocI> & lhs, const vectorIterator<TI, AllocI> & rhs) {return lhs.base() >= rhs.base();}
+
 }
 
 #endif
