@@ -107,35 +107,13 @@ namespace ft{
 			return (temp);
 		}
 
-		bool operator==( mapIterator & rhs) {
-			if (base() && rhs.base()) return !_myComp(base()->_info.first, rhs.base()->_info.first) && !_myComp(rhs.base()->_info.first, base()->_info.first);
-			if (!base() && !rhs.base()) return true;
-			return false;
-			}
-		bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
-		
-		// !!! TRY THE BELOW !!!
+		bool	operator==(const mapIterator<const key_n_map, Compare, Alloc> & rhs){
+			return base() == rhs.base();
+		}
 
-		// friend bool
-		// operator==(const mapIterator& lhs, mapIterator & rhs)
-		// { return lhs.base() == rhs.base(); }
-
-		// friend bool
-		// operator!=(const mapIterator& lhs, mapIterator & rhs)
-		// { return lhs.base() != rhs.base(); }
-
-
-
-		// friend bool
-		// operator==(const mapIterator& lhs, constMapIterator & rhs)
-		// { return lhs.base() == rhs.base(); }
-
-		// friend bool
-		// operator!=(const mapIterator& lhs, constMapIterator & rhs)
-		// { return lhs.base() != rhs.base(); }
-		
-
-
+		bool	operator!=(const mapIterator<const key_n_map, Compare, Alloc> & rhs){
+			return base() != rhs.base();
+		}
 	private:
 		node_pointer	it_start;
 		node_pointer	_smallest_node;
@@ -176,11 +154,45 @@ namespace ft{
 
 
 
+	/*my trials with comparison operators*/
+
+	// bool operator==( mapIterator & rhs) {
+		// 	if (base() && rhs.base()) return !_myComp(base()->_info.first, rhs.base()->_info.first) && !_myComp(rhs.base()->_info.first, base()->_info.first);
+		// 	if (!base() && !rhs.base()) return true;
+		// 	return false;
+		// 	}
+		// bool operator!=( mapIterator & rhs) {return !(*this == rhs);}
+		
+		// !!! TRY THE BELOW !!!
+
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator==(const Iter1 & lhs, Iter2 & rhs){
+		// 	return lhs.base() == rhs.base();
+		// }
+
+		// template <typename Iter1, typename Iter2>
+		// friend bool operator!=(const Iter1 & lhs, Iter2 & rhs){
+		// 	return lhs.base() != rhs.base();
+		// }
 
 
+		// template < class key_n_mapI, class CompareI, class AllocI >
+		// bool operator==(const mapIterator<key_n_mapI, CompareI, AllocI> & lhs, mapIterator<key_n_mapI, CompareI, AllocI> & rhs)
+		// { return lhs.base() == rhs.base(); }
 
+		// template < class key_n_mapI, class CompareI, class AllocI >
+		// bool operator!=(const mapIterator<key_n_mapI, CompareI, AllocI> & lhs, mapIterator<key_n_mapI, CompareI, AllocI> & rhs)
+		// { return lhs.base() != rhs.base(); }
 
+		// friend bool
+		// operator==(const mapIterator& lhs, mapIterator & rhs)
+		// { return lhs.base() == rhs.base(); }
 
+		// friend bool
+		// operator!=(const mapIterator& lhs, mapIterator & rhs)
+		// { return lhs.base() != rhs.base(); }
+
+	/*******************************************************************/
 
 
 
