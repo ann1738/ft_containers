@@ -34,10 +34,7 @@ namespace ft
 	template< class InputIt1, class InputIt2 >
 	bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 ){
 		for (; first1 != last1; first1++, first2++)
-		{
-			std::cout << "f1 is " << *first1 << ", and f2 is " << *first2 << std::endl;
 			if (*first1 != *first2) return false;
-		}
 		return true;
 	}
 	
@@ -45,10 +42,7 @@ namespace ft
 	bool equal( InputIt1 first1, InputIt1 last1,
 				InputIt2 first2, BinaryPredicate p ){
 		for (; first1 != last1; first1++, first2++)
-		{
-			std::cout << "f1 is " << *first1 << ", and f2 is " << *first2 << std::endl;
 			if (!p(*first1, *first2)) return false;
-		}
 		return true;
 	}
 

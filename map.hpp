@@ -614,19 +614,49 @@ namespace ft{
 		allocator_type get_allocator() const{
 			return _myAlloc;
 		}
+
 	};
+
+	/*		Non-member functions	*/
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ){
+		if (lhs.size() != rhs.size()) return false;
+		typename ft::map<Key, T, Compare, Alloc>::const_iterator first1 = lhs.begin(), last1 = lhs.end(), first2 = rhs.begin();
+		for (; first1 != last1; first1++, first2++)
+			if (lhs.value_comp()(*first1, *first2) || lhs.value_comp()(*first2, *first1)) return false;
+		return true;
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ){
+		return !(lhs == rhs);
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ){
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ){
+		return !(ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ){
+		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs ){
+		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	/*		std::swap specialization		*/
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs ){
+		lhs.swap(rhs);
+	}
 }
 
-
-     	// mapped_type& at (const key_type& k){
-		// 	pointer tmp = bst_find(k);
-		// 	if (tmp) return tmp->_info.second;
-		// 	throw std::out_of_range("map::at:  key not found");
-		// }
-		
-		// const mapped_type& at (const key_type& k) const{
-		// 	pointer tmp = bst_find(k);
-		// 	if (tmp) return tmp->_info.second;
-		// 	throw std::out_of_range("map::at:  key not found");
-		// }
 #endif
