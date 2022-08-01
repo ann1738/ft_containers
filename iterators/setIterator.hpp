@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setIterator.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 14:32:41 by ann               #+#    #+#             */
-/*   Updated: 2022/07/25 12:13:16 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/01 13:19:31 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,72 +30,100 @@ namespace ft{
 		typedef	T															key_type;
 		typedef	Compare														key_compare;
 		typedef	Compare														value_compare;
+		typedef value_type &												reference;
+		typedef const value_type &											const_reference;
+		typedef typename Alloc::pointer										node_pointer;
+		typedef value_type *												pointer;
+    	typedef const pointer												const_pointer;
 		typedef typename ft::set<T, Compare, Alloc>::difference_type		difference_type;
-		typedef typename Alloc::pointer										pointer;
-    	typedef typename Alloc::const_pointer								const_pointer;
-		typedef typename ft::set<T, Compare, Alloc>::reference				reference;
-		typedef typename ft::set<T, Compare, Alloc>::const_reference		const_reference;
+		typedef typename ft::set<T, Compare, Alloc>::size_type				size_type;
 		typedef typename ft::bidirectional_iterator_tag						iterator_category;
 
 	// private:
-		setIterator(const pointer temp) : it_start(temp) {_myComp = key_compare();}
-	public:
-		setIterator(void) : it_start(0) {_myComp = key_compare();}
-		setIterator(setIterator const & iter) : it_start(iter.it_start) {}//account for _myComp
-		setIterator & operator=(setIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
+		setIterator(const node_pointer temp, const node_pointer small, const node_pointer large)
+			:	it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
+	public:	
+		setIterator(void)
+			:	it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()) {}
+		setIterator(setIterator const & iter)
+			:	it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}
+		setIterator & operator=(setIterator const & iter){
+			if (this != &iter)
+			{
+				it_start = iter.it_start;
+				_smallest_node = iter._smallest_node;
+				_largest_node = iter._largest_node;
+				_myComp = iter._myComp;
+		 	}
+			return *this;
+		}
 		~setIterator() {}
 
+		operator setIterator<const T, Compare, Alloc>() const {
+			return setIterator<const T, Compare, Alloc>(it_start, _smallest_node, _largest_node);
+		}
+		
+		const node_pointer	base(void) const {return it_start;}
 
-		const reference	operator*(void){
+		reference	operator*(void){
 			return (this->it_start->_info);
 		}
 
+		pointer  getValPtr() const
+		{ return &it_start->_info; }
+
+
 		/*idk how to do this*/
-		value_type *	operator->(void){
-			return &(this->it_start->_info);
+		pointer	operator->(void) const {
+			return getValPtr();
+			// return &(this->it_start->_info);
 		}
 
-		setIterator operator++(void){
-			this->it_start = getNextMaximum(this->it_start);
+		setIterator & operator++(void){
+			if (it_start == NULL) it_start = _smallest_node;
+			else this->it_start = getNextMaximum(this->it_start);
 			return (*this);
 		}
 
 		setIterator operator++(int){
-			setIterator temp(this->it_start);
-			
-			this->it_start = getNextMaximum(this->it_start);
+			setIterator temp(this->it_start, _smallest_node, _largest_node);
+			if (it_start == NULL) it_start = _smallest_node;
+			else this->it_start = getNextMaximum(this->it_start);
 			return (temp);
 		}
 
-		setIterator operator--(void){
-			// if (!this->it_start->_info == value_type()) return (this->it_start());
-			// if (!this->it_start) this->it_start = getM
-			this->it_start = getNextMinimum(this->it_start);
+		setIterator & operator--(void){
+			if (it_start == NULL) it_start = _largest_node;
+			else this->it_start = getNextMinimum(this->it_start);
 			return (*this);
 		}
 
 		setIterator operator--(int){
-			setIterator temp(this->it_start);
-			/*add a line to make it bidirectional*/
-			this->it_start = getNextMinimum(this->it_start);
+			setIterator temp(this->it_start, _smallest_node, _largest_node);
+			if (it_start == NULL) it_start = _largest_node;
+			else this->it_start = getNextMinimum(this->it_start);
 			return (temp);
 		}
 
-		/* how do i make this const? */
-		bool operator==( setIterator & rhs) {return !_myComp(this->it_start->_info, rhs->_info) && !_myComp(rhs.it_start->_info, this->it_start->_info);}
-		bool operator!=( setIterator & rhs) {return !(*this == rhs);}
+		bool	operator==(const setIterator<const T, Compare, Alloc> & rhs){
+			return base() == rhs.base();
+		}
+
+		bool	operator!=(const setIterator<const T, Compare, Alloc> & rhs){
+			return base() != rhs.base();
+		}
 
 	private:
-		pointer	it_start;
-		key_compare _myComp;
-		
-		const setIterator &	base(void) const{return *(this);}
+		node_pointer	it_start;
+		node_pointer	_smallest_node;
+		node_pointer	_largest_node;
+		key_compare		_myComp;
 
-		pointer	getSubMinimum(pointer nod) const{	pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
+		node_pointer	getSubMinimum(node_pointer nod) const{	node_pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
-		pointer	getSubMaximum(pointer nod) const{	pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
+		node_pointer	getSubMaximum(node_pointer nod) const{	node_pointer tmp = nod; for (; tmp->_right; tmp = tmp->_right) {}; return tmp; }
 
-		pointer	getNextMaximum(pointer nod) const{
+		node_pointer	getNextMaximum(node_pointer nod) const{
 			if (!nod) return NULL;
 			if (nod->_right)
 				return (getSubMinimum(nod->_right));
@@ -104,7 +132,7 @@ namespace ft{
 			return nod->_parent;				
 		}
 
-		pointer	getNextMinimum(pointer nod) const{
+		node_pointer	getNextMinimum(node_pointer nod) const{
 			if (!nod) return NULL;
 			if (nod->_left)
 				return getSubMaximum(nod->_left);
@@ -113,7 +141,7 @@ namespace ft{
 			return nod->_parent;				
 		}
 
-		bool	amILeft(pointer _nod) const{return _nod == _nod->_parent->_left;}
+		bool	amILeft(node_pointer _nod) const{return _nod == _nod->_parent->_left;}
 
 	};
 }

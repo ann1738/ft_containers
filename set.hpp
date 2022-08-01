@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/25 11:31:03 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/01 14:13:07 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ namespace ft
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
 		typedef	setIterator<key_type, key_compare, allocator_type>					iterator;
-		// typedef	constSetIterator<const key_type , key_compare, allocator_type>		const_iterator;
+		typedef	setIterator<const key_type, key_compare, allocator_type>			const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
-		// typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
+		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 		typedef	std::ptrdiff_t														difference_type;
 		typedef	size_t																size_type;
 	private:
@@ -132,6 +132,7 @@ namespace ft
 			return nod->_parent;				
 		}
 
+		/* does not work for a bigger tree */
 		void	clear_tree(pointer _node){
 			if (!_node) return ;
 			if (_node->_left)
@@ -396,7 +397,7 @@ namespace ft
 			}
 		}
 
-		/* - assuming it exists */
+		/* - assuming it exists (not NULL) */
 		void	rb_delete(pointer deleteMe){
 			#if RB_DEL_DEBUG
 			std::cout << "\e[31m************************************rb delete of " << deleteMe->_info << "\e[0m" << std::endl;
@@ -576,26 +577,85 @@ namespace ft
 		explicit set (const key_compare& comp = key_compare(),
               		  const allocator_type& alloc = allocator_type())
 					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0) {}
-		
-		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
-		// template <class InputIterator>
-  		// set (InputIterator first, InputIterator last,
-       	// 	const key_compare& comp = key_compare(),
-       	// 	const allocator_type& alloc = allocator_type());
 
-		
-		/* !!!  NOT DONE !!! */
-		// set (const set& x);
+		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
+		template <class InputIterator>
+  		set (InputIterator first, InputIterator last,
+		  	 typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0,
+       		 const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+				:	_myComp(comp), _myAlloc(alloc), _root(0), _size(0){
+			insert(first, last);
+		}
+
+		set (const set& x)
+		 	:	_myComp(x._myComp), _myAlloc(x._myAlloc), _root(0), _size(0){
+			insert(x.begin(), x.end()); /*do these iterators need to be const*/
+		}
 
 		/*		Destructor		*/
 		~set(){
 			clear();
 		}
-		
+
 		/*		Copy Assignment Operator		*/
-		/* !!!  NOT DONE !!! */
-		// set& operator= (const set& x);
+		set& operator= (const set& x){
+			if (this != &x)
+			{
+				clear();
+				_myComp = x._myComp;
+				_myAlloc = x._myAlloc;
+				_size = 0; _root = 0;
+				insert(begin(), end()); /* do these iterators need to be const */
+			}
+			return *this;
+		}
+
+		/*		Iterators		*/
+		iterator begin(){
+			return iterator(getMinimum(), getMinimum(), getMaximum());
+		}
+
+		const_iterator begin() const{
+			return const_iterator(getMinimum(), getMinimum(), getMaximum());
+		}
+
+		iterator end(){
+			return (iterator(NULL, getMinimum(), getMaximum()));
+		}
+
+		const_iterator end() const{
+			return (const_iterator(NULL, getMinimum(), getMaximum()));
+		}
+
+		reverse_iterator rbegin(){
+			return reverse_iterator(end());
+		}
+
+		const_reverse_iterator rbegin() const{
+			return const_reverse_iterator(end());
+		}
+
+		reverse_iterator rend(){
+			return reverse_iterator(begin());
+		}
 		
+		const_reverse_iterator rend() const{
+			return const_reverse_iterator(begin());
+		}
+
+		/*	Capacity	*/
+		bool empty() const{
+			return !_root;
+		}
+
+		size_type size() const{
+			return _size;
+		}
+
+		size_type max_size() const{
+			return _myAlloc.max_size();
+		}
+
 		/*		Modifiers		*/
 		pair<iterator,bool> insert (const value_type& val){
 			pointer check = bst_find(val);
@@ -604,17 +664,29 @@ namespace ft
 			return ft::make_pair<iterator, bool>(iterator(check), true);
 		}
 		
-		/* !!!  NOT DONE !!! */
-		// iterator insert (iterator position, const value_type& val);
+		iterator insert (iterator position, const value_type& val){
+			return insert(val).first;
+		}
 
-		/* !!!  NOT DONE !!! */
-		// template <class InputIterator>
-  		// void insert (InputIterator first, InputIterator last);
+		template <class InputIterator>
+  		void insert (InputIterator first, InputIterator last,
+			typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
+			pointer	check;
+			while (first != last)
+			{
+				check = bst_find((*first).first);
+				if (check) {++first; continue;} 
+				rb_insert(*first);
+				++first;
+			}
+		}
 		
-		/* !!!  NOT DONE !!! */
-    	// void erase (iterator position);
+    	void erase (iterator position){
+			pointer check = bst_find(*position);
+			if (!check) return ;
+			rb_delete(check);
+		}
 		
-		/* !!!  NOT DONE !!! */
 		size_type erase (const value_type& val){
 			pointer check = bst_find(val);
 			if (!check) return 0;
@@ -622,8 +694,17 @@ namespace ft
 			return 1;
 		}
 		
-		/* !!!  NOT DONE !!! */
-     	// void erase (iterator first, iterator last);
+     	void erase (iterator first, iterator last){
+			iterator	tmp(first);
+			pointer		check = 0;
+			while (first != last)
+			{
+				tmp = first++;
+				check = bst_find(tmp->first);
+				if (!check) continue;
+				rb_delete(check);
+			}
+		 }
 		
 		/* !!! remove this !!! */
 		void	printColorAndParent(const key_type & k){
@@ -639,6 +720,7 @@ namespace ft
 				std::cout << "\e[0m with no parent\t\e[32m(ROOT)" << "\e[0m\n";
 				
 		}
+
 		void	printColor(const key_type & k){
 			pointer tmp = bst_find(k);
 			if (tmp->_color == RED)
@@ -649,37 +731,15 @@ namespace ft
 		
 		/* has invalid reads pls fix */
 		void clear(){
-			clear_tree(_root);
+			// clear_tree(_root);
+			erase(begin(), end());
 		}
 
-		/*		Iterators		*/
-		iterator begin(){
-			return (iterator(getMinimum()));
-		}
-
-		/* !!!  NOT DONE !!! */
-		// const_iterator begin() const;
-
-		iterator end(){
-			return (iterator(NULL));
-		}
 
 		/* !!!  NOT DONE !!! */
 		// const_iterator end() const;
 
-		/*	Capacity	*/
-		bool empty() const{
-			return !_root;
-		}
-		
-		size_type size() const{
-			return _size;
-		}
-		
-		size_type max_size() const{
-			return _myAlloc.max_size();
-		}
-		
+
 		/*	Operations	*/
 		iterator find (const value_type& val) const{
 			pointer tmp = bst_find(val);
