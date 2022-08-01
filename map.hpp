@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/07/25 15:47:39 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/01 13:49:00 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include "iterators/iterator.hpp"
 #include <cassert>
 #include "iterators/mapIterator.hpp"
+
+#include <limits>
 
 namespace ft{
 	template <	class Key,												// map::key_type
@@ -430,6 +432,7 @@ namespace ft{
 		
 		size_type		max_size() const{
 			return _myAlloc.max_size();
+			// return std::min<size_type>(_myAlloc.max_size(), std::numeric_limits< difference_type >::max()); //just a trial
 		}
 
 		/*			Element access		*/
@@ -547,7 +550,7 @@ namespace ft{
 
 		reverse_iterator rbegin(){
 			return reverse_iterator(end());
-		};
+		}
 
 		const_reverse_iterator rbegin() const{
 			return const_reverse_iterator(end());
