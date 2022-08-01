@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mapIterator.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/07/25 15:23:33 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/01 13:19:58 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,23 @@ namespace ft{
 		typedef	size_t																size_type;
 
 	// private:
-		mapIterator(const node_pointer temp, const node_pointer small, const node_pointer large) : it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
+		mapIterator(const node_pointer temp, const node_pointer small, const node_pointer large)
+			:	it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
 	public:	
-		mapIterator(void) : it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()){}
-		mapIterator(mapIterator const & iter) : it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}//account for _myComp
-		mapIterator & operator=(mapIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
+		mapIterator(void)
+			:	it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()) {}
+		mapIterator(mapIterator const & iter)
+			:	it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}
+		mapIterator & operator=(mapIterator const & iter){
+			if (this != &iter)
+			{
+				it_start = iter.it_start;
+				_smallest_node = iter._smallest_node;
+				_largest_node = iter._largest_node;
+				_myComp = iter._myComp;
+		 	}
+			return *this;
+		}
 		~mapIterator() {}
 
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
@@ -66,7 +78,6 @@ namespace ft{
 		reference	operator*(void) const{
 			return (this->it_start->_info);
 		}
-
 
 		pointer  getValPtr() const
 		{ return &it_start->_info; }
@@ -118,8 +129,7 @@ namespace ft{
 		node_pointer	it_start;
 		node_pointer	_smallest_node;
 		node_pointer	_largest_node;
-		key_compare _myComp;
-		
+		key_compare		_myComp;
 
 		node_pointer	getSubMinimum(node_pointer nod) const{	node_pointer tmp = nod; for (; tmp->_left; tmp = tmp->_left) {}; return tmp; }
 
