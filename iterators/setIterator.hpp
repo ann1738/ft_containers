@@ -65,7 +65,7 @@ namespace ft{
 		
 		const node_pointer	base(void) const {return it_start;}
 
-		reference	operator*(void){
+		const reference	operator*(void) const{
 			return (this->it_start->_info);
 		}
 

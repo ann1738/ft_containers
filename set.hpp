@@ -16,14 +16,17 @@
 # define RED 0
 # define BLACK 1
 
-# define RB_DEBUG 1
-# define RB_DEL_DEBUG 1
+# define RB_DEBUG 0
+# define RB_DEL_DEBUG 0
 # define BST_FIND_DEBUG 0
-# define BST_DEL_DEBUG 1
+# define BST_DEL_DEBUG 0
 
 #include <memory>
 #include "iterators/setIterator.hpp"
 #include "additional.hpp"
+
+/*	For optimizing the clear() and the destructor	*/
+#include "vector.hpp"
 
 namespace ft
 {
@@ -132,14 +135,22 @@ namespace ft
 			return nod->_parent;				
 		}
 
-		/* does not work for a bigger tree */
-		void	clear_tree(pointer _node){
-			if (!_node) return ;
-			if (_node->_left)
-				clear_tree(_node->_left);
-			if (_node->_right)
-				clear_tree(_node->_right);
-			del_node(_node);
+		/*	-assuming tree is not empty	*/
+		void	clear_tree(){
+			pointer front = 0;
+			ft::vector<pointer> tmp;
+			tmp.push_back(_root);
+
+			while (tmp.size())
+			{
+				front = tmp.front();
+				tmp.erase(tmp.begin());
+				if (front->_right) tmp.push_back(front->_right);
+				if (front->_left) tmp.push_back(front->_left);
+				del_node(front);
+			}
+			_root = 0;
+			_size = 0;
 		}
 		/*	BST ALGORITHMS	*/
 
@@ -659,9 +670,9 @@ namespace ft
 		/*		Modifiers		*/
 		pair<iterator,bool> insert (const value_type& val){
 			pointer check = bst_find(val);
-			if (check) return ft::make_pair<iterator, bool>(iterator(check), false); /*checks if it exists*/
+			if (check) return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), false); /*checks if it exists*/
 			check = rb_insert(val);
-			return ft::make_pair<iterator, bool>(iterator(check), true);
+			return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), true);
 		}
 		
 		iterator insert (iterator position, const value_type& val){
@@ -674,7 +685,7 @@ namespace ft
 			pointer	check;
 			while (first != last)
 			{
-				check = bst_find((*first).first);
+				check = bst_find(*first);
 				if (check) {++first; continue;} 
 				rb_insert(*first);
 				++first;
@@ -694,58 +705,112 @@ namespace ft
 			return 1;
 		}
 		
+		/*	LEAKS DETECTED	*/
      	void erase (iterator first, iterator last){
 			iterator	tmp(first);
 			pointer		check = 0;
 			while (first != last)
 			{
 				tmp = first++;
-				check = bst_find(tmp->first);
+				check = bst_find(*tmp);
 				if (!check) continue;
 				rb_delete(check);
 			}
 		 }
-		
-		/* !!! remove this !!! */
-		void	printColorAndParent(const key_type & k){
-			// std::cout << k << std::endl;
-			pointer tmp = bst_find(k);
-			if (tmp->_color == RED)
-				std::cout << "\e[31mRED\e[0m";
-			else
-				std::cout << "\e[30mBLACK\e[0m";
-			if (tmp->_parent)
-				std::cout << "\e[0m with parent\e[32m\t" << tmp->_parent->_info << "\e[0m\n";
-			else
-				std::cout << "\e[0m with no parent\t\e[32m(ROOT)" << "\e[0m\n";
-				
+
+		void swap (set& x){
+			myswap(_root, x._root);
+			myswap(_size, x._size);
+			myswap(_myAlloc, x._myAlloc);
+			myswap(_myComp, x._myComp);
 		}
 
-		void	printColor(const key_type & k){
-			pointer tmp = bst_find(k);
-			if (tmp->_color == RED)
-				std::cout << "\e[31mRED\e[0m\n";
-			else
-				std::cout << "\e[30mBLACK\e[0m\n";			
-		}
-		
-		/* has invalid reads pls fix */
 		void clear(){
-			// clear_tree(_root);
+			// clear_tree();
 			erase(begin(), end());
 		}
+		
+		/*	Observers	*/
+		key_compare key_comp() const{
+			return _myComp;
+		}
+
+		value_compare value_comp() const{
+			return _myComp;
+		}
+
+		/*	Operations	*/
+		iterator find (const value_type& val) const{
+			pointer tmp = bst_find(val);
+			if (!bst_find) return end();
+			return iterator(tmp, getMinimum(), getMaximum());
+		}
+
+		size_type count (const value_type& val) const{
+			if (bst_find(val) != end())
+				return 1;
+			return 0;
+		}
+		
+		iterator lower_bound (const value_type& val) const{
+			// iterator	tmp = begin();
+			const_iterator	tmp = begin();
+			while (tmp != end() && _myComp(*tmp, val))
+				++tmp;
+			return (iterator(bst_find(*tmp), getMinimum(), getMaximum()));
+			// return tmp;
+		}
+
+		iterator upper_bound (const value_type& val) const{
+			// iterator	tmp = begin();
+			const_iterator	tmp = begin();
+			while (tmp != end() && !_myComp(val, *tmp))
+				++tmp;
+			return (iterator(bst_find(*tmp), getMinimum(), getMaximum()));
+			// return tmp;
+		}
+
+		pair<iterator,iterator> equal_range (const value_type& val) const{
+			return ft::pair<iterator, iterator>(lower_bound(val), upper_bound(val));
+		}
+
+		/*		Allocator		*/
+		allocator_type get_allocator() const{
+			return _myAlloc;
+		}
+
+
+		/* !!! remove this !!! */
+		/*	TESTING FUNCTIONS	*/
+		// void	printColorAndParent(const key_type & k){
+		// 	// std::cout << k << std::endl;
+		// 	pointer tmp = bst_find(k);
+		// 	if (tmp->_color == RED)
+		// 		std::cout << "\e[31mRED\e[0m";
+		// 	else
+		// 		std::cout << "\e[30mBLACK\e[0m";
+		// 	if (tmp->_parent)
+		// 		std::cout << "\e[0m with parent\e[32m\t" << tmp->_parent->_info << "\e[0m\n";
+		// 	else
+		// 		std::cout << "\e[0m with no parent\t\e[32m(ROOT)" << "\e[0m\n";
+				
+		// }
+
+		// void	printColor(const key_type & k){
+		// 	pointer tmp = bst_find(k);
+		// 	if (tmp->_color == RED)
+		// 		std::cout << "\e[31mRED\e[0m\n";
+		// 	else
+		// 		std::cout << "\e[30mBLACK\e[0m\n";			
+		// }
+		
+
 
 
 		/* !!!  NOT DONE !!! */
 		// const_iterator end() const;
 
 
-		/*	Operations	*/
-		iterator find (const value_type& val) const{
-			pointer tmp = bst_find(val);
-			if (!bst_find) return end();
-			return iterator(tmp);
-		}
 		
 
 	};
