@@ -47,7 +47,8 @@ namespace ft
 		typedef	const value_type &													const_reference;
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
-		typedef	setIterator<key_type, key_compare, allocator_type>					iterator;
+		// typedef	setIterator<key_type, key_compare, allocator_type>					iterator;
+		typedef	setIterator<const key_type, key_compare, allocator_type>			iterator;
 		typedef	setIterator<const key_type, key_compare, allocator_type>			const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
