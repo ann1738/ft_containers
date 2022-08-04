@@ -622,7 +622,7 @@ namespace ft
 				_myComp = x._myComp;
 				_myAlloc = x._myAlloc;
 				_size = 0; _root = 0;
-				insert(begin(), end()); /* do these iterators need to be const */
+				insert(x.begin(), x.end()); /* do these iterators need to be const */
 			}
 			return *this;
 		}
@@ -747,15 +747,11 @@ namespace ft
 
 		/*	Operations	*/
 		iterator find (const value_type& val) const{
-			pointer tmp = bst_find(val);
-			if (!bst_find) return end();
-			return iterator(tmp, getMinimum(), getMaximum());
+			return iterator(bst_find(val), getMinimum(), getMaximum());
 		}
 
 		size_type count (const value_type& val) const{
-			if (bst_find(val) != end())
-				return 1;
-			return 0;
+			return (bst_find(val) ? 1 : 0);
 		}
 		
 		iterator lower_bound (const value_type& val) const{
