@@ -58,6 +58,8 @@ namespace ft
 		allocator_type	_myAlloc;
 		pointer			_root;
 		size_type		_size;
+
+		pointer			_nill;
 	struct node{
 			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
 			value_type	_info;
@@ -219,10 +221,10 @@ namespace ft
 		
 		/*	creates a nill node with a link to the parent (but the parent is not linked to it) */
 		pointer	createNillNode(){
-			pointer tmp = init_node();
-			tmp->_color = BLACK;
-			tmp->_right = tmp; /* marker for identification (i can put this in createNillNode()) */
-			return tmp;
+			// pointer tmp = init_node();
+			// tmp->_color = BLACK;
+			// _nill->_right = _nill; /* marker for identification (i can put this in createNillNode()) */
+			return _nill;
 		}
 
 		bool	isNillNode(pointer amINillNode){
@@ -404,7 +406,6 @@ namespace ft
 				std::cout << "\e[31mDetected Nill Node\e[0m" << std::endl;
 				#endif
 				replaceNodePos(_node, NULL);
-				del_node(_node);
 			}
 		}
 
@@ -440,7 +441,7 @@ namespace ft
 				std::cout << "\e[34mCase 1 detected (deleted node is the root)\e[0m" << std::endl;
 				#endif
 				changeColor(replacementNode, BLACK);
-				return ;
+				break ;
 			}
 
 			/*find the sibling*/
@@ -587,25 +588,30 @@ namespace ft
 		/*		Constructors		*/
 		explicit set (const key_compare& comp = key_compare(),
               		  const allocator_type& alloc = allocator_type())
-					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0) {}
+					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill;}
 
 		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
 		template <class InputIterator>
   		set (InputIterator first, InputIterator last,
 		  	 typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0,
        		 const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-				:	_myComp(comp), _myAlloc(alloc), _root(0), _size(0){
+				:	_myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()){
+			_nill->_color = BLACK;
+			_nill->_right = _nill;
 			insert(first, last);
 		}
 
 		set (const set& x)
-		 	:	_myComp(x._myComp), _myAlloc(x._myAlloc), _root(0), _size(0){
+		 	:	_myComp(x._myComp), _myAlloc(x._myAlloc), _root(0), _size(0),  _nill(init_node()){
+			_nill->_color = BLACK;
+			_nill->_right = _nill;
 			insert(x.begin(), x.end()); /*do these iterators need to be const*/
 		}
 
 		/*		Destructor		*/
 		~set(){
 			clear();
+			del_node(_nill);
 		}
 
 		/*		Copy Assignment Operator		*/
