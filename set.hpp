@@ -682,6 +682,7 @@ namespace ft
 		}
 		
 		iterator insert (iterator position, const value_type& val){
+			(void)position;
 			return insert(val).first;
 		}
 
@@ -812,6 +813,31 @@ namespace ft
 		/* !!!  NOT DONE !!! */
 		// const_iterator end() const;
 
+	};
+		/*		Non-member functions	*/
+	template< class Key, class Compare, class Alloc >
+	bool operator==( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		if (lhs.size() != rhs.size()) return false;
+		typename ft::set<Key,Compare,Alloc>::const_iterator first1 = lhs.begin(), last1 = lhs.end(), first2 = rhs.begin();
+		for (; first1 != last1; first1++, first2++)
+			if (lhs.value_comp()(*first1, *first2) || lhs.value_comp()(*first2, *first1)) return false;
+		return true;
+	}
+
+	template< class Key, class Compare, class Alloc >
+	bool operator!=( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		return !(lhs == rhs);
+	}
+
+	template< class Key, class Compare, class Alloc >
+	bool operator<( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template< class Key, class Compare, class Alloc >
+	bool operator<=( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		return !(ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+	}
 
 		
 
