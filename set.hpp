@@ -839,9 +839,21 @@ namespace ft
 		return !(ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
 	}
 
-		
+	template< class Key, class Compare, class Alloc >
+	bool operator>( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		return (ft::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+	}
 
-	};
+	template< class Key, class Compare, class Alloc >
+	bool operator>=( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
+		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	/*		std::swap specialization		*/
+	template< class Key, class Compare, class Alloc >
+	void swap( ft::set<Key,Compare,Alloc>& lhs, ft::set<Key,Compare,Alloc>& rhs ){
+		lhs.swap(rhs);
+	}
 
 } // namespace ft
 
