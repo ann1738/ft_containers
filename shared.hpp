@@ -15,6 +15,7 @@
 
 #include "vector.hpp"
 #include "map.hpp"
+#include "set.hpp"
 #include "additional.hpp"
 #include "iterators/iterator.hpp"
 

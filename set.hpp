@@ -25,9 +25,6 @@
 #include "iterators/setIterator.hpp"
 #include "additional.hpp"
 
-/*	For optimizing the clear() and the destructor	*/
-#include "vector.hpp"
-
 namespace ft
 {
 	template < class T,                        // set::key_type/value_type
@@ -138,23 +135,6 @@ namespace ft
 			return nod->_parent;				
 		}
 
-		/*	-assuming tree is not empty	*/
-		void	clear_tree(){
-			pointer front = 0;
-			ft::vector<pointer> tmp;
-			tmp.push_back(_root);
-
-			while (tmp.size())
-			{
-				front = tmp.front();
-				tmp.erase(tmp.begin());
-				if (front->_right) tmp.push_back(front->_right);
-				if (front->_left) tmp.push_back(front->_left);
-				del_node(front);
-			}
-			_root = 0;
-			_size = 0;
-		}
 		/*	BST ALGORITHMS	*/
 
 		/*	finds the node with the corresponding key if it exists.. if the key exists it returns a pointer to it	*/
@@ -420,7 +400,7 @@ namespace ft
 
 			if (deleteMe->_left && deleteMe->_right) save_deleteMe_color = getSubMinimum(deleteMe->_right)->_color; /* can be optimized */
 			pointer replacementNode = bst_delete_modified(deleteMe);
-
+			
 			/* if the deleted node was red, we can simply remove it */
 			if (save_deleteMe_color == RED) /* maybe we need to check if createNillNode was used before returning*/
 			{
@@ -715,15 +695,8 @@ namespace ft
 		
 		/*	LEAKS DETECTED	*/
      	void erase (iterator first, iterator last){
-			iterator	tmp(first);
-			pointer		check = 0;
 			while (first != last)
-			{
-				tmp = first++;
-				check = bst_find(*tmp);
-				if (!check) continue;
-				rb_delete(check);
-			}
+				erase(first++);
 		 }
 
 		void swap (set& x){
@@ -734,7 +707,6 @@ namespace ft
 		}
 
 		void clear(){
-			// clear_tree();
 			erase(begin(), end());
 		}
 		
