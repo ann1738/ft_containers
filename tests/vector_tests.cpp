@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector_tests.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 11:10:24 by ann               #+#    #+#             */
-/*   Updated: 2022/07/20 15:01:36 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/12 13:30:39 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,45 @@
 #include <vector>
 #include <algorithm>
 
-// #define	myAssert(expr) (static_cast <bool> (expr) ? void (0) : static_cast <void> (std::cout << "\e[31mFailed\e[0m\n"))
+#define NAMESPACE ft
+
+template< class T >
+static void	printVectorInfo(T & contatiner){
+	
+}
 
 void	test_accuracy()
 {
+	{
+		/*testing typenames*/
+		ft::vector<int>::value_type a;
+		ft::vector<int>::allocator_type b;
+		ft::vector<int>::reference c = a;
+		ft::vector<int>::const_reference d = a;
+		ft::vector<int>::pointer e;
+		ft::vector<int>::const_pointer f;
+		ft::vector<int>::iterator g;
+		ft::vector<int>::const_iterator h;
+		ft::vector<int>::reverse_iterator i;
+		ft::vector<int>::const_reverse_iterator j;
+		ft::vector<int>::difference_type k;
+		ft::vector<int>::size_type l;
+		(void)a; (void)b; (void)c; (void)d; (void)e;
+		(void)f; (void)g; (void)h; (void)i; (void)j;
+		(void)k; (void)l;
+	}
+
+	{
+		/*constructors, destructor, and copy assignemnt*/
+		ft::<int> vec;
+		for (int i = 0; i < 10000; ++i) vec.push_back(i);
+		printVectorInfo();
+		ft::<int> vec();
+	}
+
+#if 0	
 	//vector<int>
+	std::cout << "testing"<< std::endl;
 	{
 		ft::vector<int> mine;
 		std::vector<int> strd;
@@ -259,6 +293,7 @@ void	test_accuracy()
 		strdIns.insert(strdIns.begin() + 1, strd.begin(), strd.begin() + 3);
 
 	}
+	#endif
 	DEBUG();
 }
 
