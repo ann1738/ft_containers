@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 14:54:21 by ann               #+#    #+#             */
-/*   Updated: 2022/08/12 13:10:50 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/18 16:06:17 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,6 @@
 // #define NAMESPACE ft
 // #endif
 
-#ifdef TESTING
-#define ft std
-#endif
 
 
 #endif
