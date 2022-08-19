@@ -6,25 +6,40 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 11:10:24 by ann               #+#    #+#             */
-/*   Updated: 2022/08/12 13:30:39 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/19 14:02:35 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testing.hpp"
 #include <vector>
+#include <string>
 #include <algorithm>
 
+#ifdef TESTING
+# define ft std
+#endif
 #define NAMESPACE ft
 
+template < class T >
+void	printContainer(const T & container){
+	for (typename T::const_iterator it = container.begin(); it != container.end(); ++it)
+		std::cout << *it << "\t";
+	std::cout << std::endl;
+}
+
 template< class T >
-static void	printVectorInfo(T & contatiner){
-	
+static void	printVectorInfo(const T & contatiner){
+	std::cout << "Size: " << contatiner.size() << std::endl;
+	std::cout << "Capacity: " << contatiner.capacity() << std::endl;
+	std::cout << "Content: " << std::endl;
+	printContainer(contatiner);
 }
 
 void	test_accuracy()
 {
 	{
 		/*testing typenames*/
+		std::cout << "********** Testing Typenames **********" << std::endl;
 		ft::vector<int>::value_type a;
 		ft::vector<int>::allocator_type b;
 		ft::vector<int>::reference c = a;
@@ -44,10 +59,67 @@ void	test_accuracy()
 
 	{
 		/*constructors, destructor, and copy assignemnt*/
-		ft::<int> vec;
-		for (int i = 0; i < 10000; ++i) vec.push_back(i);
-		printVectorInfo();
-		ft::<int> vec();
+		std::cout << "********** Testing constructors and copy assignment **********" << std::endl;
+		ft::vector<int> vec;
+		for (int i = 0; i < 100000; ++i) vec.push_back(i);
+		printVectorInfo(vec);
+		ft::vector<int> vec1(100000, 42);
+		printVectorInfo(vec1);
+		ft::vector<int> vec2(vec.begin(), vec.end());
+		printVectorInfo(vec2);
+		ft::vector<int> vec3(vec1);
+		printVectorInfo(vec3);
+		ft::vector<int> vec4;
+		vec4 = vec3;
+		printVectorInfo(vec4);
+
+		ft::vector<std::string> vecStr;
+		for (int i = 0; i < 100000; ++i) vecStr.push_back(std::to_string(i));
+		printContainer(vecStr);
+	}
+	{
+		/*iterators*/
+		std::cout << "********** Testing Iterators: **********" << std::endl;
+		ft::vector<std::string> vecStr;
+		for (int i = 0; i < 10; ++i) vecStr.push_back(std::to_string(i));
+	
+		ft::vector<std::string>::iterator it = vecStr.begin();
+		ft::vector<std::string>::iterator ite = vecStr.end();
+		for (; it != ite; ++it) std::cout << *it << std::endl;
+		it = vecStr.begin();
+		ite--;
+		for (; ite != it;  --ite) std::cout << *ite << std::endl;
+
+		ft::vector<std::string>::reverse_iterator rit = vecStr.rbegin();
+		ft::vector<std::string>::reverse_iterator rite = vecStr.rend();
+		
+		for (; rit != rite; ++rit) std::cout << *rit << std::endl;
+		rit = vecStr.rbegin();
+		rite--;
+		for (; rite != rit;  --rite) std::cout << *rite << std::endl;
+	}
+	{
+		/*const_iterators*/
+		std::cout << "********** Testing Const_iterators **********" << std::endl;
+		const ft::vector<std::string> vecStr(10, "CONST");
+	
+		ft::vector<std::string>::const_iterator it = vecStr.begin();
+		ft::vector<std::string>::const_iterator ite = vecStr.end();
+		for (; it != ite; ++it) std::cout << *it << std::endl;
+		it = vecStr.begin();
+		ite--;
+		for (; ite != it;  --ite) std::cout << *ite << std::endl;
+
+		ft::vector<std::string>::const_reverse_iterator rit = vecStr.rbegin();
+		ft::vector<std::string>::const_reverse_iterator rite = vecStr.rend();
+		
+		for (; rit != rite; ++rit) std::cout << *rit << std::endl;
+		rit = vecStr.rbegin();
+		rite--;
+		for (; rite != rit;  --rite) std::cout << *rite << std::endl;
+	}
+	{
+		
 	}
 
 #if 0	
@@ -297,7 +369,7 @@ void	test_accuracy()
 	DEBUG();
 }
 
-static void	test_performance()
+ void	test_performance()
 {
 	int amount = 100000000;
 	std::cout << "\e[34mInsertion: (" << amount << " elements)\e[0m" << std::endl;
@@ -359,5 +431,5 @@ static void	test_performance()
 void	test_vector()
 {
 	test_accuracy();
-	test_performance();
+	// test_performance();
 }
