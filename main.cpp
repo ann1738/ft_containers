@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/08/12 13:03:43 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/18 16:06:41 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 #include "shared.hpp"
 #include "testing.hpp"
-# define ft std
+// # define ft std
 
 /* DONT DELETE -> THIS IS THE MAIN TEST */
 int main(int argc, char **argv)

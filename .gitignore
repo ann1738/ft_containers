@@ -6,3 +6,5 @@ main
 containers_test
 42_Containator
 ft_containers_tester
+*.log
+*.diff
