@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 11:10:24 by ann               #+#    #+#             */
-/*   Updated: 2022/08/19 14:02:35 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/24 10:00:15 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ template< class T >
 static void	printVectorInfo(const T & contatiner){
 	std::cout << "Size: " << contatiner.size() << std::endl;
 	std::cout << "Capacity: " << contatiner.capacity() << std::endl;
+	std::cout << "Max Size: " << contatiner.max_size() << std::endl;
 	std::cout << "Content: " << std::endl;
 	printContainer(contatiner);
 }
@@ -119,7 +120,44 @@ void	test_accuracy()
 		for (; rite != rit;  --rite) std::cout << *rite << std::endl;
 	}
 	{
-		
+		/*Capacity functions*/
+		std::cout << "********** Testing Capacity Functions **********" << std::endl;
+		{
+			/*resize*/
+			ft::vector<int> vec(100000, 42);
+			printVectorInfo(vec);
+			vec.resize(1, 42);
+			printVectorInfo(vec);
+			vec.resize(100001, 42);
+			printVectorInfo(vec);
+			vec.resize(100005, 42);
+			printVectorInfo(vec);
+			vec.resize(0, 42);
+			printVectorInfo(vec);
+			vec.resize(300005, 42);
+			printVectorInfo(vec);
+		}
+		{
+			/*empty*/
+			ft::vector<int> vec;
+			std::cout << vec.empty() << std::endl;
+			vec.push_back(424242);
+			std::cout << vec.empty() << std::endl;
+			vec.clear();
+			std::cout << vec.empty() << std::endl;
+		}
+		{
+			/*reserve*/
+			ft::vector<int> vec;
+			vec.reserve(1);
+			printVectorInfo(vec);
+			vec.reserve(0);
+			printVectorInfo(vec);
+			vec.reserve(100000);
+			printVectorInfo(vec);
+			vec.reserve(10);
+			printVectorInfo(vec);
+		}
 	}
 
 #if 0	

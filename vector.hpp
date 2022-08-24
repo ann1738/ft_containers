@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/07/21 11:09:46 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/24 09:50:35 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ namespace ft
 		}
 	public:
 		/*			Constuctors			*/
-		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {}
+		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {std::cout << "HELLO, I AM HERE ON PURPOSE!!!" << std::endl;}
 
 		explicit vector( size_type count, const_reference value = value_type(), const allocator_type& alloc = allocator_type())
 			: _myAlloc(alloc){
@@ -209,14 +209,16 @@ namespace ft
 				for (size_type i = new_size; i < this->size(); ++i) _myAlloc.destroy(this->_start + i);
 				this->_end = this->_start + new_size;
 			}
-			else if (new_size > this->size() && new_size <= this->capacity())
+			else
 				for (size_type i = this->size(); i < new_size; ++i) this->push_back(value);
-			else if (new_size > this->size() && new_size > this->capacity())
-			{
-				realloc_vec(new_size);
-				for (size_type i = this->size(); i < new_size; ++i) _myAlloc.construct(this->_start + i, value);
-				this->_end = this->_start + new_size;
-			}
+			// else if (new_size > this->size() && new_size <= this->capacity())
+			// 	for (size_type i = this->size(); i < new_size; ++i) this->push_back(value);
+			// else if (new_size > this->size() && new_size > this->capacity())
+			// {
+			// 	realloc_vec(new_size);
+			// 	for (size_type i = this->size(); i < new_size; ++i) _myAlloc.construct(this->_start + i, value);
+			// 	this->_end = this->_start + new_size;
+			// }
 		}
 
 		size_type	capacity(void) const{
