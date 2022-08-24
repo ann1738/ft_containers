@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/08/01 13:49:00 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/24 15:26:11 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,7 +385,7 @@ namespace ft{
 		/*			Constructors		*/
 		explicit map (const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type())
-						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){}
+						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){std::cout << "This appears when things work properly!" << std::endl;}
 
 		template <class InputIterator>
 		map (InputIterator first, InputIterator last,

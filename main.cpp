@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/08/18 16:06:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/24 15:29:39 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 			test_vector();
 			break;
 		case 1: //map
-			// test_map();
+			test_map();
 			break;
 		case 2: //stack
 			// test_stack();

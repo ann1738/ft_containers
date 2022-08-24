@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 11:10:24 by ann               #+#    #+#             */
-/*   Updated: 2022/08/24 14:41:45 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/24 16:11:51 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	printVectorInfo(const T & contatiner){
 	printContainer(contatiner);
 }
 
-void	test_accuracy()
+static void	test_accuracy()
 {
 	{
 		/*testing typenames*/
@@ -92,13 +92,6 @@ void	test_accuracy()
 	
 		ft::vector<std::string>::iterator it = vecStr.begin();
 		ft::vector<std::string>::iterator ite = vecStr.end();
-
-		std::cout << (it == ite) << std::endl;
-		std::cout << (it != ite) << std::endl;
-		std::cout << (it < ite) << std::endl;
-		std::cout << (it <= ite) << std::endl;
-		std::cout << (it > ite) << std::endl;
-		std::cout << (it >= ite) << std::endl;
 		
 		for (; it != ite; ++it) std::cout << *it << std::endl;
 		it = vecStr.begin();
@@ -429,7 +422,7 @@ void	test_accuracy()
 	}
 }
 
-void	test_performance()
+static void	test_performance()
 {
 	int amount = 100000000;
 	std::cout << "\e[34mInsertion: (" << amount << " elements)\e[0m" << std::endl;
@@ -458,9 +451,10 @@ void	test_performance()
 
 void	test_vector()
 {
-	#ifdef SPEED
+	#ifndef SPEED
 		test_accuracy();
 	#else
 		test_performance();
 	#endif
+	(void)(test_performance);
 }
