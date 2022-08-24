@@ -6,18 +6,24 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 11:10:24 by ann               #+#    #+#             */
-/*   Updated: 2022/08/24 10:00:15 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/24 14:41:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testing.hpp"
 #include <vector>
 #include <string>
+#include <list>
 #include <algorithm>
 
 #ifdef TESTING
 # define ft std
 #endif
+
+// #ifdef SPEED
+// # define
+// #endif
+
 #define NAMESPACE ft
 
 template < class T >
@@ -86,6 +92,14 @@ void	test_accuracy()
 	
 		ft::vector<std::string>::iterator it = vecStr.begin();
 		ft::vector<std::string>::iterator ite = vecStr.end();
+
+		std::cout << (it == ite) << std::endl;
+		std::cout << (it != ite) << std::endl;
+		std::cout << (it < ite) << std::endl;
+		std::cout << (it <= ite) << std::endl;
+		std::cout << (it > ite) << std::endl;
+		std::cout << (it >= ite) << std::endl;
+		
 		for (; it != ite; ++it) std::cout << *it << std::endl;
 		it = vecStr.begin();
 		ite--;
@@ -98,6 +112,35 @@ void	test_accuracy()
 		rit = vecStr.rbegin();
 		rite--;
 		for (; rite != rit;  --rite) std::cout << *rite << std::endl;
+
+		/*relational operators for iterators*/
+		it = vecStr.begin();
+		ite = vecStr.end();
+
+		std::cout << (it == ite) << std::endl;
+		std::cout << (it != ite) << std::endl;
+		std::cout << (it < ite) << std::endl;
+		std::cout << (it <= ite) << std::endl;
+		std::cout << (it > ite) << std::endl;
+		std::cout << (it >= ite) << std::endl;
+
+		/*relational operators between iterators and const_iterator*/
+		ft::vector<std::string>::const_iterator cit = vecStr.begin();
+		ft::vector<std::string>::const_iterator cite = vecStr.end();
+
+		std::cout << (it == cite) << std::endl;
+		std::cout << (it != cite) << std::endl;
+		std::cout << (it < cite) << std::endl;
+		std::cout << (it <= cite) << std::endl;
+		std::cout << (it > cite) << std::endl;
+		std::cout << (it >= cite) << std::endl;
+	
+		std::cout << (cit == ite) << std::endl;
+		std::cout << (cit != ite) << std::endl;
+		std::cout << (cit < ite) << std::endl;
+		std::cout << (cit <= ite) << std::endl;
+		std::cout << (cit > ite) << std::endl;
+		std::cout << (cit >= ite) << std::endl;
 	}
 	{
 		/*const_iterators*/
@@ -118,12 +161,24 @@ void	test_accuracy()
 		rit = vecStr.rbegin();
 		rite--;
 		for (; rite != rit;  --rite) std::cout << *rite << std::endl;
+
+		/*relational operators for const iterators*/
+		it = vecStr.begin();
+		ite = vecStr.end();
+
+		std::cout << (it == ite) << std::endl;
+		std::cout << (it != ite) << std::endl;
+		std::cout << (it < ite) << std::endl;
+		std::cout << (it <= ite) << std::endl;
+		std::cout << (it > ite) << std::endl;
+		std::cout << (it >= ite) << std::endl;
 	}
 	{
 		/*Capacity functions*/
 		std::cout << "********** Testing Capacity Functions **********" << std::endl;
 		{
 			/*resize*/
+			std::cout << "# resize() #" << std::endl;
 			ft::vector<int> vec(100000, 42);
 			printVectorInfo(vec);
 			vec.resize(1, 42);
@@ -139,6 +194,7 @@ void	test_accuracy()
 		}
 		{
 			/*empty*/
+			std::cout << "# empty() #" << std::endl;
 			ft::vector<int> vec;
 			std::cout << vec.empty() << std::endl;
 			vec.push_back(424242);
@@ -148,6 +204,7 @@ void	test_accuracy()
 		}
 		{
 			/*reserve*/
+			std::cout << "# reserve() #" << std::endl;
 			ft::vector<int> vec;
 			vec.reserve(1);
 			printVectorInfo(vec);
@@ -157,317 +214,253 @@ void	test_accuracy()
 			printVectorInfo(vec);
 			vec.reserve(10);
 			printVectorInfo(vec);
+			// try
+			// {
+			// 	vec.reserve(4611686018427387904);
+			// }
+			// catch (std::exception & e){
+			// 	std::cout << e.what() << std::endl;
+			// }
 		}
 	}
-
-#if 0	
-	//vector<int>
-	std::cout << "testing"<< std::endl;
 	{
-		ft::vector<int> mine;
-		std::vector<int> strd;
-
-		myAssert(mine.empty() == strd.empty());
-
-
-		myAssert(mine.max_size() == strd.max_size());
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());
-		mine.assign(7, 100);
-		strd.assign(7, 100);
-
-		// mine.resize(1000);
-		// strd.resize(1000);
-		// std::cout << mine.size() << " == " << strd.size() << std::endl;
-		// std::cout << mine.capacity() << " == " << strd.capacity() << std::endl;
-
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());
-		myAssert(mine.front() == strd.front());
-		myAssert(mine.back() == strd.back());
-
-		for (int i = 0; i < 100000; ++i)
+		/*Element access*/
+		std::cout << "********** Testing Element access: **********" << std::endl;
+		ft::vector<int> vec;
+		for (int i = 0; i < 100000; ++i) vec.push_back(i);
+		std::cout << vec.front() << std::endl;
+		std::cout << vec.back() << std::endl;
+		for (ft::vector<int>::size_type i = 0; i < vec.size(); ++i) std::cout << vec[i] << "&" << vec.at(i) << " - ";
+		std::cout << std::endl;
+		try
 		{
-			mine.push_back(i);
-			strd.push_back(i);
-			myAssert(mine.size() == strd.size());
-			myAssert(mine.capacity() == strd.capacity());
-			myAssert(mine.back() == strd.back());
+			std::cout << vec.at(100001) << std::endl;
 		}
-		
-		myAssert(mine.empty() == strd.empty());
-
-		mine.reserve(1);
-		strd.reserve(1);
-		myAssert(mine.back() == strd.back());
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());
-
-		mine.reserve(200000);
-		strd.reserve(200000);
-		myAssert(mine.back() == strd.back());
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());	
-		
-		mine.resize(1, 42);
-		strd.resize(1, 42);
-		myAssert(mine.back() == strd.back());
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());
-
-		mine.resize(100);
-		strd.resize(100);
-		myAssert(mine.back() == strd.back());
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());
-
-		mine.resize(200001);
-		strd.resize(200001);
-		myAssert(mine.back() == strd.back());
-		myAssert(mine.size() == strd.size());
-		myAssert(mine.capacity() == strd.capacity());
-
-		for (ft::vector<int>::iterator it = mine.begin(); it != mine.end(); ++it)
-			*it = 42;
-		for (std::vector<int>::iterator it = strd.begin(); it != strd.end(); ++it)
-			*it = 42;
-		for (ft::vector<int>::size_type i = 0; i < mine.size() && i < strd.size(); ++i)
+		catch (std::exception & e){
+			std::cout << e.what() << std::endl;
+		}
+		try
 		{
-			myAssert(mine[i] == strd[i]);
-			myAssert(mine.at(i) == strd.at(i));	
+			std::cout << vec.at(-1) << std::endl;
 		}
-
-		for (ft::vector<int>::reverse_iterator rit = mine.rbegin(); rit != mine.rend(); ++rit)
-			*rit = 24;
-		for (std::vector<int>::reverse_iterator rit = strd.rbegin(); rit != strd.rend(); ++rit)
-			*rit = 24;
-		for (ft::vector<int>::size_type i = 0; i < mine.size() && i < strd.size(); ++i)
-		{
-			myAssert(mine[i] == strd[i]);
-			myAssert(mine.at(i) == strd.at(i));	
+		catch (std::exception & e){
+			std::cout << e.what() << std::endl;
 		}
-		
-		try{
-			mine.at(mine.size() + 1);
-			myAssert(false);
-		}
-		catch(std::exception & e){}
-		
-		try{
-			strd.at(strd.size() + 1);
-			myAssert(false);
-		}
-		catch(std::exception & e){}
-
-		ft::vector<int> mineEqual;
-		mineEqual = mine;
-		std::vector<int> strdEqual;
-		strdEqual = strd;
-		
-
-		for (ft::vector<int>::size_type i = 0; i < mineEqual.size() && i < strdEqual.size(); ++i)
-		{
-			mineEqual.pop_back();
-			strdEqual.pop_back();
-			myAssert(mineEqual.back() == strdEqual.back());
-			myAssert(mineEqual.size() == strdEqual.size());
-			myAssert(mineEqual.capacity() == strdEqual.capacity());
-		}
-		
-		myAssert(mineEqual.empty() == strdEqual.empty());
-
-		ft::vector<int> mineCopy(mine);
-		std::vector<int> strdCopy(strd);
-
-		for (ft::vector<int>::size_type i = 0; i < mineCopy.size() && i < strdCopy.size(); ++i)
-		{
-			mineCopy.pop_back();
-			strdCopy.pop_back();
-			myAssert(mineCopy.back() == strdCopy.back());
-			myAssert(mineCopy.size() == strdCopy.size());
-			myAssert(mineCopy.capacity() == strdCopy.capacity());
-		}
-		
-		myAssert(mineCopy.empty() == strdCopy.empty());
-		
-		ft::vector<int> mineSwap(100, 1337);
-		std::vector<int> strdSwap(100, 1337);
-
-		mineSwap.swap(mine);
-		strdSwap.swap(strd);
-		
-		myAssert(mineSwap.size() == strdSwap.size());
-		myAssert(mineSwap.capacity() == strdSwap.capacity());
-
-		for (ft::vector<int>::size_type i = 0; i < mine.size() && i < strd.size(); ++i)
-		{
-			myAssert(mine[i] == strd[i]);
-			myAssert(mine.at(i) == strd.at(i));	
-		}
-		for (ft::vector<int>::size_type i = 0; i < mineSwap.size() && i < strdSwap.size(); ++i)
-		{
-			myAssert(mineSwap[i] == strdSwap[i]);
-			myAssert(mineSwap.at(i) == strdSwap.at(i));	
-		}
-		
-		mineSwap.clear();
-		strdSwap.clear();
-		
-		myAssert(mineSwap.size() == strdSwap.size());
-		myAssert(mineSwap.capacity() == strdSwap.capacity());
-
-		ft::vector<int> mineRange(mine.begin(), mine.end());
-		std::vector<int> strdRange(strd.begin(), strd.end());
-
-		for (ft::vector<int>::size_type i = 0; i < mineRange.size() && i < strdRange.size(); ++i)
-		{
-			myAssert(mineRange[i] == mine[i]);
-			myAssert(strdRange[i] == strd[i]);
-			myAssert(mineRange[i] == strdRange[i]);
-		}
-		
-		mineRange.erase(mineRange.begin() + 10);
-		strdRange.erase(strdRange.begin() + 10);
-		mineRange.erase(mineRange.begin(), mineRange.begin() + 5);
-		strdRange.erase(strdRange.begin(), strdRange.begin() + 5);
-		// std::cout << mineRange.size() << " == " << strdRange.size() << std::endl;
-		myAssert(mineSwap.size() == strdSwap.size());
-		myAssert(mineSwap.capacity() == strdSwap.capacity());
-
-
-		mine.resize(0);
-		strd.resize(0);
-		for (ft::vector<int>::size_type i = 0; i < 100; ++i)
-		{
-			mine.push_back(i);
-			strd.push_back(i);
-		}
-		mineRange.assign(mine.begin(), mine.end());
-		strdRange.assign(strd.begin(), strd.end());
-		for (ft::vector<int>::size_type i = 0; i < mineRange.size() && i < strdRange.size(); ++i)
-			myAssert(mineRange[i] == strdRange[i]);
-		
-		mineRange.erase(mineRange.begin() + 10);
-		strdRange.erase(strdRange.begin() + 10);
-		
-		myAssert(mineSwap.size() == strdSwap.size());
-		myAssert(mineSwap.capacity() == strdSwap.capacity());
-		for (ft::vector<int>::size_type i = 0; i < mineRange.size() && i < strdRange.size(); ++i)
-			myAssert(mineRange[i] == strdRange[i]);
-
-		mineRange.erase(mineRange.begin() + 3, mineRange.begin() + 7);
-		strdRange.erase(strdRange.begin() + 3, strdRange.begin() + 7);
-		
-		myAssert(mineSwap.size() == strdSwap.size());
-		myAssert(mineSwap.capacity() == strdSwap.capacity());
-		for (ft::vector<int>::size_type i = 0; i < mineRange.size() && i < strdRange.size(); ++i)
-			myAssert(mineRange[i] == strdRange[i]);
-
-		// myAssert(*mineRange.insert(mineRange.begin() + 5, 42) == *strdRange.insert(strdRange.begin() + 5, 42));
-		// myAssert(*mineRange.insert(mineRange.begin() + 5, 42) == *strdRange.insert(strdRange.begin() + 5, 42));
-		// myAssert(*mineRange.insert(mineRange.begin() + 5, 42) == *strdRange.insert(strdRange.begin() + 5, 42));
-		// myAssert(*mineRange.insert(mineRange.begin() + 5, 42) == *strdRange.insert(strdRange.begin() + 5, 42));
-		// myAssert(*mineRange.insert(mineRange.begin() + 2, 42) == *strdRange.insert(strdRange.begin() + 2, 42));
-		// myAssert(*mineRange.insert(mineRange.begin() + 2, 42) == *strdRange.insert(strdRange.begin() + 2, 42));
-		// mineRange.insert(mineRange.begin(), 15, 42);
-		// strdRange.insert(strdRange.begin(), 15, 42);
-
-		DEBUG();
-		// mineRange.insert(mineRange.begin(), mine.begin(), mine.begin() + 6);
-		// strdRange.insert(strdRange.begin(), strd.begin(), strd.begin() + 6);
-
-		// std::cout << mineRange.size() << " == " << strdRange.size() << std::endl;
-		// std::cout << mineRange.capacity() << " == " << strdRange.capacity() << std::endl;
-		// myAssert(mineSwap.size() == strdSwap.size());
-		// myAssert(mineSwap.capacity() == strdSwap.capacity());
-
-		// return ;
-		// for (ft::vector<int>::size_type i = 0; i < mineRange.size() && i < strdRange.size(); ++i)
-		// {	std::cout << mineRange[i] << " == " << strdRange[i] << std::endl;
-		// 	myAssert(mineRange[i] == strdRange[i]);}
-
-		// mineRange.insert(mineRange.begin(), mine.begin(), mine.begin() + 2); 
-		// s.insert(mineRange.begin(), mine.begin(), mine.begin() + 2);
-
-		myAssert((strdRange == strdRange) && (mineRange == mineRange));
-		myAssert(!(strdRange != strdRange) && !(mineRange != mineRange));
-		myAssert(!(strdRange < strdRange) && !(mineRange < mineRange));
-		myAssert((strdRange <= strdRange) && (mineRange <= mineRange));
-		myAssert(!(strdRange > strdRange) && !(mineRange > mineRange));
-		myAssert((strdRange >= strdRange) && (mineRange >= mineRange));
-		
-		ft::vector<int> mineIns(3, 42);
-		std::vector<int> strdIns(3, 42);
-
-		mineIns.insert(mineIns.begin() + 1, mine.begin(), mine.begin() + 3);
-		strdIns.insert(strdIns.begin() + 1, strd.begin(), strd.begin() + 3);
-
+		vec.pop_back();
+		vec.erase(vec.begin());
+		std::cout << vec.front() << std::endl;
+		std::cout << vec.back() << std::endl;
 	}
-	#endif
-	DEBUG();
+	{
+		/*Modifiers*/
+		std::cout << "********** Testing Modifiers: **********" << std::endl;
+		{
+			/*assign*/
+			std::cout << "# assign() #" << std::endl;
+			ft::vector<int> vec;
+			vec.assign(10000, 42);
+			printVectorInfo(vec);
+			vec.assign(10, 42);
+			printVectorInfo(vec);
+			vec.assign(0, 42);
+			printVectorInfo(vec);
+			vec.assign(100000, 42);
+			printVectorInfo(vec);
+			vec.assign(100001, 42);
+			printVectorInfo(vec);
+			std::list<int> myNameIsListy(1000, 1337);
+			vec.assign(myNameIsListy.begin(), myNameIsListy.end());
+			printVectorInfo(vec);
+		}
+		{
+			/*push_back, pop_back*/
+			std::cout << "# push_back() and pop_back() #" << std::endl;
+			ft::vector<std::string> vecStr;
+			printContainer(vecStr);
+			vecStr.push_back("FIRST");
+			printContainer(vecStr);
+			vecStr.push_back("SECOND");
+			for (int i = 0; i < 100000; ++i) 
+			{
+				std::cout << vecStr.capacity() << "*" << vecStr.size() << " - ";
+				vecStr.push_back(std::to_string(i));
+			}
+			std::cout << std::endl;
+			printContainer(vecStr);
+			for (; !vecStr.empty();) 
+			{
+				std::cout << vecStr.capacity() << "*" << vecStr.size() << " - ";
+				vecStr.pop_back();
+			}
+			std::cout << std::endl;
+			printContainer(vecStr);
+		}
+		{
+			/*insert, */
+			std::cout << "# insert() #" << std::endl;
+			ft::vector<int> vec;
+			for (int i = 0; i < 10000; ++i) vec.push_back(i);
+			vec.insert(vec.begin(), 4242);
+			vec.insert(vec.end() - 1, 4242);
+			printContainer(vec);	
+			vec.insert(vec.begin() + 1000, 4242);
+			vec.insert(vec.begin() + 5000, 4242);
+			vec.insert(vec.begin() + 7000, 4242);
+			vec.insert(vec.begin() + 9000, 4242);
+			printContainer(vec);
+			
+			vec.insert(vec.begin(), 5, 4242);
+			vec.insert(vec.end() - 1, 5, 4242);
+			printContainer(vec);
+			vec.insert(vec.begin() + 500, 0, 4242);
+			vec.insert(vec.begin() + 500, 5, 4242);
+			vec.insert(vec.begin() + 1500, 5, 4242);
+			vec.insert(vec.begin() + 2500, 5, 4242);
+			vec.insert(vec.begin() + 4500, 5, 4242);
+			vec.insert(vec.begin() + 5500, 5, 4242);
+			vec.insert(vec.begin() + 6500, 5, 4242);
+			vec.insert(vec.begin() + 7500, 5, 4242);
+			vec.insert(vec.begin() + 8500, 5, 4242);
+			vec.insert(vec.begin() + 9500, 5, 4242);
+			printContainer(vec);
+
+			std::list<int> myNameIsListy(1000, 1337);
+		
+			vec.insert(vec.begin(), myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.end() - 1, myNameIsListy.begin(), myNameIsListy.end());
+			printContainer(vec);
+			
+
+			myNameIsListy.clear();
+			myNameIsListy.assign(50, 1337);
+			vec.insert(vec.begin() + 750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 1750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 2750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 3750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 4750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 5750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 6750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 7750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 8750, myNameIsListy.begin(), myNameIsListy.end());
+			vec.insert(vec.begin() + 9750, myNameIsListy.begin(), myNameIsListy.end());
+			printContainer(vec);
+		
+			/*erase*/
+			std::cout << "# erase() #" << std::endl;
+			vec.erase(vec.begin());
+			vec.erase(vec.end() - 1);
+			printContainer(vec);
+			
+			vec.erase(vec.begin() + 4);
+			vec.erase(vec.begin() + 44);
+			vec.erase(vec.begin() + 444);
+			vec.erase(vec.begin() + 4444);
+			printContainer(vec);
+			
+			vec.erase(vec.begin(), vec.begin() + 25);
+			vec.erase(vec.begin() + 500, vec.begin() + 575);
+			vec.erase(vec.begin() + 5000, vec.begin() + 5750);
+			vec.erase(vec.begin() + 9000, vec.begin() + 9125);
+			printContainer(vec);
+			
+			vec.erase(vec.begin(), vec.end());
+			printContainer(vec);
+		}
+		{
+			/*swap, clear*/
+			std::cout << "# swap() and clear() #" << std::endl;
+			ft::vector<std::string> vecA(999, "A");
+			ft::vector<std::string> vecB(9999, "BB");
+			
+			ft::vector<std::string>::iterator itOldA = vecA.begin();
+			ft::vector<std::string>::iterator iteOldA = vecA.end();
+			ft::vector<std::string>::iterator itOldB = vecB.begin();
+			ft::vector<std::string>::iterator iteOldB = vecB.end();
+
+			vecA.swap(vecB);
+			printContainer(vecA);
+			printContainer(vecB);
+			
+			std::cout << "Checking iterator validity:" << std::endl;
+			std::cout << (itOldA == vecB.begin()) << std::endl;
+			std::cout << (iteOldA == vecB.end()) << std::endl;
+			std::cout << (itOldB == vecA.begin()) << std::endl;
+			std::cout << (iteOldB == vecA.end()) << std::endl;
+
+			vecA.clear();
+			printContainer(vecA);
+			vecB.clear();
+			printContainer(vecB);
+		}
+		{
+			/*get_allocator*/
+			std::cout << "# get_allocator() #" << std::endl;
+			ft::vector<int> vec;
+
+			int *ptr = vec.get_allocator().allocate(1000);
+
+			for (int i = 0; i < 1000; ++i) vec.get_allocator().construct(ptr + i, i);
+
+			for (int i = 0; i < 1000; ++i) std::cout << ptr[i] << " - ";
+			std::cout << std::endl;
+
+			for (int i = 0; i < 1000; ++i) vec.get_allocator().destroy(ptr + i);
+			vec.get_allocator().deallocate(ptr, 1000);
+		}
+		{
+			/*relational operators*/
+			std::cout << "# relational operators #" << std::endl;
+			ft::vector<int> vecA(10, 42);
+			ft::vector<int> vecB(10, 1337);
+
+			std::cout << (vecA == vecB) << std::endl;
+			std::cout << (vecA != vecB) << std::endl;
+			std::cout << (vecA < vecB) << std::endl;
+			std::cout << (vecA <= vecB) << std::endl;
+			std::cout << (vecA > vecB) << std::endl;
+			std::cout << (vecA >= vecB) << std::endl;
+
+			/*std::swap specialization*/
+			std::cout << "# std::swap specialization #" << std::endl;
+			std::swap(vecA, vecB);
+			printVectorInfo(vecA);
+			printVectorInfo(vecB);
+		}
+	}
 }
 
- void	test_performance()
+void	test_performance()
 {
 	int amount = 100000000;
 	std::cout << "\e[34mInsertion: (" << amount << " elements)\e[0m" << std::endl;
-	{
-		std::cout << "ft::vector:" << std::endl;
-		std::cout << "Insertion: ";
-		timer *T1 = new timer();
-		ft::vector<int> mine;
-		for (int i = 0; i < amount; ++i) mine.push_back(i);
-		delete T1;
+	std::cout << "ft::vector:" << std::endl;
+	std::cout << "Insertion: ";
+	timer *T1 = new timer();
+	ft::vector<int> mine;
+	for (int i = 0; i < amount; ++i) mine.push_back(i);
+	delete T1;
 
-		std::cout << "Searching: ";
-		timer *T2 = new timer();
-		ft::find(mine.begin(), mine.end(), amount / 10);
-		ft::find(mine.begin(), mine.end(), amount / 7);
-		ft::find(mine.begin(), mine.end(), amount / 5);
-		ft::find(mine.begin(), mine.end(), amount / 3);
-		ft::find(mine.begin(), mine.end(), amount / 1);
-		delete T2;
-		
-		std::cout << "Deletion: ";
-		// timer *T3 = new timer();
-		timer T4;
-		mine.erase(mine.begin(), mine.end());
-		// delete T3;
-
-		// timer *T1 = new timer();
-		// timer *T1 = new timer();
-		// timer *T1 = new timer();
-		// timer *T1 = new timer();
-		
-	}
-	{
-		std::cout << "std::vector:" << std::endl;
-		std::cout << "Insertion: ";
-		timer *T1 = new timer();
-		std::vector<int> mine;
-		for (int i = 0; i < amount; ++i) mine.push_back(i);
-		delete T1;
-
-		std::cout << "Searching: ";
-		timer *T2 = new timer();
-		std::find(mine.begin(), mine.end(), amount / 10);
-		std::find(mine.begin(), mine.end(), amount / 7);
-		std::find(mine.begin(), mine.end(), amount / 5);
-		std::find(mine.begin(), mine.end(), amount / 3);
-		std::find(mine.begin(), mine.end(), amount / 1);
-		delete T2;
-
-		std::cout << "Deletion: ";
-		timer T4;
-		// timer *T3 = new timer();
-		mine.erase(mine.begin(), mine.end());
-		// delete T3;
-
-	}
+	std::cout << "Searching: ";
+	timer *T2 = new timer();
+	ft::find(mine.begin(), mine.end(), amount / 10);
+	ft::find(mine.begin(), mine.end(), amount / 7);
+	ft::find(mine.begin(), mine.end(), amount / 5);
+	ft::find(mine.begin(), mine.end(), amount / 3);
+	ft::find(mine.begin(), mine.end(), amount / 1);
+	delete T2;
+	
+	std::cout << "Deletion: ";
+	// timer *T3 = new timer();
+	timer T4;
+	mine.erase(mine.begin(), mine.end());
+	// delete T3;
 }
 
 void	test_vector()
 {
-	test_accuracy();
-	// test_performance();
+	#ifdef SPEED
+		test_accuracy();
+	#else
+		test_performance();
+	#endif
 }
