@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   stack.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 11:53:57 by ann               #+#    #+#             */
-/*   Updated: 2022/07/14 12:20:31 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/25 16:07:48 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ namespace ft{
 		typedef	size_t		size_type;
 
 		explicit stack (const container_type& ctnr = container_type())
-			: c(ctnr) {}
+			: c(ctnr) {std::cout << "I am here to show you that things are working!" << std::endl;}
 		
 
 		bool empty() const{

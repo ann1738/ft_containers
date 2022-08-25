@@ -3,217 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   stack_tests.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 12:58:15 by ann               #+#    #+#             */
-/*   Updated: 2022/07/14 12:36:07 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/25 16:45:01 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../testing.hpp"
 #include <stack>
 
-#define TESTED_TYPE int
-#define TESTED_NAMESPACE ft
-#define t_stack_ TESTED_NAMESPACE::stack<TESTED_TYPE>
-typedef t_stack_::container_type container_type;
+#ifdef TESTING
+# define ft std
+#endif
 
-template <class T_STACK>
-void	cmp(const T_STACK &lhs, const T_STACK &rhs)
-{
-	static int i = 0;
-
-	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
-	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
-	std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
-	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
+template< class T >
+static void	printStackInfo(const T & contatiner){
+	std::cout << "Empty " << contatiner.empty() << std::endl;
+	std::cout << "Size: " << contatiner.size() << std::endl;
+	if (contatiner.size())
+		std::cout << "Top: " << contatiner.top() << std::endl;
 }
+
 void	test_stack()
 {
-
-	container_type	ctnr;
-
-	ctnr.push_back(21);
-	ctnr.push_back(42);
-	ctnr.push_back(1337);
-	ctnr.push_back(19);
-	ctnr.push_back(0);
-	ctnr.push_back(183792);
-
-	t_stack_	stck(ctnr);
-	t_stack_	stck2(ctnr);
-
-	cmp(stck, stck);  // 0
-	cmp(stck, stck2); // 1
-
-	stck2.push(60);
-	stck2.push(61);
-	stck2.push(62);
-
-	cmp(stck, stck2); // 2
-	cmp(stck2, stck); // 3
-
-	stck.push(42);
-
-	cmp(stck, stck2); // 4
-	cmp(stck2, stck); // 5
-
-	stck.push(100);
-
-	cmp(stck, stck2); // 6
-	cmp(stck2, stck); // 7
-	return ;
-	#if 0
 	{
-		std::stack<int> stnd;
-		ft::stack<int> mine;
+		/*testing typenames*/
+		ft::stack<int>::value_type a;
+		ft::stack<int>::container_type b;
+		ft::stack<int>::size_type c;
+		(void)a; (void)b; (void)c;
 
-		assert(stnd.empty() == mine.empty());
-		assert(stnd.size() == mine.size());
-		// assert(stnd.top() == mine.top());
+		/*testing member-functions and relational operators*/
+		ft::stack<int> stk;
 
-		stnd.push(5);
-		mine.push(5);
+		printStackInfo(stk);
+
+		stk.push(5);
+		printStackInfo(stk);
 		
-		assert(stnd.empty() == mine.empty());
-		assert(stnd.size() == mine.size());
-		assert(stnd.top() == mine.top());
-
-		stnd.pop();
-		mine.pop();
-
-		assert(stnd.empty() == mine.empty());
-		assert(stnd.size() == mine.size());
-		// assert(stnd.top() == mine.top());
+		stk.pop();
+		printStackInfo(stk);
 
 		for (ft::stack<int>::size_type i = 0; i < 100; ++i)
 		{
-			stnd.push(i);
-			mine.push(i);
-			assert(stnd.size() == mine.size());
-			assert(stnd.top() == mine.top());
+			stk.push(i);
+			printStackInfo(stk);
 		}
 		
-		assert(stnd == stnd && mine == mine);
-		assert(!(stnd != stnd) && !(mine != mine));
-		assert(!(stnd < stnd) && !(mine < mine));
-		assert((stnd <= stnd) && (mine <= mine));
-		assert(!(stnd > stnd) && !(mine > mine));
-		assert((stnd >= stnd) && (mine >= mine));
+		std::cout << (stk == stk) << std::endl;
+		std::cout << (stk != stk) << std::endl;
+		std::cout << (stk < stk) << std::endl;
+		std::cout << (stk <= stk) << std::endl;
+		std::cout << (stk > stk) << std::endl;
+		std::cout << (stk >= stk) << std::endl;
 
-		// container_type a;
-
-		for (ft::stack<int>::size_type i = 0; i < 100; ++i)
+		while (!stk.empty())
 		{
-			assert(stnd.top() == mine.top());
-			assert(stnd.size() == mine.size());
-			stnd.pop();
-			mine.pop();
+			stk.pop();
+			printStackInfo(stk);
 		}
-
-		assert(stnd.empty() == mine.empty());
 	}
-
 	{
-		std::stack<std::string> stnd;
-		ft::stack<std::string> mine;
+		std::stack<std::string> stk;
 
-		assert(stnd.empty() == mine.empty());
-		assert(stnd.size() == mine.size());
-		// assert(stnd.top() == mine.top());
+		printStackInfo(stk);
 
-		stnd.push("FIRST");
-		mine.push("FIRST");
+		stk.push("FIRST");
+		printStackInfo(stk);
 		
-		assert(stnd.empty() == mine.empty());
-		assert(stnd.size() == mine.size());
-		assert(stnd.top() == mine.top());
-
-		stnd.pop();
-		mine.pop();
-
-		assert(stnd.empty() == mine.empty());
-		assert(stnd.size() == mine.size());
-		// assert(stnd.top() == mine.top());
+		stk.pop();
+		printStackInfo(stk);
 
 		for (ft::stack<int>::size_type i = 0; i < 100; ++i)
 		{
-			stnd.push("HEHE");
-			mine.push("HEHE");
-			assert(stnd.size() == mine.size());
-			assert(stnd.top() == mine.top());
+			stk.push("HELLO!");
+			printStackInfo(stk);
 		}
 
-		// assert(stnd == stnd);
-		// assert(!(stnd != stnd));
-		// assert(!(stnd < stnd));
-		// assert(!(stnd <= stnd));
-		// assert(!(stnd > stnd));
-		// assert(!(stnd >= stnd));
-		
-		// assert(mine == mine);
-		// assert(!(mine != mine));
-		// assert(!(mine < mine));
-		// assert(!(mine <= mine));
-		// assert(!(mine > mine));
-		// assert(!(mine >= mine));
+		std::cout << (stk == stk) << std::endl;
+		std::cout << (stk != stk) << std::endl;
+		std::cout << (stk < stk) << std::endl;
+		std::cout << (stk <= stk) << std::endl;
+		std::cout << (stk > stk) << std::endl;
+		std::cout << (stk >= stk) << std::endl;
 
-		for (ft::stack<int>::size_type i = 0; i < 100; ++i)
+		while (!stk.empty())
 		{
-			assert(stnd.top() == mine.top());
-			assert(stnd.size() == mine.size());
-			stnd.pop();
-			mine.pop();
+			stk.pop();
+			printStackInfo(stk);
 		}
-
-		assert(stnd.empty() == mine.empty());
+		std::cout << "HEYEYE" << std::endl;
 	}
-	#endif
 }
-
-// template <class T_STACK>
-// void	cmp(const T_STACK &lhs, const T_STACK &rhs)
-// {
-// 	static int i = 0;
-
-// 	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
-// 	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
-// 	std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
-// 	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
-// }
-
-// int		main(void)
-// {
-// 	container_type	ctnr;
-
-// 	ctnr.push_back(21);
-// 	ctnr.push_back(42);
-// 	ctnr.push_back(1337);
-// 	ctnr.push_back(19);
-// 	ctnr.push_back(0);
-// 	ctnr.push_back(183792);
-
-// 	t_stack_	stck(ctnr);
-// 	t_stack_	stck2(ctnr);
-
-// 	cmp(stck, stck);  // 0
-// 	cmp(stck, stck2); // 1
-
-// 	stck2.push(60);
-// 	stck2.push(61);
-// 	stck2.push(62);
-
-// 	cmp(stck, stck2); // 2
-// 	cmp(stck2, stck); // 3
-
-// 	stck.push(42);
-
-// 	cmp(stck, stck2); // 4
-// 	cmp(stck2, stck); // 5
-
-// 	stck.push(100);
-
-// 	cmp(stck, stck2); // 6
-// 	cmp(stck2, stck); // 7
-// 	return (0);
-// }
