@@ -822,13 +822,15 @@ namespace ft
 		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
+
+} // namespace ft
+
+namespace std
+{
 	/*		std::swap specialization		*/
 	template< class Key, class Compare, class Alloc >
 	void swap( ft::set<Key,Compare,Alloc>& lhs, ft::set<Key,Compare,Alloc>& rhs ){
 		lhs.swap(rhs);
 	}
-
-} // namespace ft
-
-
+}
 #endif

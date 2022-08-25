@@ -655,9 +655,14 @@ namespace ft{
 		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
 
+}
+
+namespace std
+{
 	/*		std::swap specialization		*/
 	template< class Key, class T, class Compare, class Alloc >
 	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs ){
+		std::cout << "MY SWAP IS USED" << std::endl;
 		lhs.swap(rhs);
 	}
 }

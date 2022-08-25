@@ -388,12 +388,15 @@ namespace ft
 	bool operator>=( const ft::vector<T,_Alloc>& lhs, const ft::vector<T,_Alloc>& rhs ){
 		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
+}
 
+namespace std
+{
 	/*		std::swap specialization		*/
 	template< class T, class Alloc >
 	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ){
+		std::cout << "THIS IS MY SWAP" << std::endl;
 		lhs.swap(rhs);
 	}
 }
-
 #endif
