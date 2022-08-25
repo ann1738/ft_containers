@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:21 by ann               #+#    #+#             */
-/*   Updated: 2022/08/24 15:29:39 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/25 16:04:22 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ int main(int argc, char **argv)
 			test_map();
 			break;
 		case 2: //stack
-			// test_stack();
+			test_stack();
 			break;
-		case 3: //vector
-			//test_vector();
+		case 3: //set
+			//test_set();
 			break;
 		default:
 			std::cout << "\e[31mInvalid Input\e[0m" << std::endl

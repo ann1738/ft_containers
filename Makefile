@@ -1,7 +1,7 @@
 NAME = main
 VECTOR_TESTS = vector_tests/element_access.cpp vector_tests/capacity.cpp vector_tests/modifiers.cpp
 
-SRC = main.cpp tests/vector_tests.cpp tests/map_tests.cpp #tests/stack_tests.cpp
+SRC = main.cpp tests/vector_tests.cpp tests/map_tests.cpp tests/stack_tests.cpp
 OBJ = $(SRC:%.cpp=%.o)
 CXX = c++
 CPPFLAGS = -Wall -Werror -Wextra -c -std=c++98 -g
@@ -67,6 +67,7 @@ stack:
 	$(MAKE) ft_stack
 	$(MAKE) std_stack
 	@diff $(OUTPUT_STACK_FT) $(OUTPUT_STACK_STD) > $(OUTPUT_STACK_CMP) || exit 0
+	cat $(OUTPUT_STACK_CMP)
 
 ft_stack: re
 	./$(NAME) stack > $(OUTPUT_STACK_FT)
