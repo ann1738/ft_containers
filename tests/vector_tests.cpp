@@ -13,6 +13,7 @@
 #include "../testing.hpp"
 #include <vector>
 #include <string>
+#include <sstream>
 #include <list>
 #include <algorithm>
 
@@ -25,6 +26,12 @@
 // #endif
 
 #define NAMESPACE ft
+
+static std::string	to_string(int _n){
+	std::stringstream s;
+	s << _n;
+	return s.str();
+}
 
 template < class T >
 void	printContainer(const T & container){
@@ -81,14 +88,14 @@ static void	test_accuracy()
 		printVectorInfo(vec4);
 
 		ft::vector<std::string> vecStr;
-		for (int i = 0; i < 100000; ++i) vecStr.push_back(std::to_string(i));
+		for (int i = 0; i < 100000; ++i) vecStr.push_back(to_string(i));
 		printContainer(vecStr);
 	}
 	{
 		/*iterators*/
 		std::cout << "********** Testing Iterators: **********" << std::endl;
 		ft::vector<std::string> vecStr;
-		for (int i = 0; i < 10; ++i) vecStr.push_back(std::to_string(i));
+		for (int i = 0; i < 10; ++i) vecStr.push_back(to_string(i));
 	
 		ft::vector<std::string>::iterator it = vecStr.begin();
 		ft::vector<std::string>::iterator ite = vecStr.end();
@@ -276,7 +283,7 @@ static void	test_accuracy()
 			for (int i = 0; i < 100000; ++i) 
 			{
 				std::cout << vecStr.capacity() << "*" << vecStr.size() << " - ";
-				vecStr.push_back(std::to_string(i));
+				vecStr.push_back(to_string(i));
 			}
 			std::cout << std::endl;
 			printContainer(vecStr);
