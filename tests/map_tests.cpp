@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:52:38 by ann               #+#    #+#             */
-/*   Updated: 2022/08/24 16:47:41 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/25 12:38:13 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,6 +353,34 @@ void	test_accuracy()
 			printMapInfo(mpA);
 			mpB.clear();
 			printMapInfo(mpB);
+		}
+	}
+	{
+		/*Observers*/
+		std::cout << "********** Testing Observers: **********" << std::endl;
+		{
+			/*key_comp*/
+			std::cout << "# key_comp() #" << std::endl;
+			
+			ft::map<float, char> mp;
+			ft::map<float, char>::key_compare keyCompReplica = mp.key_comp();
+			mp[1.1] = 'A';	mp[2.2] = 'B';	mp[3.3] = 'C';
+			mp[4.4] = 'D';	mp[5.5] = 'E';	mp[6.6] = 'G';
+			mp[7.7] = 'F';	mp[8.8] = 'K';	mp[9.9] = 'L';
+			
+			ft::map<float, char>::iterator it = mp.begin();
+			for (; keyCompReplica(it->first, mp.rbegin()->first); ++it)
+				std::cout << it->first << "->" << it->second << " - " << std::endl;			
+			
+			/*value_comp*/
+			std::cout << "# value_comp() #" << std::endl;
+			
+			it = mp.begin();
+			for (it = mp.begin(); mp.value_comp()(*it, *mp.rbegin()); ++it)
+				std::cout << it->first << "->" << it->second << " - " << std::endl;
+		}
+		{
+			
 		}
 	}
 	
