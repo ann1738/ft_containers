@@ -34,9 +34,9 @@ int main(int argc, char **argv)
 			<< "Valid inputs: \e[35m./main\t \e[33m\"vector\"\e[0m OR \e[33m\"map\"\e[0m OR \e[33m\"stack\"\e[0m OR \e[33m\"all\"\e[0m" << std::endl;
 			return 1;
 		}
-		std::string possible[] = {"vector", "map", "stack", "all"};
-		int	test_index = 0;
-		for (; test_index < 4 && argv[1] != possible[test_index]; ++test_index);
+		std::string possible[] = {"vector", "map", "stack", "set", "all"};
+		size_t	test_index = 0;
+		for (; test_index < possible->length() && argv[1] != possible[test_index]; ++test_index);
 		switch (test_index)
 		{
 		case 0: //vector
@@ -49,7 +49,13 @@ int main(int argc, char **argv)
 			test_stack();
 			break;
 		case 3: //set
-			//test_set();
+			test_set();
+			break;
+		case 4: //all
+			test_vector();
+			test_map();
+			test_stack();
+			test_set();
 			break;
 		default:
 			std::cout << "\e[31mInvalid Input\e[0m" << std::endl
