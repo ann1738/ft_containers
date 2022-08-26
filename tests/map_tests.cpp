@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:52:38 by ann               #+#    #+#             */
-/*   Updated: 2022/08/25 15:22:13 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/26 12:10:14 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,18 +334,14 @@ void	test_accuracy()
 			for (int i = 0; i < 464; ++i)
 				mpA.insert(ft::make_pair(i, 'B'));
 			ft::map<int, char>::iterator OldItA = mpA.begin();
-			ft::map<int, char>::iterator OldIteA = mpA.end();
 			ft::map<int, char>::iterator OldItB = mpB.begin();
-			ft::map<int, char>::iterator OldIteB = mpB.end();
 			
 			mpA.swap(mpB);
 			printMapInfo(mpA);
 			printMapInfo(mpB);
 			std::cout << "Check iterator validity: " << std::endl;
 			std::cout << (OldItA == mpB.begin()) << std::endl;
-			std::cout << (OldIteA == mpB.end()) << std::endl;
 			std::cout << (OldItB == mpA.begin()) << std::endl;
-			std::cout << (OldIteB == mpA.end()) << std::endl;
 
 			/*clear*/
 			std::cout << "# clear() #" << std::endl;
