@@ -372,6 +372,34 @@ static void	test_accuracy()
 		// 	st.get_allocator().deallocate(ptr, 1000);
 		// }
 	}
+	{
+		/*relational operators*/
+		std::cout << "# relational operators #" << std::endl;
+		std::list<int> myNameIsListy;
+		for (int i = 0; i < 10000; ++i)
+			myNameIsListy.push_back(i);
+	
+		ft::set<int> stA(myNameIsListy.begin(), myNameIsListy.end());
+
+		myNameIsListy.clear();
+		for (int i = 0; i < 454; ++i)
+			myNameIsListy.push_back(i);
+		ft::set<int> stB(myNameIsListy.begin(), myNameIsListy.end());
+
+		std::cout << (stA == stB) << std::endl;
+		std::cout << (stA != stB) << std::endl;
+		std::cout << (stA < stB) << std::endl;
+		std::cout << (stA <= stB) << std::endl;
+		std::cout << (stA > stB) << std::endl;
+		std::cout << (stA >= stB) << std::endl;
+		
+		/*std::swap specialization*/
+		std::cout << "# std::swap specialization #" << std::endl;
+
+		std::swap(stA, stB);
+		printSetInfo(stA);
+		printSetInfo(stB);
+	}
 }
 
 void	test_set()
