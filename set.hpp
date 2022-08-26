@@ -569,7 +569,7 @@ namespace ft
 		/*		Constructors		*/
 		explicit set (const key_compare& comp = key_compare(),
               		  const allocator_type& alloc = allocator_type())
-					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill;}
+					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill; std::cout << "Hello" << std::endl;}
 
 		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
 		template <class InputIterator>
