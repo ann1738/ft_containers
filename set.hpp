@@ -33,20 +33,20 @@ namespace ft
            >
 	class set{
 	struct node;
+	typedef	typename Alloc::template rebind<node>::other							node_allocator;
 	public:
 		typedef	T																	key_type;
 		typedef	T																	value_type;
 		typedef	T																	val;
 		typedef	Compare																key_compare;
 		typedef	Compare																value_compare;
-		typedef	typename Alloc::template rebind<node>::other						allocator_type;
+		typedef	Alloc																allocator_type;
 		typedef	value_type &														reference;
 		typedef	const value_type &													const_reference;
     	typedef node *																pointer;
     	typedef const pointer														const_pointer;
-		// typedef	setIterator<key_type, key_compare, allocator_type>					iterator;
-		typedef	setIterator<const key_type, key_compare, allocator_type>			iterator;
-		typedef	setIterator<const key_type, key_compare, allocator_type>			const_iterator;
+		typedef	setIterator<const key_type, key_compare, node_allocator>			iterator;
+		typedef	setIterator<const key_type, key_compare, node_allocator>			const_iterator;
 		typedef	ft::reverse_iterator<iterator>										reverse_iterator;
 		typedef	ft::reverse_iterator<const_iterator>								const_reverse_iterator;
 		typedef	std::ptrdiff_t														difference_type;
@@ -54,6 +54,7 @@ namespace ft
 	private:
 		key_compare 	_myComp;
 		allocator_type	_myAlloc;
+		node_allocator	_myNodeAlloc;
 		pointer			_root;
 		size_type		_size;
 
@@ -80,14 +81,14 @@ namespace ft
 		};
 
 		pointer	init_node(const key_type & n = key_type()){
-			pointer tmp = _myAlloc.allocate(1);
-			_myAlloc.construct(tmp, node(n));
+			pointer tmp = _myNodeAlloc.allocate(1);
+			_myNodeAlloc.construct(tmp, node(n));
 			return tmp;
 		}
 
 		void	del_node(pointer deleteMe){
-			_myAlloc.destroy(deleteMe);
-			_myAlloc.deallocate(deleteMe, 1);
+			_myNodeAlloc.destroy(deleteMe);
+			_myNodeAlloc.deallocate(deleteMe, 1);
 		}
 
 		void	recolor(pointer _nod) {if (RB_DEBUG) std::cout << "recolor: " << _nod->_info << std::endl; _nod->_color == RED ? _nod->_color = BLACK : _nod->_color = RED;};
@@ -569,7 +570,8 @@ namespace ft
 		/*		Constructors		*/
 		explicit set (const key_compare& comp = key_compare(),
               		  const allocator_type& alloc = allocator_type())
-					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill; std::cout << "Hello" << std::endl;}
+					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill;
+					  _myNodeAlloc = node_allocator(); std::cout << "Hello" << std::endl;}
 
 		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
 		template <class InputIterator>
@@ -579,6 +581,7 @@ namespace ft
 				:	_myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()){
 			_nill->_color = BLACK;
 			_nill->_right = _nill;
+			_myNodeAlloc = node_allocator();
 			insert(first, last);
 		}
 
@@ -586,6 +589,7 @@ namespace ft
 		 	:	_myComp(x._myComp), _myAlloc(x._myAlloc), _root(0), _size(0),  _nill(init_node()){
 			_nill->_color = BLACK;
 			_nill->_right = _nill;
+			_myNodeAlloc = node_allocator();
 			insert(x.begin(), x.end()); /*do these iterators need to be const*/
 		}
 
@@ -602,6 +606,7 @@ namespace ft
 				clear();
 				_myComp = x._myComp;
 				_myAlloc = x._myAlloc;
+				_myNodeAlloc = x._myNodeAlloc;
 				_size = 0; _root = 0;
 				insert(x.begin(), x.end()); /* do these iterators need to be const */
 			}
@@ -651,7 +656,7 @@ namespace ft
 		}
 
 		size_type max_size() const{
-			return _myAlloc.max_size();
+			return _myNodeAlloc.max_size();
 		}
 
 		/*		Modifiers		*/
@@ -703,6 +708,7 @@ namespace ft
 			myswap(_root, x._root);
 			myswap(_size, x._size);
 			myswap(_myAlloc, x._myAlloc);
+			myswap(_myNodeAlloc, x._myNodeAlloc);
 			myswap(_myComp, x._myComp);
 		}
 
