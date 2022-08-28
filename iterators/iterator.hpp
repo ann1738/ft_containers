@@ -79,8 +79,10 @@ namespace ft
 		/*			Operators			*/
 		reverse_iterator& operator++() {--current; return *(this);}
 		reverse_iterator& operator--() {++current; return *(this);}
-		reverse_iterator operator++(int) {reverse_iterator temp = *this; --current; return temp;}
-		reverse_iterator operator--(int) {reverse_iterator temp = *this; ++current; return temp;}
+		reverse_iterator operator++(int) {return reverse_iterator(current--);}
+		reverse_iterator operator--(int) {return reverse_iterator(current++);}
+		// reverse_iterator operator++(int) {reverse_iterator temp = *this; --current; return temp;}
+		// reverse_iterator operator--(int) {reverse_iterator temp = *this; ++current; return temp;}
 		reverse_iterator operator+( difference_type n ) const {return reverse_iterator(current - n);}
 		reverse_iterator operator-( difference_type n ) const {return reverse_iterator(current + n);}
 		reverse_iterator& operator+=( difference_type n ) {current -= n; return *(this);}
