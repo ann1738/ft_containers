@@ -1,3 +1,6 @@
+#ifndef COMMON_HPP
+#define COMMON_HPP
+
 #include "../../vector.hpp"
 #include <string>
 #include <sstream>
@@ -24,3 +27,5 @@ static void	printVectorInfo(const T & contatiner){
 	std::cout << "Content: " << std::endl;
 	printContainer(contatiner);
 }
+
+#endif

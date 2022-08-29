@@ -6,12 +6,12 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/08/01 13:19:58 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 14:50:47 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef mapITERATOR_HPP
-# define mapITERATOR_HPP
+#ifndef MAPITERATOR_HPP
+# define MAPITERATOR_HPP
 
 #include <memory>
 #include "iterator.hpp"

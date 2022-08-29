@@ -1,3 +1,6 @@
+#ifndef COMMON_HPP
+#define COMMON_HPP
+
 #include "../../set.hpp"
 #include <list>
 #include <sstream>
@@ -21,3 +24,5 @@ static void	printSetInfo(const T & contatiner){
 	std::cout << "Content: " << std::endl;
 	printContainer(contatiner);
 }
+
+#endif

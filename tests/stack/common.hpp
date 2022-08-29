@@ -1,3 +1,6 @@
+#ifndef COMMON_HPP
+#define COMMON_HPP
+
 #include "../../stack.hpp"
 
 #ifdef TESTING
@@ -12,3 +15,5 @@ static void	printStackInfo(const T & contatiner){
 	if (contatiner.size())
 		std::cout << "Top: " << contatiner.top() << std::endl;
 }
+
+#endif
