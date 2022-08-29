@@ -76,6 +76,8 @@ function assessAndReportIfTestPassed()
 		rm -f $1
 	else
 		printf "%-20s: COMPILE: $exit_code | OUTPUT: ❌\n" "$temp.cpp"
+		# printf "Returned: %-20s\n" "$(cat $1 | grep "<" | cut -d' ' -f2-)"
+		# printf "Expected: %-20s\n" "$(cat $1 | grep ">" | cut -d' ' -f2-)"
 	fi
 }
 
