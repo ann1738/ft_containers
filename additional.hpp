@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   additional.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ann <ann@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:08:35 by anasr             #+#    #+#             */
-/*   Updated: 2022/07/13 11:46:35 by ann              ###   ########.fr       */
+/*   Updated: 2022/08/29 15:06:39 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,6 @@
 
 namespace ft
 {
-	template< typename T >
-	void	myswap(T & a, T & b){
-		T temp = a;
-		a = b;
-		b = temp;
-	}
-	
-	template< class Iterator, typename T >
-	Iterator	find(Iterator first, Iterator last, T findMe){
-		for (; first != last && *first != findMe; ++first);
-		return first;
-	}
-
 	/*			ft::equal			*/
 	template< class InputIt1, class InputIt2 >
 	bool equal( InputIt1 first1, InputIt1 last1, InputIt2 first2 ){
@@ -182,6 +169,21 @@ namespace ft
 
 	template< >
 	struct is_integral< unsigned long long int > : public true_type {};
+
+	/* my own swap function */
+	template< typename T >
+	void	myswap(T & a, T & b){
+		T temp = a;
+		a = b;
+		b = temp;
+	}
+	
+	/* my own find function */
+	template< class Iterator, typename T >
+	Iterator	find(Iterator first, Iterator last, T findMe){
+		for (; first != last && *first != findMe; ++first);
+		return first;
+	}
 }
 
 #endif

@@ -12,6 +12,7 @@ White='\033[0;37m'        # White
 
 TEST_DIR="tests/"
 
+CC="c++"
 CXX_FLAGS="-Wall -Wextra -Werror -std=c++98" 
 TEST_FLAG="-D TESTING=1"
 
@@ -121,12 +122,12 @@ function assessAndReportIfTestPassed()
 
 function compileTestFileWithFt()
 {
-	g++ ${CXX_FLAGS} $1 -o $2 2>/dev/null
+	${CC} ${CXX_FLAGS} $1 -o $2 2>/dev/null
 }
 
 function compileTestFileWithStd()
 {
-	g++ ${CXX_FLAGS} ${TEST_FLAG} $1 -o $2 2>/dev/null
+	${CC} ${CXX_FLAGS} ${TEST_FLAG} $1 -o $2 2>/dev/null
 }
 
 #######################################
