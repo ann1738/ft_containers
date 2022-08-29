@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 11:53:57 by ann               #+#    #+#             */
-/*   Updated: 2022/08/29 11:25:24 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 13:32:14 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ namespace ft{
 
 		explicit stack (const container_type& ctnr = container_type())
 			: c(ctnr) {}
-		
 
 		bool empty() const{
 			return c.empty();
@@ -54,36 +53,21 @@ namespace ft{
 	
 		template <class TI, class ContainerI>
 		friend	bool operator== (const ft::stack<TI,ContainerI>& lhs, const ft::stack<TI,ContainerI>& rhs);
-		// {
-		// 	return lhs.c == rhs.c;
-		// }
 
 		template <class TI, class ContainerI>
 		friend	bool operator!= (const ft::stack<TI,ContainerI>& lhs, const ft::stack<TI,ContainerI>& rhs);
-		// {
-		// 	return lhs.c != rhs.c;
-		// }
-		
+
 		template <class TI, class ContainerI>
 		friend	bool operator<  (const ft::stack<TI,ContainerI>& lhs, const ft::stack<TI,ContainerI>& rhs);
-		// {
-		// 	return lhs.c < rhs.c;
-		// }
+
 		template <class TI, class ContainerI>
 		friend	bool operator<= (const ft::stack<TI,ContainerI>& lhs, const ft::stack<TI,ContainerI>& rhs);
-		// {
-		// 	return lhs.c <= rhs.c;
-		// }
+
 		template <class TI, class ContainerI>
 		friend	bool operator>  (const ft::stack<TI,ContainerI>& lhs, const ft::stack<TI,ContainerI>& rhs);
-		// {
-		// 	return lhs.c > rhs.c;
-		// }
+
 		template <class TI, class ContainerI>
 		friend	bool operator>= (const ft::stack<TI,ContainerI>& lhs, const ft::stack<TI,ContainerI>& rhs);
-		// {
-		// 	return lhs.c >= rhs.c;
-		// }
 	protected:
 		container_type	c;
 	};
