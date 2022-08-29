@@ -8,3 +8,6 @@ containers_test
 ft_containers_tester
 *.log
 *.diff
+diffs
+ft_logs
+std_logs
