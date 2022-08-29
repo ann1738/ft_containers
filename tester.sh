@@ -164,6 +164,7 @@ function runTestsInDir()
 if [ $ARGS_LENGTH == 0 ]; then 
 	colorPrint $Red "Invalid Input"
 	colorPrint $Purple "./<script> <container1> <container2> ...";
+	colorPrint $Purple "./<script> performance";
 	exit ;
 fi
 

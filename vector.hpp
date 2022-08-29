@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/08/29 11:27:59 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 13:23:51 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 #include <memory>
 #include <limits>
-#include "iterators/iterator.hpp"
 #include "additional.hpp"
+#include "iterators/iterator.hpp"
 #include "iterators/vectorIterator.hpp"
 
 namespace ft
@@ -199,11 +199,11 @@ namespace ft
 			return (static_cast<size_type>(this->_end - this->_start));
 		}
 
-		size_type	max_size() const{
+		size_type	max_size(void) const{
 			return (_myAlloc.max_size());
 		}
 
-		void resize(size_type new_size, T value = T() ){
+		void resize(size_type new_size, T value = T()){
 			if (new_size < this->size())
 			{
 				for (size_type i = new_size; i < this->size(); ++i) _myAlloc.destroy(this->_start + i);
@@ -232,7 +232,7 @@ namespace ft
 		}
 
 		/*			Modifiers			*/
-		void assign( size_type count, const_reference value ){
+		void assign(size_type count, const_reference value){
 			this->clear();
 			if (count > this->capacity())
 				realloc_vec(count);
@@ -299,19 +299,18 @@ namespace ft
 			return (iterator(re));
 		}
 
-		iterator insert( iterator pos, const T& value ){ //fix issues
+		iterator insert(iterator pos, const T& value){
 			size_type offset = pos - begin();
 			push_back(value);
 			iterator it = this->end() - 2;
 			iterator	update_pos(this->_start + offset);
 			for (; it >= update_pos && it >= this->begin(); --it)
 				_myAlloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
-			// std::cout << "\e[31m" << *++it << "\e[0m\n";
-			_myAlloc.construct(this->_start + offset, value); //do i need to delete here
+			_myAlloc.construct(this->_start + offset, value);
 			return (update_pos);
 		}
 
-		void insert( iterator pos, size_type count, const T& value ){
+		void insert(iterator pos, size_type count, const T& value){
 			size_type offset = static_cast<size_type>(pos - this->begin());
 			
 			if (count + this->size() > this->capacity())
@@ -327,7 +326,6 @@ namespace ft
 		template <class InputIterator>
    		void insert (iterator position, InputIterator first, InputIterator last,
 		typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
-			// if (first >= last) return ; //do i need this
 			size_type pos_offset = static_cast<size_type>(position - begin());
 			size_type range = 0;
 			for (InputIterator it = first; it != last; ++it, ++range);
@@ -337,10 +335,7 @@ namespace ft
 				position = iterator(this->_start + pos_offset);
 			}
 			for (iterator it = end() - 1; it >= position; --it)
-			{
 				_myAlloc.construct(&*it + range, *it);
-				// _myAlloc.destroy(&*it);
-			}
 			for (; first != last; ++first, ++position)
 				_myAlloc.construct(&*position, *first);
 			this->_end += range;
