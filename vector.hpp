@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/08/29 13:23:51 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 17:54:08 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ namespace ft
 		typedef const value_type&							const_reference;
     	typedef typename allocator_type::pointer			pointer;
     	typedef typename allocator_type::const_pointer		const_pointer;
-		typedef	ft::vectorIterator<T, _Alloc>						iterator;
-		typedef	ft::vectorIterator<const T, _Alloc>					const_iterator;
+		typedef	ft::vectorIterator<T, _Alloc>				iterator;
+		typedef	ft::vectorIterator<const T, _Alloc>			const_iterator;
 		typedef ft::reverse_iterator<iterator>				reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 		typedef std::ptrdiff_t 								difference_type;
@@ -325,19 +325,39 @@ namespace ft
 
 		template <class InputIterator>
    		void insert (iterator position, InputIterator first, InputIterator last,
-		typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
-			size_type pos_offset = static_cast<size_type>(position - begin());
-			size_type range = 0;
+					 typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
+			size_type	pos_offset = static_cast<size_type>(position - begin());
+			size_type	range = 0;
+
+			bool		internal = false;
+			size_type	internal_pos = 0;
+
 			for (InputIterator it = first; it != last; ++it, ++range);
 			if (range + size() > capacity())
 			{
+				/*for an edge case (e.g. vec.insert(vec.begin(), vec.end()))*/
+				if (&(*first) >= this->_start && &(*first) < this->_end)
+				{
+					internal = true;
+					for (InputIterator it = first; &(*first) != this->_start + internal_pos; ++it, ++internal_pos);
+				}
 				realloc_vec(range + size() <= size() * 2 ? size() * 2 : range + size());
 				position = iterator(this->_start + pos_offset);
 			}
 			for (iterator it = end() - 1; it >= position; --it)
 				_myAlloc.construct(&*it + range, *it);
-			for (; first != last; ++first, ++position)
-				_myAlloc.construct(&*position, *first);
+			
+			/*the edge case occurs when internal is true*/
+			if (internal)
+			{
+				for (size_type count = 0; count != range; ++position, ++count)
+					_myAlloc.construct(&*position, *(this->_start + internal_pos + count));
+			}
+			else
+			{
+				for (; first != last; ++first, ++position)
+					_myAlloc.construct(&*position, *first);
+			}
 			this->_end += range;
 		}
 
