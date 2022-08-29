@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/08/29 11:28:22 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 17:32:03 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,9 @@
 #include <functional>
 #include "additional.hpp"
 #include "iterators/iterator.hpp"
-#include <cassert>
 #include "iterators/mapIterator.hpp"
 
-#include <limits>
+// #include <cassert>
 
 namespace ft{
 	template <	class Key,												// map::key_type
@@ -70,11 +69,7 @@ namespace ft{
 		allocator_type	_myAlloc;
 		node_allocator	_myNodeAlloc;
 
-	// template <	class KeyI, class TI, class CompareI, class AllocI >
-	// friend class mapIterator;
-
 		struct node{
-			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
 			value_type	_info;
 			
 			pointer		_parent;
@@ -117,8 +112,8 @@ namespace ft{
 	
 			if (nod->_right)
 				return (getSubMinimum(nod->_right));
-			/*knowing that nod is a leaf*/
 
+			/*knowing that nod is a leaf*/
 			while (nod->_parent && !amILeft(nod))
 				nod = nod->_parent;
 			return nod->_parent;				
@@ -129,8 +124,8 @@ namespace ft{
 	
 			if (nod->_left)
 				return getSubMaximum(nod->_left);
-			/*knowing that nod is a leaf*/
 
+			/*knowing that nod is a leaf*/
 			while (nod->_parent && amILeft(nod))
 				nod = nod->_parent;
 			return nod->_parent;				
@@ -176,7 +171,7 @@ namespace ft{
 			return newNode;
 		}
 
-		/*	two things need to be changed: the parent's child pointer and the child's parent pointer*/
+		/*	two things are changed: the parent's child pointer and the child's parent pointer*/
 		void	replaceNodePos(pointer toBeReplaced, pointer replacement){
 			/*	changing the parent's (parent of toBeReplaced) child pointer to point at replacement*/
 			if (!toBeReplaced->_parent)
@@ -191,7 +186,6 @@ namespace ft{
 				replacement->_parent = toBeReplaced->_parent;
 		}
 		
-		/*WHAT IF DELETEME IS ROOT*/
 		pointer	bst_delete(pointer deleteMe){
 			if (!deleteMe) return NULL; /*checks if it exists*/
 			pointer save = deleteMe->_parent;
@@ -226,7 +220,6 @@ namespace ft{
 				successor->_left = deleteMe->_left; /*linking the successor to the left subtree of deleteMe*/
 				deleteMe->_left->_parent = successor;
 			}
-			// std::cout << "deleteMe = " << deleteMe->_info.first << std::endl;
 			del_node(deleteMe);
 			--_size;
 			return save;
@@ -234,7 +227,6 @@ namespace ft{
 
 		/*	rotation algorithms	*/
 		void	rotate_left(pointer x){
-			// std::cout << "\e[35mrotate left " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_right;
 			x->_right = y->_left;
 			if (x->_right)
@@ -254,7 +246,6 @@ namespace ft{
 		}
 
 		void	rotate_right(pointer x){
-			// std::cout << "\e[35mrotate right " << x->_info.first << "\e[0m" << std::endl;
 			pointer y = x->_left;
 			x->_left = y->_right;
 			if (y->_right)
@@ -273,6 +264,7 @@ namespace ft{
 			x->_height = 1 + max(getHeight(x->_left), getHeight(x->_right));
 			y->_height = 1 + max(getHeight(y->_left), getHeight(y->_right));
 		}
+
 	// public:
 	// 	size_type	pubGetHeight(const key_type & k){
 	// 		pointer tmp = bst_find(k);
@@ -294,7 +286,7 @@ namespace ft{
 			return _node->_height;
 		}
 
-		/*	testing function	*/
+		/*	testing function (NOTE: make sure to include <cassert>)	*/
 		void	verifyAvl(pointer leaf){
 			pointer tmp = leaf;
 			while (tmp)
@@ -305,9 +297,9 @@ namespace ft{
 		}
 
 		/*	AVL ALGORITHMS	*/
+		
+		/*assuming val does not exist*/
 		pointer	avl_insert(const value_type & val){
-			/*check if exists!!*/
-			// std::cout << "" << std::endl;
 			pointer		newNode = bst_insert(val);
 			pointer		tmp = newNode->_parent; //initialized as the parent of the newNode
 			key_type	key = newNode->_info.first;
@@ -316,7 +308,6 @@ namespace ft{
 			{
 				/*update height of parent*/
 				tmp->_height = 1 + max(getHeight(tmp->_left), getHeight(tmp->_right));
-				// std::cout << tmp->_height << std::endl;
 				
 				/*get balance factor*/
 				balanceFactor = getBalance(tmp);
@@ -341,17 +332,15 @@ namespace ft{
 				}
 				tmp = tmp->_parent;
 			}
-			verifyAvl(newNode);
+			// verifyAvl(newNode);
 			return newNode;
 		}
 
 		void	avl_delete(pointer deleteMe){
 			pointer tmp = bst_delete(deleteMe);
 			if (!tmp) return ;
-			pointer test = tmp;
+			// pointer test = tmp;
 			int			balanceFactor;
-			// std::cout << "the parent is node with key = " << tmp->_info.first << std::endl;
-			// std::cout << "the parent of the node = " << tmp->_parent->_info.first << std::endl;
 			while (tmp != NULL)
 			{
 				/*update height of parent*/
@@ -380,7 +369,7 @@ namespace ft{
 				}
 				tmp = tmp->_parent;
 			}
-			verifyAvl(test);
+			// verifyAvl(test);
 		}
 	public:
 		/*			Constructors		*/
@@ -412,7 +401,6 @@ namespace ft{
 		
 		/*			Copy assignment		*/
 		map& operator= (const map& x){
-			// std::cout << "operator=: i am here" << std::endl;
 			if (this != &x)
 			{
 				_root = 0;
@@ -436,21 +424,14 @@ namespace ft{
 		
 		size_type		max_size() const{
 			return _myNodeAlloc.max_size();
-			// return std::min<size_type>(_myAlloc.max_size(), std::numeric_limits< difference_type >::max()); //just a trial
 		}
 
 		/*			Element access		*/
 		mapped_type&	operator[] (const key_type& k){
-			// pointer tmp = bst_find(k);
-			// if (tmp) /*if already there*/
-			// 	return (tmp->_info.second);
-			// tmp = avl_insert(ft::make_pair<key_type, mapped_type>(k, mapped_type()));
-			// return tmp->_info.second;
 			return ((this->insert(ft::make_pair(k, mapped_type()))).first)->second;
 		}
 
 		/*			Modifiers			*/
-		/*TESTED*/
 		ft::pair<iterator,bool>	insert (const value_type& val)
 		{
 			pointer check = bst_find(val.first);
@@ -460,14 +441,13 @@ namespace ft{
 			return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), true);
 		}
 
-		/*	Make this actually check the hint	*/
 		iterator insert (iterator position, const value_type& val)
 		{
 			static_cast<void>(position);
 			pointer check = bst_find(val.first);
 			if (check) return iterator(check, getMinimum(), getMaximum()); /*checks if it exists*/
 
-			check = avl_insert(val); /*reusing check*/
+			check = avl_insert(val);
 			return iterator(check, getMinimum(), getMaximum());
 		}
 		
@@ -485,12 +465,10 @@ namespace ft{
 
 		}
 		
-		/*TESTED*/
 		void erase (iterator position){
 			avl_delete(bst_find(position->first));
 		}
 
-		/*TESTED*/
 		size_type erase (const key_type& k){
 			pointer tmp = bst_find(k);
 			if (!tmp) return 0;
@@ -498,7 +476,6 @@ namespace ft{
 			return 1;
 		}
 
-		/*TESTED*/
 		void erase (iterator first, iterator last){
 			iterator	tmp(first);
 			
@@ -509,7 +486,6 @@ namespace ft{
 			}
 		}
 
-		/*TESTED*/
 		void swap (map& x){
 			ft::myswap(_root, x._root);
 			ft::myswap(_size, x._size);
@@ -518,16 +494,7 @@ namespace ft{
 			ft::myswap(_myNodeAlloc, x._myNodeAlloc);
 		}
 
-		/*TESTED*/
 		void clear(){
-			// pointer tmp;
-			// pointer save = getMinimum();
-			// while (save)
-			// {
-			// 	tmp = save;
-			// 	save = getNextMaximum(save);
-			// 	del_node(tmp);
-			// }
 			erase(begin(), end());
 		}
 
