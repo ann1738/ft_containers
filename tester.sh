@@ -13,7 +13,7 @@ White='\033[0;37m'        # White
 
 TEST_DIR="tests/"
 
-CXX_FLAGS="-Wall -Wextra -Werror"
+CXX_FLAGS="-Wall -Wextra -Werror -std=c++98" 
 TEST_FLAG="-D TESTING=1"
 
 EXEC_NAME=test
@@ -81,12 +81,12 @@ function assessAndReportIfTestPassed()
 
 function compileTestFileWithFt()
 {
-	g++ ${CXX_FLAGS} $1 -o $2
+	g++ ${CXX_FLAGS} $1 -o $2 2>/dev/null
 }
 
 function compileTestFileWithStd()
 {
-	g++ ${CXX_FLAGS} ${TEST_FLAG} $1 -o $2
+	g++ ${CXX_FLAGS} ${TEST_FLAG} $1 -o $2 2>/dev/null
 }
 
 
@@ -107,11 +107,10 @@ function runTestsInDir()
 
 	for (( i=0; i < ${length}; i++ ))  
 	do
-		# echo ${TEST_FILES[$i]}
 		file_name="$(basename ${TEST_FILES[$i]} .cpp)"
-		compileTestFileWithFt ${TEST_FILES[$i]} $EXEC_NAME
-		./$EXEC_NAME > "${FT_LOG_DIR}/${file_name}.${container_name}.log"
+		compileTestFileWithFt ${TEST_FILES[$i]} $EXEC_NAME 
 		ft_exit_code=$?
+		./$EXEC_NAME > "${FT_LOG_DIR}/${file_name}.${container_name}.log"
 
 		compileTestFileWithStd ${TEST_FILES[$i]} $EXEC_NAME
 		./$EXEC_NAME > "${STD_LOG_DIR}/${file_name}.${container_name}.log"
