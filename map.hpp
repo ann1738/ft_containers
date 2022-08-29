@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/08/24 15:26:11 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 11:28:22 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,7 +386,7 @@ namespace ft{
 		/*			Constructors		*/
 		explicit map (const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type())
-						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){_myNodeAlloc = node_allocator(); std::cout << "This appears when things work properly!" << std::endl;}
+						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){_myNodeAlloc = node_allocator();}
 
 		template <class InputIterator>
 		map (InputIterator first, InputIterator last,
@@ -667,7 +667,6 @@ namespace std
 	/*		std::swap specialization		*/
 	template< class Key, class T, class Compare, class Alloc >
 	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs ){
-		std::cout << "MY SWAP IS USED" << std::endl;
 		lhs.swap(rhs);
 	}
 }

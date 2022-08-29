@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/08/01 14:13:07 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 11:24:45 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -571,7 +571,7 @@ namespace ft
 		explicit set (const key_compare& comp = key_compare(),
               		  const allocator_type& alloc = allocator_type())
 					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill;
-					  _myNodeAlloc = node_allocator(); std::cout << "Hello" << std::endl;}
+					  _myNodeAlloc = node_allocator();}
 
 		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
 		template <class InputIterator>

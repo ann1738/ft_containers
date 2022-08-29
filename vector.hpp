@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/08/24 09:50:35 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/29 11:27:59 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ namespace ft
 		}
 	public:
 		/*			Constuctors			*/
-		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {std::cout << "HELLO, I AM HERE ON PURPOSE!!!" << std::endl;}
+		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {}
 
 		explicit vector( size_type count, const_reference value = value_type(), const allocator_type& alloc = allocator_type())
 			: _myAlloc(alloc){
@@ -395,7 +395,6 @@ namespace std
 	/*		std::swap specialization		*/
 	template< class T, class Alloc >
 	void swap( ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ){
-		std::cout << "THIS IS MY SWAP" << std::endl;
 		lhs.swap(rhs);
 	}
 }
