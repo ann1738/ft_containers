@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/08/29 17:54:08 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/30 12:44:16 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ namespace ft
 			return (iterator(this->_start));
 		}
 
-		const_iterator begin() const{
+		const_iterator begin(void) const{
 			return (const_iterator(this->_start));
 		}
 

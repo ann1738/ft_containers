@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/08/29 11:24:45 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/30 13:42:06 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ namespace ft
 	public:
 		typedef	T																	key_type;
 		typedef	T																	value_type;
-		typedef	T																	val;
 		typedef	Compare																key_compare;
 		typedef	Compare																value_compare;
 		typedef	Alloc																allocator_type;
@@ -568,14 +567,14 @@ namespace ft
 
 		public:
 		/*		Constructors		*/
-		explicit set (const key_compare& comp = key_compare(),
+		explicit set(const key_compare& comp = key_compare(),
               		  const allocator_type& alloc = allocator_type())
 					  : _myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()) {_nill->_color = BLACK; _nill->_right = _nill;
 					  _myNodeAlloc = node_allocator();}
 
 		/* !!! RANGE CONSTRUCTOR NOT DONE !!! */
 		template <class InputIterator>
-  		set (InputIterator first, InputIterator last,
+  		set(InputIterator first, InputIterator last,
 		  	 typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0,
        		 const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 				:	_myComp(comp), _myAlloc(alloc), _root(0), _size(0), _nill(init_node()){
@@ -585,7 +584,7 @@ namespace ft
 			insert(first, last);
 		}
 
-		set (const set& x)
+		set(const set& x)
 		 	:	_myComp(x._myComp), _myAlloc(x._myAlloc), _root(0), _size(0),  _nill(init_node()){
 			_nill->_color = BLACK;
 			_nill->_right = _nill;
@@ -600,7 +599,7 @@ namespace ft
 		}
 
 		/*		Copy Assignment Operator		*/
-		set& operator= (const set& x){
+		set& operator=(const set& x){
 			if (this != &x)
 			{
 				clear();
@@ -660,20 +659,20 @@ namespace ft
 		}
 
 		/*		Modifiers		*/
-		pair<iterator,bool> insert (const value_type& val){
+		pair<iterator,bool> insert(const value_type& val){
 			pointer check = bst_find(val);
 			if (check) return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), false); /*checks if it exists*/
 			check = rb_insert(val);
 			return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), true);
 		}
 		
-		iterator insert (iterator position, const value_type& val){
+		iterator insert(iterator position, const value_type& val){
 			(void)position;
 			return insert(val).first;
 		}
 
 		template <class InputIterator>
-  		void insert (InputIterator first, InputIterator last,
+  		void insert(InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
 			pointer	check;
 			while (first != last)
@@ -685,26 +684,25 @@ namespace ft
 			}
 		}
 		
-    	void erase (iterator position){
+    	void erase(iterator position){
 			pointer check = bst_find(*position);
 			if (!check) return ;
 			rb_delete(check);
 		}
 		
-		size_type erase (const value_type& val){
+		size_type erase(const value_type& val){
 			pointer check = bst_find(val);
 			if (!check) return 0;
 			rb_delete(check);
 			return 1;
 		}
 		
-		/*	LEAKS DETECTED	*/
-     	void erase (iterator first, iterator last){
+     	void erase(iterator first, iterator last){
 			while (first != last)
 				erase(first++);
-		 }
+		}
 
-		void swap (set& x){
+		void swap(set& x){
 			myswap(_root, x._root);
 			myswap(_size, x._size);
 			myswap(_myAlloc, x._myAlloc);
@@ -726,15 +724,15 @@ namespace ft
 		}
 
 		/*	Operations	*/
-		iterator find (const value_type& val) const{
+		iterator find(const value_type& val) const{
 			return iterator(bst_find(val), getMinimum(), getMaximum());
 		}
 
-		size_type count (const value_type& val) const{
+		size_type count(const value_type& val) const{
 			return (bst_find(val) ? 1 : 0);
 		}
 		
-		iterator lower_bound (const value_type& val) const{
+		iterator lower_bound(const value_type& val) const{
 			// iterator	tmp = begin();
 			const_iterator	tmp = begin();
 			while (tmp != end() && _myComp(*tmp, val))
@@ -743,7 +741,7 @@ namespace ft
 			// return tmp;
 		}
 
-		iterator upper_bound (const value_type& val) const{
+		iterator upper_bound(const value_type& val) const{
 			// iterator	tmp = begin();
 			const_iterator	tmp = begin();
 			while (tmp != end() && !_myComp(val, *tmp))
@@ -752,7 +750,7 @@ namespace ft
 			// return tmp;
 		}
 
-		pair<iterator,iterator> equal_range (const value_type& val) const{
+		pair<iterator,iterator> equal_range(const value_type& val) const{
 			return ft::pair<iterator, iterator>(lower_bound(val), upper_bound(val));
 		}
 
@@ -761,8 +759,6 @@ namespace ft
 			return _myAlloc;
 		}
 
-
-		/* !!! remove this !!! */
 		/*	TESTING FUNCTIONS	*/
 		// void	printColorAndParent(const key_type & k){
 		// 	// std::cout << k << std::endl;
@@ -775,7 +771,6 @@ namespace ft
 		// 		std::cout << "\e[0m with parent\e[32m\t" << tmp->_parent->_info << "\e[0m\n";
 		// 	else
 		// 		std::cout << "\e[0m with no parent\t\e[32m(ROOT)" << "\e[0m\n";
-				
 		// }
 
 		// void	printColor(const key_type & k){
@@ -785,15 +780,9 @@ namespace ft
 		// 	else
 		// 		std::cout << "\e[30mBLACK\e[0m\n";			
 		// }
-		
-
-
-
-		/* !!!  NOT DONE !!! */
-		// const_iterator end() const;
-
 	};
-		/*		Non-member functions	*/
+
+	/*		Non-member functions	*/
 	template< class Key, class Compare, class Alloc >
 	bool operator==( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 		if (lhs.size() != rhs.size()) return false;
@@ -827,8 +816,6 @@ namespace ft
 	bool operator>=( const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 		return !(ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	}
-
-
 } // namespace ft
 
 namespace std

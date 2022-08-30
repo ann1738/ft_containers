@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 16:50:42 by ann               #+#    #+#             */
-/*   Updated: 2022/08/29 17:32:03 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/30 15:25:47 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ namespace ft{
 	class map{
 	struct node;
 	typedef	typename Alloc::template rebind<node>::other							node_allocator;
-	
-	public:
 
+	public:
 		typedef	pair<const Key, T>													value_type;
 		typedef	Key																	key_type;
 		typedef	T																	mapped_type;
@@ -373,12 +372,12 @@ namespace ft{
 		}
 	public:
 		/*			Constructors		*/
-		explicit map (const key_compare& comp = key_compare(),
+		explicit map(const key_compare& comp = key_compare(),
     				  const allocator_type& alloc = allocator_type())
 						: _root(0), _size(0), _myComp(comp), _myAlloc(alloc){_myNodeAlloc = node_allocator();}
 
 		template <class InputIterator>
-		map (InputIterator first, InputIterator last,
+		map(InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0,
 			const key_compare& comp = key_compare(),
 			const allocator_type& alloc = allocator_type())
@@ -387,7 +386,7 @@ namespace ft{
 			insert(first, last);
 		}
 		
-		map (const map& x)
+		map(const map& x)
 			: _root(0), _size(0), _myComp(x._myComp), _myAlloc(x._myAlloc){
 			_myNodeAlloc = node_allocator();
 			const_iterator first = x.begin(), last = x.end();
@@ -395,12 +394,12 @@ namespace ft{
 		}
 		
 		/*			Destructors			*/
-		~map (){
+		~map(){
 			clear();
 		}
 		
 		/*			Copy assignment		*/
-		map& operator= (const map& x){
+		map& operator=(const map& x){
 			if (this != &x)
 			{
 				_root = 0;
@@ -427,12 +426,12 @@ namespace ft{
 		}
 
 		/*			Element access		*/
-		mapped_type&	operator[] (const key_type& k){
+		mapped_type&	operator[](const key_type& k){
 			return ((this->insert(ft::make_pair(k, mapped_type()))).first)->second;
 		}
 
 		/*			Modifiers			*/
-		ft::pair<iterator,bool>	insert (const value_type& val)
+		ft::pair<iterator,bool>	insert(const value_type& val)
 		{
 			pointer check = bst_find(val.first);
 			if (check) return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), false); /*checks if it exists*/
@@ -441,7 +440,7 @@ namespace ft{
 			return ft::make_pair<iterator, bool>(iterator(check, getMinimum(), getMaximum()), true);
 		}
 
-		iterator insert (iterator position, const value_type& val)
+		iterator insert(iterator position, const value_type& val)
 		{
 			static_cast<void>(position);
 			pointer check = bst_find(val.first);
@@ -452,7 +451,7 @@ namespace ft{
 		}
 		
 		template <class InputIterator>
- 		void insert (InputIterator first, InputIterator last,
+ 		void insert(InputIterator first, InputIterator last,
 			typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator >::type* = 0){
 			pointer	check;
 			while (first != last)
@@ -462,21 +461,20 @@ namespace ft{
 				avl_insert(*first);
 				++first;
 			}
-
 		}
 		
-		void erase (iterator position){
+		void erase(iterator position){
 			avl_delete(bst_find(position->first));
 		}
 
-		size_type erase (const key_type& k){
+		size_type erase(const key_type& k){
 			pointer tmp = bst_find(k);
 			if (!tmp) return 0;
 			avl_delete(tmp);
 			return 1;
 		}
 
-		void erase (iterator first, iterator last){
+		void erase(iterator first, iterator last){
 			iterator	tmp(first);
 			
 			while (first != last)
@@ -486,7 +484,7 @@ namespace ft{
 			}
 		}
 
-		void swap (map& x){
+		void swap(map& x){
 			ft::myswap(_root, x._root);
 			ft::myswap(_size, x._size);
 			ft::myswap(_myComp, x._myComp);
@@ -537,51 +535,51 @@ namespace ft{
 		}
 
 		/*		Operations		*/
-		iterator find (const key_type& k){
+		iterator find(const key_type& k){
 			return (iterator(bst_find(k), getMinimum(), getMaximum()));
 		}
 
-		const_iterator find (const key_type& k) const{
+		const_iterator find(const key_type& k) const{
 			return (const_iterator(bst_find(k), getMinimum(), getMaximum()));
 		}
 
-		size_type count (const key_type& k) const{
+		size_type count(const key_type& k) const{
 			return (bst_find(k) ? 1 : 0);
 		}	
 
-		iterator lower_bound (const key_type& k) {
+		iterator lower_bound(const key_type& k) {
 			iterator	tmp = begin();
 			while (tmp != end() && _myComp(tmp->first, k))
 				++tmp;
 			return tmp;
 		}
 		
-		const_iterator lower_bound (const key_type& k) const{
+		const_iterator lower_bound(const key_type& k) const{
 			const_iterator	tmp = begin();
 			while (tmp != end() && _myComp(tmp->first, k))
 				++tmp;
 			return tmp;
 		}
 
-		iterator upper_bound (const key_type& k) {
+		iterator upper_bound(const key_type& k) {
 			iterator	tmp = begin();
 			while (tmp != end() && !_myComp(k, tmp->first))
 				++tmp;	
 			return tmp;
 		}
 
-		const_iterator upper_bound (const key_type& k) const {
+		const_iterator upper_bound(const key_type& k) const {
 			const_iterator	tmp = begin();
 			while (tmp != end() && !_myComp(k, tmp->first))
 				++tmp;	
 			return tmp;
 		}
 
-		ft::pair<iterator,iterator>	equal_range (const key_type& k) {
+		ft::pair<iterator,iterator>	equal_range(const key_type& k) {
 			return ft::make_pair<iterator, iterator>(lower_bound(k), upper_bound(k));
 		}
 		
-		pair<const_iterator,const_iterator>	equal_range (const key_type& k) const{
+		pair<const_iterator,const_iterator>	equal_range(const key_type& k) const{
 			return ft::make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
 		}
 
