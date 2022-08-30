@@ -41,11 +41,9 @@ int main()
 	std::cout << "# erase() #" << std::endl;
 
 	/*first type (with position)*/
-	ft::map<std::string, int>::iterator it = mp.begin();
-	for (int i = 0; i < 1000; ++i, ++it)
+	for (int i = 0; i < 1000; ++i)
 	{
-		it = mp.begin();
-		mp.erase(it); //invalidates iterator
+		mp.erase(mp.begin()); //invalidates iterator
 		if (i % 100 == 0)
 			printMapInfo(mp);
 	}
