@@ -402,6 +402,7 @@ namespace ft{
 		map& operator=(const map& x){
 			if (this != &x)
 			{
+				clear();
 				_root = 0;
 				_size = 0;
 				_myComp = x._myComp;
