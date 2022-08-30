@@ -41,11 +41,9 @@ int main()
 	std::cout << "# erase() #" << std::endl;
 
 	/*first type (with position)*/
-	ft::set<std::string>::iterator it = st.begin();
-	for (int i = 0; i < 1000; ++i, ++it)
+	for (int i = 0; i < 1000; ++i)
 	{
-		it = st.begin();
-		st.erase(it);
+		st.erase(st.begin());
 		if (i % 100 == 0)
 			printSetInfo(st);
 	}
