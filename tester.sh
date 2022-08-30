@@ -13,7 +13,8 @@ White='\033[0;37m'        # White
 TEST_DIR="tests/"
 
 CC="c++"
-CXX_FLAGS="-Wall -Wextra -Werror -std=c++98" 
+CPPFLAGS="-Wall -Wextra -Werror -std=c++98"
+# CPPFLAGS+=" -fsanitize=address -g3"
 TEST_FLAG="-D TESTING=1"
 
 EXEC_NAME=test
@@ -114,7 +115,13 @@ function assessAndReportIfTestPassed()
 		printf "%-20s: COMPILE: $exit_code | OUTPUT: ✅\n" "$temp.cpp"
 		rm -f $1
 	else
-		printf "%-20s: COMPILE: $exit_code | OUTPUT: ❌\n" "$temp.cpp"
+		if [[ "$(cat $1 | grep "Max Size:" | wc -l)" != "0" ]]; then
+			printf "%-20s: COMPILE: $exit_code | OUTPUT: 🙉\n" "$temp.cpp"
+			# printf "%-20s: COMPILE: $exit_code | OUTPUT: 👀\n" "$temp.cpp"
+			# printf "%-20s: COMPILE: $exit_code | OUTPUT: ⚠️\n" "$temp.cpp"
+		else
+			printf "%-20s: COMPILE: $exit_code | OUTPUT: ❌\n" "$temp.cpp"
+		fi
 		# printf "Returned: %-20s\n" "$(cat $1 | grep "<" | cut -d' ' -f2-)"
 		# printf "Expected: %-20s\n" "$(cat $1 | grep ">" | cut -d' ' -f2-)"
 	fi
@@ -122,12 +129,12 @@ function assessAndReportIfTestPassed()
 
 function compileTestFileWithFt()
 {
-	${CC} ${CXX_FLAGS} $1 -o $2 2>/dev/null
+	${CC} ${CPPFLAGS} $1 -o $2 2>/dev/null
 }
 
 function compileTestFileWithStd()
 {
-	${CC} ${CXX_FLAGS} ${TEST_FLAG} $1 -o $2 2>/dev/null
+	${CC} ${CPPFLAGS} ${TEST_FLAG} $1 -o $2 2>/dev/null
 }
 
 #######################################
