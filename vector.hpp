@@ -78,7 +78,7 @@ namespace ft
 		template< class InputIt>
 		vector(InputIt first, InputIt last, 
 			typename ft::enable_if< !ft::is_integral<InputIt>::value, InputIt >::type* = 0, const allocator_type& alloc = allocator_type())
-			: _myAlloc(alloc){
+			: _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc){
 			size_type count = 0;
 			for (InputIt it = first; it != last; ++it, ++count);
 				
@@ -90,15 +90,17 @@ namespace ft
 
 		/*		Copy constructor and copy assignment		*/
 		vector(const vector& other) : _myAlloc(other._myAlloc){
-			this->_start = _myAlloc.allocate(other.capacity());
-			for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
-			this->_end = this->_start + other.size();
-			this->_end_of_memory = this->_start + other.capacity();
+			*this = other;
+			// this->_start = _myAlloc.allocate(other.capacity());
+			// for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, *(other._start + i));
+			// this->_end = this->_start + other.size();
+			// this->_end_of_memory = this->_start + other.capacity();
 		}
 
 		vector<value_type> & operator=(const vector& other){
 			if (this != &other)
 			{
+				_start = 0; _end = 0; _end_of_memory = 0;
 				_myAlloc = other._myAlloc;
 				clear();
 				if (this->capacity())
