@@ -63,6 +63,13 @@ namespace ft
 			this->_end = temp + temp_size;
 			this->_end_of_memory = temp + new_capacity;
 		}
+
+		void	safeConstruct(pointer p, const_reference val)
+		{
+			if (p >= this->_start && p < this->_end)
+				_myAlloc.destroy(p);
+			_myAlloc.construct(p, val);
+		}
 	public:
 		/*			Constuctors			*/
 		explicit vector (const allocator_type& alloc = allocator_type()): _start(0), _end(0), _end_of_memory(0), _myAlloc(alloc) {}
@@ -240,14 +247,25 @@ namespace ft
 
 		template< class InputIt >
 		void assign(InputIt first, InputIt last,
-					typename enable_if< !is_integral<InputIt>::value >::type* = 0)
-		{
+					typename enable_if< !is_integral<InputIt>::value >::type* = 0){
 			size_type count = 0;
 			for (InputIt it = first; it != last; ++it, ++count);
-			this->clear();
-			if (count > this->capacity())
-				realloc_vec(count);
-			for (size_type i = 0; first != last; ++first, ++i) _myAlloc.construct(this->_start + i, *first);
+			
+			if (&(*first) >= this->_start && &(*first) < this->_end) //edge case
+			{
+				vector temp = vector(first, last);
+				iterator myFirst = temp.begin();
+				iterator myEnd = temp.end();
+				this->clear();
+				for (size_type i = 0; myFirst != myEnd; ++myFirst, ++i) _myAlloc.construct(this->_start + i, *myFirst); //no need to destroy()
+			}
+			else
+			{
+				this->clear();
+				if (count > this->capacity())
+					realloc_vec(count);
+				for (size_type i = 0; first != last; ++first, ++i) _myAlloc.construct(this->_start + i, *first); //no need to destroy()
+			}
 			this->_end = this->_start + count;
 		}
 
@@ -274,7 +292,7 @@ namespace ft
 			pointer temp = &(*pos);
 			
 			for (; pos < this->end() - 1; ++pos, ++temp)
-				_myAlloc.construct(temp, *(temp + 1));
+				safeConstruct(temp, *(temp + 1));
 			_myAlloc.destroy(temp);
 			--this->_end;
 
@@ -289,7 +307,7 @@ namespace ft
 
 			if (first >= last) return(last);
 			for (; first + offset != this->end(); ++first, ++save)
-				_myAlloc.construct(save, *(save + offset));
+				safeConstruct(save, *(save + offset));
 			for (iterator it = this->end() - offset;  it != this->end(); ++it)
 				_myAlloc.destroy(&*it);
 			this->_end -= offset;
@@ -303,7 +321,11 @@ namespace ft
 			iterator it = this->end() - 2;
 			iterator	update_pos(this->_start + offset);
 			for (; it >= update_pos && it >= this->begin(); --it)
+			{
+				_myAlloc.destroy(&(*it) + 1);
 				_myAlloc.construct(&(*it) + 1, *(it)); /* backwards copying to avoid overlapping (similar to memmove) */
+			}
+			_myAlloc.destroy(this->_start + offset);
 			_myAlloc.construct(this->_start + offset, value);
 			return (update_pos);
 		}
@@ -315,9 +337,9 @@ namespace ft
 				realloc_vec(count + this->size());
 			size_type i = 0;
 			for (iterator it = this->end() - 1; it != this->begin() + offset - 1; --it, ++i)
-				_myAlloc.construct(&*it + count, *it);
+				safeConstruct(&*it + count, *it);
 			for (i = 0; i < count; ++i, ++offset)
-				_myAlloc.construct(this->_start + offset, value);
+				safeConstruct(this->_start + offset, value);
 			this->_end += count;
 		}
 
@@ -327,34 +349,39 @@ namespace ft
 			size_type	pos_offset = static_cast<size_type>(position - begin());
 			size_type	range = 0;
 
+			vector		temp;
 			bool		internal = false;
-			size_type	internal_pos = 0;
 
 			for (InputIterator it = first; it != last; ++it, ++range);
+
+			/*for an edge case (e.g. vec.insert(vec.begin(), vec.end()))*/
+			if (&(*first) >= this->_start && &(*first) < this->_end)
+			{
+				internal = true;
+				temp.assign(first, last);
+			}
+			/**/
+
 			if (range + size() > capacity())
 			{
-				/*for an edge case (e.g. vec.insert(vec.begin(), vec.end()))*/
-				if (&(*first) >= this->_start && &(*first) < this->_end)
-				{
-					internal = true;
-					for (InputIterator it = first; &(*first) != this->_start + internal_pos; ++it, ++internal_pos);
-				}
 				realloc_vec(range + size() <= size() * 2 ? size() * 2 : range + size());
 				position = iterator(this->_start + pos_offset);
 			}
 			for (iterator it = end() - 1; it >= position; --it)
-				_myAlloc.construct(&*it + range, *it);
-			
+				safeConstruct(&*it + range, *it);
+
 			/*the edge case occurs when internal is true*/
 			if (internal)
 			{
-				for (size_type count = 0; count != range; ++position, ++count)
-					_myAlloc.construct(&*position, *(this->_start + internal_pos + count));
+				iterator myFirst = temp.begin();
+				iterator myEnd = temp.end();
+				for (; myFirst != myEnd; ++position, ++myFirst)
+					safeConstruct(&*position, *myFirst);
 			}
 			else
 			{
 				for (; first != last; ++first, ++position)
-					_myAlloc.construct(&*position, *first);
+					safeConstruct(&*position, *first);
 			}
 			this->_end += range;
 		}
