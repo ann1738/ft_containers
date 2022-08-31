@@ -89,26 +89,22 @@ namespace ft
 		}
 
 		/*		Copy constructor and copy assignment		*/
-		vector(const vector& other) : _myAlloc(other._myAlloc){
+		vector(const vector& other) :  _start(0), _end(0), _end_of_memory(0), _myAlloc(other._myAlloc){
 			*this = other;
-			// this->_start = _myAlloc.allocate(other.capacity());
-			// for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, *(other._start + i));
-			// this->_end = this->_start + other.size();
-			// this->_end_of_memory = this->_start + other.capacity();
 		}
 
 		vector<value_type> & operator=(const vector& other){
 			if (this != &other)
 			{
-				_start = 0; _end = 0; _end_of_memory = 0;
-				_myAlloc = other._myAlloc;
 				clear();
 				if (this->capacity())
 					_myAlloc.deallocate(this->_start, this->capacity());
+				_myAlloc = other._myAlloc;
 				this->_start = _myAlloc.allocate(other.size());
 				for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 				this->_end = this->_start + other.size();
 				this->_end_of_memory = this->_start + other.size();
+				// this->_end = this->_end_of_memory = this->_start + other.size();
 			}
 			return *(this);
 		}
