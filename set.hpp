@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/08/30 13:42:06 by anasr            ###   ########.fr       */
+/*   Updated: 2022/08/31 17:39:24 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -737,7 +737,7 @@ namespace ft
 			const_iterator	tmp = begin();
 			while (tmp != end() && _myComp(*tmp, val))
 				++tmp;
-			return (iterator(bst_find(*tmp), getMinimum(), getMaximum()));
+			return iterator(tmp);
 			// return tmp;
 		}
 
@@ -746,7 +746,7 @@ namespace ft
 			const_iterator	tmp = begin();
 			while (tmp != end() && !_myComp(val, *tmp))
 				++tmp;
-			return (iterator(bst_find(*tmp), getMinimum(), getMaximum()));
+			return iterator(tmp);
 			// return tmp;
 		}
 
