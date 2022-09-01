@@ -17,6 +17,12 @@ CPPFLAGS="-Wall -Wextra -Werror -std=c++98"
 # CPPFLAGS+=" -fsanitize=address -g3"
 TEST_FLAG="-D TESTING=1"
 
+if [ "$(uname)" == "Linux" ]; then
+	VALGRIND="valgrind --leak-check=full"
+else
+	VALGRIND=""
+fi 
+
 EXEC_NAME=test
 
 FT_LOG_DIR=ft_logs
@@ -115,10 +121,8 @@ function assessAndReportIfTestPassed()
 		printf "%-20s: COMPILE: $exit_code | OUTPUT: ✅\n" "$temp.cpp"
 		rm -f $1
 	else
-		if [[ "$(cat $1 | grep "Max Size:" | wc -l)" != "0" ]]; then
-			printf "%-20s: COMPILE: $exit_code | OUTPUT: 🙉\n" "$temp.cpp"
-			# printf "%-20s: COMPILE: $exit_code | OUTPUT: 👀\n" "$temp.cpp"
-			# printf "%-20s: COMPILE: $exit_code | OUTPUT: ⚠️\n" "$temp.cpp"
+		if [[ "$(cat $1 | grep -c "Max Size:")" != "0" ]]; then
+			printf "%-20s: COMPILE: $exit_code | OUTPUT: 👀\n" "$temp.cpp"
 		else
 			printf "%-20s: COMPILE: $exit_code | OUTPUT: ❌\n" "$temp.cpp"
 		fi
@@ -154,7 +158,7 @@ function runTestsInDir()
 		file_name="$(basename ${TEST_FILES[$i]} .cpp)"
 		compileTestFileWithFt ${TEST_FILES[$i]} $EXEC_NAME 
 		ft_exit_code=$?
-		./$EXEC_NAME > "${FT_LOG_DIR}/${file_name}.${container_name}.log"
+		${VALGRIND} ./$EXEC_NAME > "${FT_LOG_DIR}/${file_name}.${container_name}.log"
 
 		compileTestFileWithStd ${TEST_FILES[$i]} $EXEC_NAME
 		./$EXEC_NAME > "${STD_LOG_DIR}/${file_name}.${container_name}.log"
