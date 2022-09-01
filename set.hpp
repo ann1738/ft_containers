@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/08/31 17:39:24 by anasr            ###   ########.fr       */
+/*   Updated: 2022/09/01 13:53:23 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -698,8 +698,13 @@ namespace ft
 		}
 		
      	void erase(iterator first, iterator last){
-			while (first != last)
-				erase(first++);
+			size_type range = 0;
+			for (iterator it = first; it != last; ++it, ++range);			
+			key_type	keys[range];
+			for (size_type i = 0; i < range; ++i, ++first)
+				keys[i] =  *first;
+			for (size_type i = 0; i < range; ++i)
+				erase(keys[i]);
 		}
 
 		void swap(set& x){
