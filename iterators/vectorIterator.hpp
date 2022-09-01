@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 08:09:13 by ann               #+#    #+#             */
-/*   Updated: 2022/08/30 17:45:05 by anasr            ###   ########.fr       */
+/*   Updated: 2022/09/01 18:28:21 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,22 @@ namespace ft{
 		typedef typename ft::vector<T, _Alloc>::const_reference		const_reference;
 		typedef typename ft::random_access_iterator_tag		iterator_category;
 
-	// private:
-		vectorIterator(pointer temp) : it_start(temp) {}
-	public:
-		const pointer &	base(void) const{return it_start;}
 		vectorIterator(void) : it_start(0) {}
 		vectorIterator(vectorIterator const & iter) : it_start(iter.it_start) {}
+		vectorIterator(pointer temp) : it_start(temp) {}
 		vectorIterator & operator=(vectorIterator const & iter) {if (this != &iter) this->it_start = iter.it_start; return *(this);}
 		~vectorIterator() {}
+
+		const pointer &	base(void) const{return it_start;}
 
 		operator	vectorIterator<const T, _Alloc>() const{
 			return vectorIterator<const T, _Alloc>(it_start);
 		}
 
-		/*to const or not to const*/
 		reference	operator*(void) const{
 			return *(this->it_start);
 		}
 
-		/*to const or not to const*/
 		pointer	operator->(void) const{
 			return (this->it_start);
 		}
