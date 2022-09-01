@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 14:32:41 by ann               #+#    #+#             */
-/*   Updated: 2022/08/01 13:19:31 by anasr            ###   ########.fr       */
+/*   Updated: 2022/09/01 18:24:32 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,12 @@ namespace ft{
 		typedef typename ft::set<T, Compare, Alloc>::size_type				size_type;
 		typedef typename ft::bidirectional_iterator_tag						iterator_category;
 
-	// private:
-		setIterator(const node_pointer temp, const node_pointer small, const node_pointer large)
-			:	it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
-	public:	
 		setIterator(void)
 			:	it_start(0), _smallest_node(0), _largest_node(0), _myComp(key_compare()) {}
 		setIterator(setIterator const & iter)
 			:	it_start(iter.it_start), _smallest_node(iter._smallest_node), _largest_node(iter._largest_node), _myComp(key_compare()) {}
+		setIterator(const node_pointer temp, const node_pointer small, const node_pointer large)
+			:	it_start(temp), _smallest_node(small), _largest_node(large), _myComp(key_compare()) {}
 		setIterator & operator=(setIterator const & iter){
 			if (this != &iter)
 			{
@@ -69,14 +67,8 @@ namespace ft{
 			return (this->it_start->_info);
 		}
 
-		pointer  getValPtr() const
-		{ return &it_start->_info; }
-
-
-		/*idk how to do this*/
 		pointer	operator->(void) const {
 			return getValPtr();
-			// return &(this->it_start->_info);
 		}
 
 		setIterator & operator++(void){
@@ -143,6 +135,7 @@ namespace ft{
 
 		bool	amILeft(node_pointer _nod) const{return _nod == _nod->_parent->_left;}
 
+		pointer  getValPtr() const{return &it_start->_info;}
 	};
 }
 #endif
