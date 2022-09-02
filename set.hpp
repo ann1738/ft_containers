@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/09/02 11:37:58 by anasr            ###   ########.fr       */
+/*   Updated: 2022/09/02 13:42:44 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -699,12 +699,17 @@ namespace ft
 		
      	void erase(iterator first, iterator last){
 			size_type range = 0;
-			for (iterator it = first; it != last; ++it, ++range);			
-			key_type	keys[range];
+			for (iterator it = first; it != last; ++it, ++range);
+			key_type*	keys;
+			std::allocator<key_type>	keyAllocator;
+			keys = keyAllocator.allocate(range);
 			for (size_type i = 0; i < range; ++i, ++first)
-				keys[i] =  *first;
+				keyAllocator.construct(keys + i, *first);
 			for (size_type i = 0; i < range; ++i)
 				erase(keys[i]);
+			for (size_type i = 0; i < range; ++i)
+				keyAllocator.destroy(keys + i);
+			keyAllocator.deallocate(keys, range);
 		}
 
 		void swap(set& x){
