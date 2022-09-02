@@ -49,7 +49,6 @@ namespace ft{
 		typedef	size_t																size_type;
 
 		/*	value_compare class	*/
-		template <class KeyI, class TI, class CompareI, class AllocI>
 		class value_compare : public std::binary_function<value_type, value_type, bool>{
 			friend class map;
 		public:
@@ -57,8 +56,8 @@ namespace ft{
 				return _compObj(a.first, b.first);
 			}
 		protected:
-			CompareI	_compObj;
-			value_compare (CompareI c) : _compObj(c) {};
+			Compare	_compObj;
+			value_compare (Compare c) : _compObj(c) {};
 		};
 
 	private:
@@ -500,7 +499,7 @@ namespace ft{
 		/*		Observers		*/
 		key_compare key_comp() const{return _myComp;}
 		
-		const value_compare<Key, T, Compare, Alloc> value_comp() const{return value_compare<Key, T, Compare, Alloc>(_myComp);}
+		const value_compare value_comp() const{return value_compare(_myComp);}
 
 		/*			Iterators			*/
 		iterator begin(){
