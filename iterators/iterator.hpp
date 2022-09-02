@@ -34,12 +34,12 @@ namespace ft
 	template <typename _iter>
 	class reverse_iterator{
 	public:
-		typedef  _iter					  			iterator_type;
-		typedef typename _iter::difference_type  	difference_type;
-		typedef typename _iter::value_type       	value_type;
-		typedef typename _iter::pointer         	pointer;
-		typedef typename _iter::const_pointer         	const_pointer;
-		typedef typename _iter::reference        	reference;
+		typedef _iter								iterator_type;
+		typedef typename _iter::difference_type		difference_type;
+		typedef typename _iter::value_type			value_type;
+		typedef typename _iter::pointer				pointer;
+		typedef typename _iter::const_pointer		const_pointer;
+		typedef typename _iter::reference			reference;
 		typedef typename _iter::iterator_category	iterator_category;
 	protected:
 		_iter	current;
@@ -66,7 +66,6 @@ namespace ft
 			return *(--temp); /* thats why &*r == &*(i - 1) */
 		}
 		
-		/*check pls*/
 		pointer operator->() const{
 			iterator_type	temp = current;
 			--temp;
@@ -81,18 +80,10 @@ namespace ft
 		reverse_iterator& operator--() {++current; return *(this);}
 		reverse_iterator operator++(int) {return reverse_iterator(current--);}
 		reverse_iterator operator--(int) {return reverse_iterator(current++);}
-		// reverse_iterator operator++(int) {reverse_iterator temp = *this; --current; return temp;}
-		// reverse_iterator operator--(int) {reverse_iterator temp = *this; ++current; return temp;}
 		reverse_iterator operator+( difference_type n ) const {return reverse_iterator(current - n);}
 		reverse_iterator operator-( difference_type n ) const {return reverse_iterator(current + n);}
 		reverse_iterator& operator+=( difference_type n ) {current -= n; return *(this);}
 		reverse_iterator& operator-=( difference_type n ) {current += n; return *(this);}
-
-		
-		/*	Non-member functions of ft::reverse_iterators	*/
-
-		// /*advances the reverse iterator*/
-
 	};
 
 	template< class IterI >
