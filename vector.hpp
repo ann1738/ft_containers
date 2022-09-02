@@ -30,8 +30,8 @@ namespace ft
     	typedef _Alloc										allocator_type;
 		typedef value_type&									reference;
 		typedef const value_type&							const_reference;
-    	typedef typename allocator_type::pointer			pointer;
-    	typedef typename allocator_type::const_pointer		const_pointer;
+    	typedef value_type *								pointer;
+    	typedef const value_type *							const_pointer;
 		typedef	ft::vectorIterator<T, _Alloc>				iterator;
 		typedef	ft::vectorIterator<const T, _Alloc>			const_iterator;
 		typedef ft::reverse_iterator<iterator>				reverse_iterator;
