@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 10:49:59 by ann               #+#    #+#             */
-/*   Updated: 2022/08/30 12:44:16 by anasr            ###   ########.fr       */
+/*   Updated: 2022/09/02 11:38:50 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ namespace ft
 			*this = other;
 		}
 
-		vector<value_type> & operator=(const vector& other){
+		vector & operator=(const vector& other){
 			if (this != &other)
 			{
 				clear();
@@ -111,7 +111,6 @@ namespace ft
 				for (size_type i = 0; i < other.size(); ++i) _myAlloc.construct(this->_start + i, other[i]);
 				this->_end = this->_start + other.size();
 				this->_end_of_memory = this->_start + other.size();
-				// this->_end = this->_end_of_memory = this->_start + other.size();
 			}
 			return *(this);
 		}

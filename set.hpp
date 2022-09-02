@@ -6,7 +6,7 @@
 /*   By: anasr <anasr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 09:58:27 by anasr             #+#    #+#             */
-/*   Updated: 2022/09/01 13:53:23 by anasr            ###   ########.fr       */
+/*   Updated: 2022/09/02 11:37:58 by anasr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ namespace ft
 		size_type		_size;
 
 		pointer			_nill;
-	struct node{
-			/*maybe this is considered a normal class and thus i can't implement here or maybe that's not true*/
+
+		struct node{
 			value_type	_info;
 			
 			pointer		_parent;
@@ -341,7 +341,7 @@ namespace ft
 
 					rotate_left(newNode->_parent);					
 				}
-				else// (amILeft(newNode->_parent) && !amILeft(newNode)) /* L R */
+				else /* L R */
 				{
 					if (RB_DEBUG) std::cout << "L R" << std::endl;
 					rotate_left(newNode->_parent);
